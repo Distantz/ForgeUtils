@@ -52,7 +52,7 @@ jobs:
         run: |
           # Define absolute paths for clarity and robustness using GITHUB_WORKSPACE
 
-          PROJECT_ROOT_ON_RUNNER="${GITHUB_WORKSPACE}"
+          PROJECT_ROOT_ON_RUNNER="${GITHUB_WORKSPACE}/repo_main"
 
           LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/Main"
           DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/docs/src"
