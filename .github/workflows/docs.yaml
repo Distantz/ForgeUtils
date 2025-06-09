@@ -81,14 +81,14 @@ jobs:
         # Navigate into the 'docs' directory of your main repository and build the HTML site.
         run: |
           cd "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/Docs"
-          mdbook build # This will output the HTML site to ForgeUtils/docs/book/
+          mdbook build
 
       - name: Upload documentation artifact
         # Upload the generated HTML files as an artifact.
         # The path here is relative to the runner's workspace root.
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs/book" # The output directory of mdbook
+          path: "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/Docs/book" # The output directory of mdbook
 
   deploy:
     needs: build # This job will only run if the 'build' job completes successfully
