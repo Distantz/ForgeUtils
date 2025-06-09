@@ -1,0 +1,82 @@
+# .github/workflows/docs.yml
+name: Build & Deploy Lua Docs
+
+on:
+  push:
+    branches:
+      - main # Trigger on pushes to the 'main' branch
+  pull_request:
+    branches:
+      - main # Optional: run on pull requests for documentation previews
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use a Linux environment for the build process
+    steps:
+      - name: Checkout main repository code
+        uses: actions/checkout@v4
+
+      - name: Set up Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal # Install only essential components for faster setup
+
+      - name: Install luals-docs-gen from source
+        # Clone the luals-docs-gen repository into a temporary directory
+        # and build the executable from source.
+        run: |
+          git clone https://github.com/RCLTK/luals-docs-gen.git /tmp/luals-docs-gen
+          cd /tmp/luals-docs-gen
+          cargo build --release # Build the optimized executable
+
+      - name: Install mdbook
+        # Install mdbook globally using cargo
+        run: |
+          cargo install mdbook
+
+      - name: Generate Markdown with luals-docs-gen
+        # Ensure the output directory for luals-docs-gen exists within docs/src/
+        # Run luals-docs-gen from the project root.
+        # Adjust '--library .' if your Lua source code is in a subdirectory (e.g., '--library src/').
+        run: |
+          mkdir -p docs/src/api # Create the directory where API docs will go
+          /tmp/luals-docs-gen/target/release/luals-docs-gen --library Main/ --output docs/src/api
+
+      - name: Set up Python
+        # Install Python for running the generate_summary.py script
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate mdbook SUMMARY.md
+        # Navigate to the 'docs' directory and run the Python script
+        run: |
+          cd docs
+          python generate_summary.py
+
+      - name: Build mdbook documentation
+        # Navigate to the 'docs' directory and build the HTML site
+        run: |
+          cd docs
+          mdbook build # This will output the HTML site to docs/book/
+
+      - name: Upload documentation artifact
+        # Upload the generated HTML files as an artifact for the deployment job
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/book # The output directory of mdbook
+
+  deploy:
+    needs: build # This job depends on the 'build' job completing successfully
+    permissions:
+      pages: write      # Required to deploy to GitHub Pages
+      id-token: write   # Required for OpenID Connect (OIDC) authentication
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # The official GitHub Pages deploy action
