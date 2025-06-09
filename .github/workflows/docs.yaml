@@ -55,7 +55,7 @@ jobs:
           PROJECT_ROOT_ON_RUNNER="${GITHUB_WORKSPACE}/repo_main"
 
           LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/Main"
-          DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/docs/src"
+          DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/Docs/src"
           API_OUTPUT_DIR="${DOCS_OUTPUT_BASE_PATH}/src/api"
 
           # Ensure the output directory for API docs exists
