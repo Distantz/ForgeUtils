@@ -3,90 +3,105 @@ name: Build & Deploy Lua Docs
 on:
   push:
     branches:
-      - main
+      - main # Trigger on pushes to the 'main' branch
+      # Add your development branch here if you want it to trigger on pushes
+      # e.g., - feature/your-docs-branch
   pull_request:
     branches:
-      - main
+      - main # Optional: run on pull requests targeting 'main' for documentation previews
+      # Add your development branch here if you want it to trigger on PRs
+      # e.g., - feature/your-docs-branch
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Use a Linux environment for the build process
     steps:
       - name: Checkout main repository code
         uses: actions/checkout@v4
         with:
-          path: your_repo_code # Clones your main repo into 'your_repo_code' dir
+          # This 'path:' specifies where your main repo's code will be cloned on the runner.
+          # It's relative to the runner's workspace root.
+          path: your_repo_code
 
       - name: Checkout luals-docs-gen repository
         uses: actions/checkout@v4
         with:
-          repository: RCLTK/luals-docs-gen # Specify the other repo
-          path: luals-docs-gen_clone # Clones it into this path
-          token: ${{ secrets.GITHUB_TOKEN }} # Use the automatically provided token
+          # Specify the repository to clone (owner/repo_name)
+          repository: RCLTK/luals-docs-gen
+          # Specify where to clone this repository on the runner.
+          path: luals-docs-gen_clone
+          # Use the GITHUB_TOKEN for authentication (required for cloning even public repos robustly in Actions)
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          profile: minimal
+          profile: minimal # Install only essential components for faster setup
 
       - name: Install luals-docs-gen from source
-        # Build the executable from the cloned luals-docs-gen repo
+        # Navigate to the cloned luals-docs-gen repo and build its executable.
         run: |
-          cd luals-docs-gen_clone # Navigate to the cloned repo
-          cargo build --release
-          # The compiled tool will be at luals-docs-gen_clone/target/release/luals-docs-gen
+          cd luals-docs-gen_clone
+          cargo build --release # Build the optimized executable
 
       - name: Install mdbook
+        # Install mdbook globally using cargo.
         run: |
           cargo install mdbook
 
       - name: Generate Markdown with luals-docs-gen
-        # Now, call luals-docs-gen from its built location
-        # and point it to your main repository's Lua code.
+        # Create the target directory for the generated API docs.
+        # Then, run luals-docs-gen from the runner's workspace root.
+        # - The '--library' argument points to your main repository's code.
+        # - The '--output' argument points to where the Markdown files should be generated.
         run: |
-          # Create the output directory relative to your main repo's root
           mkdir -p your_repo_code/docs/src/api
-          # Execute luals-docs-gen, pointing to your main repo's code.
-          # The path to the tool is relative to the runner's root.
           ./luals-docs-gen_clone/target/release/luals-docs-gen --library your_repo_code --output your_repo_code/docs/src/api
-          # ADJUST '--library your_repo_code' IF YOUR LUA SOURCE IS IN A SUBDIRECTORY
-          # For example, if Lua code is in 'your_repo_code/src/':
-          # ./luals-docs-gen_clone/target/release/luals-docs-gen --library your_repo_code/src --output your_repo_code/docs/src/api
+          # IMPORTANT:
+          # If your Lua source code is NOT directly in your repository's root
+          # (e.g., it's in a 'src/' folder inside your main repo),
+          # you MUST change '--library your_repo_code' to '--library your_repo_code/src'.
+          # Example: --library your_repo_code/lua_source
+          # Do NOT change 'your_repo_code/docs/src/api' unless your docs folder is also moved.
 
-      - name: Set up Python (for SUMMARY.md generation)
+      - name: Set up Python
+        # Install Python for running the generate_summary.py script.
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
       - name: Generate mdbook SUMMARY.md
-        # Navigate to your main repository's docs directory and run the Python script
+        # Navigate into the 'docs' directory of your main repository
+        # and run the Python script to create the navigation file.
         run: |
           cd your_repo_code/docs
           python generate_summary.py
 
       - name: Build mdbook documentation
-        # Navigate to your main repository's docs directory and build the HTML site
+        # Navigate into the 'docs' directory of your main repository
+        # and build the HTML site.
         run: |
           cd your_repo_code/docs
-          mdbook build
+          mdbook build # This will output the HTML site to docs/book/
 
       - name: Upload documentation artifact
-        # Upload the generated HTML files from your main repository's docs/book
+        # Upload the generated HTML files as an artifact.
+        # The path here is relative to the runner's workspace root.
         uses: actions/upload-pages-artifact@v3
         with:
-          path: your_repo_code/docs/book
+          path: your_repo_code/docs/book # The output directory of mdbook
 
-      deploy:
-        needs: build
-        permissions:
-          pages: write
-          id-token: write
-        environment:
-          name: github-pages
-          url: ${{ steps.deployment.outputs.page_url }}
-        runs-on: ubuntu-latest
-        steps:
-          - name: Deploy to GitHub Pages
-            id: deployment
-            uses: actions/deploy-pages@v4
+  deploy:
+    needs: build # This job will only run if the 'build' job completes successfully
+    permissions:
+      pages: write      # Required to deploy to GitHub Pages
+      id-token: write   # Required for OpenID Connect (OIDC) authentication
+    environment:
+      name: github-pages # The GitHub Pages environment
+      url: ${{ steps.deployment.outputs.page_url }} # The URL of the deployed page
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # The official GitHub Pages deploy action
