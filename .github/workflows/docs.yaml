@@ -1,4 +1,3 @@
-# .github/workflows/docs.yml
 name: Build & Deploy Lua Docs (luals-docs-gen + mdbook)
 
 on:
@@ -32,14 +31,6 @@ jobs:
           path: luals_docs_gen_repo
           token: ${{ secrets.GITHUB_TOKEN }} # Use the automatically provided token
 
-      # --- DEBUG STEP 1: After cloning luals-docs-gen ---
-      - name: Debug: List contents of luals_docs_gen_repo after clone
-        run: |
-          echo "Contents of ${GITHUB_WORKSPACE}/luals_docs_gen_repo:"
-          ls -la "${GITHUB_WORKSPACE}/luals_docs_gen_repo"
-          echo "Contents of ${GITHUB_WORKSPACE}/luals_docs_gen_repo/src:"
-          ls -la "${GITHUB_WORKSPACE}/luals_docs_gen_repo/src"
-
       - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -47,50 +38,29 @@ jobs:
           profile: minimal # Install only essential components for faster setup
 
       - name: Install luals-docs-gen from source
-        # This step will `cd` into the cloned repo and run `cargo build`.
-        # Any errors during compilation should appear in the logs for this step.
+        # Navigate to the cloned luals-docs-gen repo and build its executable.
         run: |
-          echo "Navigating to: ${GITHUB_WORKSPACE}/luals_docs_gen_repo"
           cd "${GITHUB_WORKSPACE}/luals_docs_gen_repo"
-          echo "Running cargo build --release..."
-          cargo build --release
-          echo "cargo build finished."
-
-      # --- DEBUG STEP 2: After building luals-docs-gen ---
-      - name: Debug: Verify luals-docs-gen executable after build
-        run: |
-          LUALS_EXEC_PATH="${GITHUB_WORKSPACE}/luals_docs_gen_repo/target/release/luals-docs-gen"
-          echo "Checking for executable at: ${LUALS_EXEC_PATH}"
-          if [ -f "$LUALS_EXEC_PATH" ]; then
-            echo "SUCCESS: luals-docs-gen executable found at: $LUALS_EXEC_PATH"
-            echo "Permissions:"
-            ls -l "$LUALS_EXEC_PATH"
-          else
-            echo "ERROR: luals-docs-gen executable NOT FOUND at: $LUALS_EXEC_PATH"
-            echo "Listing contents of ${GITHUB_WORKSPACE}/luals_docs_gen_repo/target/:"
-            ls -la "${GITHUB_WORKSPACE}/luals_docs_gen_repo/target/" || echo "target directory not found."
-            echo "Listing contents of ${GITHUB_WORKSPACE}/luals_docs_gen_repo/target/release/:"
-            ls -la "${GITHUB_WORKSPACE}/luals_docs_gen_repo/target/release/" || echo "release directory not found."
-            exit 1 # Fail the step if binary not found - this is key to debugging!
-          fi
+          cargo build --release --verbose # Build the optimized executable
 
       - name: Install mdbook
+        # Install mdbook globally using cargo.
         run: |
           cargo install mdbook
 
       - name: Generate Markdown with luals-docs-gen
         run: |
-          # Define absolute paths for clarity and robustness
+          # Define absolute paths for clarity and robustness using GITHUB_WORKSPACE
           LUALS_EXEC_PATH="${GITHUB_WORKSPACE}/luals_docs_gen_repo/target/release/luals-docs-gen"
           PROJECT_ROOT_ON_RUNNER="${GITHUB_WORKSPACE}/repo_main"
           LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/ForgeUtils/Main" # Based on your previous input
           DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/ForgeUtils/docs"
           API_OUTPUT_DIR="${DOCS_OUTPUT_BASE_PATH}/src/api"
 
+          # Ensure the output directory for API docs exists
           mkdir -p "${API_OUTPUT_DIR}"
 
           # Explicitly make the luals-docs-gen executable executable
-          # This is the line that has been causing you trouble if the file isn't there!
           chmod +x "${LUALS_EXEC_PATH}"
 
           # Run luals-docs-gen using absolute paths
@@ -102,30 +72,36 @@ jobs:
           python-version: '3.x'
 
       - name: Generate mdbook SUMMARY.md
+        # Navigate into the 'docs' directory of your main repository and run the Python script.
         run: |
+          # Ensure this path is correct for your 'docs' directory relative to the main repo's clone
           cd "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs"
           python generate_summary.py
 
       - name: Build mdbook documentation
+        # Navigate into the 'docs' directory of your main repository and build the HTML site.
         run: |
+          # Ensure this path is correct for your 'docs' directory relative to the main repo's clone
           cd "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs"
-          mdbook build
+          mdbook build # This will output the HTML site to ForgeUtils/docs/book/
 
       - name: Upload documentation artifact
+        # Upload the generated HTML files as an artifact.
+        # The path here is relative to the runner's workspace root.
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs/book"
+          path: "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs/book" # The output directory of mdbook
 
   deploy:
-    needs: build
+    needs: build # This job will only run if the 'build' job completes successfully
     permissions:
-      pages: write
-      id-token: write
+      pages: write      # Required to deploy to GitHub Pages
+      id-token: write   # Required for OpenID Connect (OIDC) authentication
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: github-pages # The GitHub Pages environment
+      url: ${{ steps.deployment.outputs.page_url }} # The URL of the deployed page
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4 # The official GitHub Pages deploy action
