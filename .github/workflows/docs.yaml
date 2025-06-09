@@ -1,0 +1,108 @@
+name: Build & Deploy Lua Docs (luals-docs-gen + mdbook)
+
+on:
+  push:
+    branches:
+      - main # Trigger on pushes to the 'main' branch
+      # IMPORTANT: If you're on a different branch for testing (e.g., 'feature/my-docs-branch'),
+      # uncomment and add your branch here:
+      # - feature/my-docs-branch
+  pull_request:
+    branches:
+      - main # Optional: run on pull requests targeting 'main' for documentation previews
+      # IMPORTANT: If you want PRs from your testing branch to trigger, uncomment and add:
+      # - feature/my-docs-branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use a Linux environment for the build process
+    steps:
+      - name: Checkout main repository code
+        uses: actions/checkout@v4
+        with:
+          # Clones your main repo into a subdirectory named 'repo_main'
+          path: repo_main
+
+      - name: Checkout luals-docs-gen repository
+        uses: actions/checkout@v4
+        with:
+          repository: emuell/luals-docs-gen # Using 'emuell' as per your last input
+          # Clones luals-docs-gen into a subdirectory named 'luals_docs_gen_repo'
+          path: luals_docs_gen_repo
+          token: ${{ secrets.GITHUB_TOKEN }} # Use the automatically provided token
+
+      - name: Set up Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal # Install only essential components for faster setup
+
+      - name: Install luals-docs-gen from source
+        # Navigate to the cloned luals-docs-gen repo and build its executable.
+        run: |
+          cd "${GITHUB_WORKSPACE}/luals_docs_gen_repo"
+          cargo build --release # Build the optimized executable
+
+      - name: Install mdbook
+        # Install mdbook globally using cargo.
+        run: |
+          cargo install mdbook
+
+      - name: Generate Markdown with luals-docs-gen
+        run: |
+          # Define absolute paths for clarity and robustness using GITHUB_WORKSPACE
+
+          PROJECT_ROOT_ON_RUNNER="${GITHUB_WORKSPACE}/repo_main"
+
+          LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/Main"
+          DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/Docs/src"
+          API_OUTPUT_DIR="${DOCS_OUTPUT_BASE_PATH}/api"
+
+          # Ensure the output directory for API docs exists
+          mkdir -p "${API_OUTPUT_DIR}"
+
+          echo "$GITHUB_WORKSPACE"
+          ls
+          # Run luals-docs-gen using absolute paths
+          cargo run --manifest-path "${GITHUB_WORKSPACE}/luals_docs_gen_repo/Cargo.toml" -- "${LUA_SOURCE_PATH}" "${API_OUTPUT_DIR}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate mdbook SUMMARY.md
+        run: |
+          cd "${GITHUB_WORKSPACE}/repo_main/Docs"
+          python generate_summary.py
+
+      - name: Build mdbook documentation
+        run: |
+          cd "${GITHUB_WORKSPACE}/repo_main/Docs"
+          mdbook build
+
+      - name: Check mdbook output
+        run: |
+          echo "Contents of Docs after build:"
+          ls -l "${GITHUB_WORKSPACE}/repo_main/Docs"
+          echo "Contents of book dir (if exists):"
+          ls -l "${GITHUB_WORKSPACE}/repo_main/Docs/book" || echo "No book directory found"
+
+      - name: Upload documentation artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: repo_main/Docs/book
+
+  deploy:
+    needs: build # This job will only run if the 'build' job completes successfully
+    permissions:
+      pages: write      # Required to deploy to GitHub Pages
+      id-token: write   # Required for OpenID Connect (OIDC) authentication
+    environment:
+      name: github-pages # The GitHub Pages environment
+      url: ${{ steps.deployment.outputs.page_url }} # The URL of the deployed page
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # The official GitHub Pages deploy action
