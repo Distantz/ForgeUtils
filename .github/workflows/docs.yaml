@@ -52,7 +52,6 @@ jobs:
         run: |
           # Define absolute paths for clarity and robustness using GITHUB_WORKSPACE
 
-          LUALS_PATH="${GITHUB_WORKSPACE}/luals_docs_gen_repo"
           PROJECT_ROOT_ON_RUNNER="${GITHUB_WORKSPACE}/repo_main"
 
           LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/ForgeUtils/Main"
@@ -63,7 +62,7 @@ jobs:
           mkdir -p "${API_OUTPUT_DIR}"
 
           # Run luals-docs-gen using absolute paths
-          "cargo run --manifest-path ${LUALS_PATH}/Cargo.toml ${LUA_SOURCE_PATH} ${DOCS_OUTPUT_BASE_PATH}"
+          cargo run --manifest-path "${GITHUB_WORKSPACE}/luals_docs_gen_repo/Cargo.toml ${LUA_SOURCE_PATH} ${API_OUTPUT_DIR}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
