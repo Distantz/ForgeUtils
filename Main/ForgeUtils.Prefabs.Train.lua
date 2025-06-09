@@ -21,8 +21,8 @@ local table = global.table
 local math = global.math
 local tonumber = global.tonumber
 
----@module "ForgeUtils.Prefabs.Train"
-local TrainLibrary = module(...)
+---@class ForgeUtils.Prefabs.Train
+local TrainLibrary = {}
 
 -- #region Constants
 
@@ -368,3 +368,5 @@ function TrainLibrary.GetSimpleCameraChild(cameraPrefabName, position, rotation)
         }
     }
 end
+
+return TrainLibrary

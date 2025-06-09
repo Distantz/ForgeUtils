@@ -8,8 +8,8 @@ local table = global.table
 local tostring = global.tostring
 local GameDatabase = require("Database.GameDatabase")
 
----@module "Database.ForgeUtils.SceneryDatabaseManager"
-local SceneryDatabaseManager = module(...)
+---@class Database.ForgeUtils.SceneryDatabaseManager
+local SceneryDatabaseManager = {}
 
 --
 -- Initialization functions. These functions are called during the initialization process only
@@ -294,3 +294,5 @@ end
 SceneryDatabaseManager.Shutdown = function()
 
 end
+
+return SceneryDatabaseManager
