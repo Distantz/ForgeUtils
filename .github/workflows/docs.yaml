@@ -84,7 +84,7 @@ jobs:
       - name: Upload documentation artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "${GITHUB_WORKSPACE}/repo_main/Docs/book"
+          path: "${GITHUB_WORKSPACE}/repo_main/Docs"
 
   deploy:
     needs: build # This job will only run if the 'build' job completes successfully
