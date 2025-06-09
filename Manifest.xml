@@ -1,0 +1,6 @@
+<ContentPack version="1">
+  <Name>ForgeUtils</Name> <!-- This must match your folder name -->
+  <ID>aabefdf0-36e2-4849-92d6-3fdd4ef0c9d7</ID> <!-- You must replace this UUID -->
+  <Version>1</Version>
+  <Type>Game</Type>
+</ContentPack>
