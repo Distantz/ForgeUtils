@@ -1,16 +1,17 @@
-name: Build & Deploy Lua Docs
+name: Build & Deploy Lua Docs (luals-docs-gen + mdbook)
 
 on:
   push:
     branches:
       - main # Trigger on pushes to the 'main' branch
-      # Add your development branch here if you want it to trigger on pushes
-      # e.g., - feature/your-docs-branch
+      # IMPORTANT: If you're on a different branch for testing (e.g., 'feature/my-docs-branch'),
+      # uncomment and add your branch here:
+      # - feature/my-docs-branch
   pull_request:
     branches:
       - main # Optional: run on pull requests targeting 'main' for documentation previews
-      # Add your development branch here if you want it to trigger on PRs
-      # e.g., - feature/your-docs-branch
+      # IMPORTANT: If you want PRs from your testing branch to trigger, uncomment and add:
+      # - feature/my-docs-branch
 
 jobs:
   build:
@@ -19,19 +20,16 @@ jobs:
       - name: Checkout main repository code
         uses: actions/checkout@v4
         with:
-          # This 'path:' specifies where your main repo's code will be cloned on the runner.
-          # It's relative to the runner's workspace root.
-          path: your_repo_code
+          # Clones your main repo into a subdirectory named 'repo_main'
+          path: repo_main
 
       - name: Checkout luals-docs-gen repository
         uses: actions/checkout@v4
         with:
-          # Specify the repository to clone (owner/repo_name)
-          repository: emuell/luals-docs-gen
-          # Specify where to clone this repository on the runner.
-          path: luals-docs-gen_clone
-          # Use the GITHUB_TOKEN for authentication (required for cloning even public repos robustly in Actions)
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: emuell/luals-docs-gen # Using 'emuell' as per your last input
+          # Clones luals-docs-gen into a subdirectory named 'luals_docs_gen_repo'
+          path: luals_docs_gen_repo
+          token: ${{ secrets.GITHUB_TOKEN }} # Use the automatically provided token
 
       - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
@@ -42,7 +40,7 @@ jobs:
       - name: Install luals-docs-gen from source
         # Navigate to the cloned luals-docs-gen repo and build its executable.
         run: |
-          cd luals-docs-gen_clone
+          cd "${GITHUB_WORKSPACE}/luals_docs_gen_repo"
           cargo build --release # Build the optimized executable
 
       - name: Install mdbook
@@ -51,46 +49,48 @@ jobs:
           cargo install mdbook
 
       - name: Generate Markdown with luals-docs-gen
-        # Create the target directory for the generated API docs.
-        # Then, run luals-docs-gen from the runner's workspace root.
-        # - The '--library' argument points to your main repository's code.
-        # - The '--output' argument points to where the Markdown files should be generated.
         run: |
-          mkdir -p ForgeUtils/docs/src/api
-          ./luals-docs-gen_clone/target/release/luals-docs-gen --library ForgeUtils/Main --output ForgeUtils/docs/src/api
-          # IMPORTANT:
-          # If your Lua source code is NOT directly in your repository's root
-          # (e.g., it's in a 'src/' folder inside your main repo),
-          # you MUST change '--library your_repo_code' to '--library your_repo_code/src'.
-          # Example: --library your_repo_code/lua_source
-          # Do NOT change 'your_repo_code/docs/src/api' unless your docs folder is also moved.
+          # Define absolute paths for clarity and robustness using GITHUB_WORKSPACE
+          LUALS_EXEC_PATH="${GITHUB_WORKSPACE}/luals_docs_gen_repo/target/release/luals-docs-gen"
+          PROJECT_ROOT_ON_RUNNER="${GITHUB_WORKSPACE}/repo_main"
+          LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/ForgeUtils/Main" # Based on your previous input
+          DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/ForgeUtils/docs"
+          API_OUTPUT_DIR="${DOCS_OUTPUT_BASE_PATH}/src/api"
+
+          # Ensure the output directory for API docs exists
+          mkdir -p "${API_OUTPUT_DIR}"
+
+          # Explicitly make the luals-docs-gen executable executable
+          chmod +x "${LUALS_EXEC_PATH}"
+
+          # Run luals-docs-gen using absolute paths
+          "${LUALS_EXEC_PATH}" --library "${LUA_SOURCE_PATH}" --output "${API_OUTPUT_DIR}"
 
       - name: Set up Python
-        # Install Python for running the generate_summary.py script.
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
       - name: Generate mdbook SUMMARY.md
-        # Navigate into the 'docs' directory of your main repository
-        # and run the Python script to create the navigation file.
+        # Navigate into the 'docs' directory of your main repository and run the Python script.
         run: |
-          cd ForgeUtils/docs
+          # Ensure this path is correct for your 'docs' directory relative to the main repo's clone
+          cd "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs"
           python generate_summary.py
 
       - name: Build mdbook documentation
-        # Navigate into the 'docs' directory of your main repository
-        # and build the HTML site.
+        # Navigate into the 'docs' directory of your main repository and build the HTML site.
         run: |
-          cd ForgeUtils/docs
-          mdbook build # This will output the HTML site to docs/book/
+          # Ensure this path is correct for your 'docs' directory relative to the main repo's clone
+          cd "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs"
+          mdbook build # This will output the HTML site to ForgeUtils/docs/book/
 
       - name: Upload documentation artifact
         # Upload the generated HTML files as an artifact.
         # The path here is relative to the runner's workspace root.
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ForgeUtils/docs/book # The output directory of mdbook
+          path: "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs/book" # The output directory of mdbook
 
   deploy:
     needs: build # This job will only run if the 'build' job completes successfully
