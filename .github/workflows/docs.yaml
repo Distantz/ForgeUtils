@@ -56,8 +56,8 @@ jobs:
         # - The '--library' argument points to your main repository's code.
         # - The '--output' argument points to where the Markdown files should be generated.
         run: |
-          mkdir -p your_repo_code/docs/src/api
-          ./luals-docs-gen_clone/target/release/luals-docs-gen --library your_repo_code --output your_repo_code/docs/src/api
+          mkdir -p ForgeUtils/docs/src/api
+          ./luals-docs-gen_clone/target/release/luals-docs-gen --library ForgeUtils/Main --output ForgeUtils/docs/src/api
           # IMPORTANT:
           # If your Lua source code is NOT directly in your repository's root
           # (e.g., it's in a 'src/' folder inside your main repo),
@@ -75,14 +75,14 @@ jobs:
         # Navigate into the 'docs' directory of your main repository
         # and run the Python script to create the navigation file.
         run: |
-          cd your_repo_code/docs
+          cd ForgeUtils/docs
           python generate_summary.py
 
       - name: Build mdbook documentation
         # Navigate into the 'docs' directory of your main repository
         # and build the HTML site.
         run: |
-          cd your_repo_code/docs
+          cd ForgeUtils/docs
           mdbook build # This will output the HTML site to docs/book/
 
       - name: Upload documentation artifact
@@ -90,7 +90,7 @@ jobs:
         # The path here is relative to the runner's workspace root.
         uses: actions/upload-pages-artifact@v3
         with:
-          path: your_repo_code/docs/book # The output directory of mdbook
+          path: ForgeUtils/docs/book # The output directory of mdbook
 
   deploy:
     needs: build # This job will only run if the 'build' job completes successfully
