@@ -1,4 +1,3 @@
-# your_lua_project/docs/generate_summary.py
 import os
 
 # Path to the directory where luals-docs-gen outputs its Markdown files

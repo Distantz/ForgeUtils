@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           # Specify the repository to clone (owner/repo_name)
-          repository: RCLTK/luals-docs-gen
+          repository: emuell/luals-docs-gen
           # Specify where to clone this repository on the runner.
           path: luals-docs-gen_clone
           # Use the GITHUB_TOKEN for authentication (required for cloning even public repos robustly in Actions)
