@@ -9,7 +9,7 @@ local tostring = global.tostring
 local GameDatabase = require("Database.GameDatabase")
 
 ---@class SceneryDatabaseManager
-local SceneryDatabaseManager = module(...)
+local SceneryDatabaseManager = {}
 
 --
 -- Initialization functions. These functions are called during the initialization process only

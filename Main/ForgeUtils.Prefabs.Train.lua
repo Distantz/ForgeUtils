@@ -22,7 +22,7 @@ local math = global.math
 local tonumber = global.tonumber
 
 ---@class TrainLibrary
-local TrainLibrary = module(...)
+local TrainLibrary = {}
 
 -- #region Constants
 

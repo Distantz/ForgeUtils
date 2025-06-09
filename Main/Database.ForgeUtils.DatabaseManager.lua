@@ -7,7 +7,7 @@ local type = type
 local table = global.table
 local tostring = global.tostring
 local GameDatabase = require("Database.GameDatabase")
-local ForgeUtilsDatabaseManager = module(...)
+local ForgeUtilsDatabaseManager = {}
 
 --
 -- Initialization functions. These functions are called during the initialization process only

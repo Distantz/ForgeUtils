@@ -1,7 +1,7 @@
 local global = _G
 local table = global.table
 local require = require
-local ForgeUtilsLuaDatabase = module(...)
+local ForgeUtilsLuaDatabase = {}
 
 ForgeUtilsLuaDatabase.AddContentToCall = function(_tContentToCall)
     -- We tell the Database Manager to load our custom Database Manager by its Lua name
