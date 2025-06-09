@@ -21,7 +21,7 @@ local table = global.table
 local math = global.math
 local tonumber = global.tonumber
 
----@class TrainLibrary
+---@module "ForgeUtils.Prefabs.Train"
 local TrainLibrary = {}
 
 -- #region Constants

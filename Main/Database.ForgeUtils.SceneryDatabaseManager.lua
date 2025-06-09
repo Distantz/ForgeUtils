@@ -8,7 +8,7 @@ local table = global.table
 local tostring = global.tostring
 local GameDatabase = require("Database.GameDatabase")
 
----@class SceneryDatabaseManager
+---@module "Database.ForgeUtils.SceneryDatabaseManager"
 local SceneryDatabaseManager = {}
 
 --
