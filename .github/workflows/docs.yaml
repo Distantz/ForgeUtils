@@ -74,15 +74,13 @@ jobs:
       - name: Generate mdbook SUMMARY.md
         # Navigate into the 'docs' directory of your main repository and run the Python script.
         run: |
-          # Ensure this path is correct for your 'docs' directory relative to the main repo's clone
-          cd "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs"
+          cd "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/Docs"
           python generate_summary.py
 
       - name: Build mdbook documentation
         # Navigate into the 'docs' directory of your main repository and build the HTML site.
         run: |
-          # Ensure this path is correct for your 'docs' directory relative to the main repo's clone
-          cd "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/docs"
+          cd "${GITHUB_WORKSPACE}/repo_main/ForgeUtils/Docs"
           mdbook build # This will output the HTML site to ForgeUtils/docs/book/
 
       - name: Upload documentation artifact
