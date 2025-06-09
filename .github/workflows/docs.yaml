@@ -56,7 +56,7 @@ jobs:
 
           LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/Main"
           DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/Docs/src"
-          API_OUTPUT_DIR="${DOCS_OUTPUT_BASE_PATH}/src/api"
+          API_OUTPUT_DIR="${DOCS_OUTPUT_BASE_PATH}/api"
 
           # Ensure the output directory for API docs exists
           mkdir -p "${API_OUTPUT_DIR}"
