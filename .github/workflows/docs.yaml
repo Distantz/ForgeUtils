@@ -81,10 +81,17 @@ jobs:
           cd "${GITHUB_WORKSPACE}/repo_main/Docs"
           mdbook build
 
+      - name: Check mdbook output
+        run: |
+          echo "Contents of Docs after build:"
+          ls -l "${GITHUB_WORKSPACE}/repo_main/Docs"
+          echo "Contents of book dir (if exists):"
+          ls -l "${GITHUB_WORKSPACE}/repo_main/Docs/book" || echo "No book directory found"
+
       - name: Upload documentation artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "${GITHUB_WORKSPACE}/repo_main/Docs"
+          path: ${GITHUB_WORKSPACE}/repo_main/Docs/book
 
   deploy:
     needs: build # This job will only run if the 'build' job completes successfully
