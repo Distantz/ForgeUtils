@@ -9,7 +9,7 @@ local tostring = global.tostring
 local GameDatabase = require("Database.GameDatabase")
 
 ---@module "Database.ForgeUtils.SceneryDatabaseManager"
-local SceneryDatabaseManager = {}
+local SceneryDatabaseManager = module(...)
 
 --
 -- Initialization functions. These functions are called during the initialization process only
