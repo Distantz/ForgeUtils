@@ -51,20 +51,19 @@ jobs:
       - name: Generate Markdown with luals-docs-gen
         run: |
           # Define absolute paths for clarity and robustness using GITHUB_WORKSPACE
-          LUALS_EXEC_PATH="${GITHUB_WORKSPACE}/luals_docs_gen_repo/target/release/luals-docs-gen"
+
+          LUALS_PATH="${GITHUB_WORKSPACE}/luals_docs_gen_repo"
           PROJECT_ROOT_ON_RUNNER="${GITHUB_WORKSPACE}/repo_main"
-          LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/ForgeUtils/Main" # Based on your previous input
-          DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/ForgeUtils/docs"
+
+          LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/ForgeUtils/Main"
+          DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/ForgeUtils/docs/src"
           API_OUTPUT_DIR="${DOCS_OUTPUT_BASE_PATH}/src/api"
 
           # Ensure the output directory for API docs exists
           mkdir -p "${API_OUTPUT_DIR}"
 
-          # Explicitly make the luals-docs-gen executable executable
-          chmod +x "${LUALS_EXEC_PATH}"
-
           # Run luals-docs-gen using absolute paths
-          "${LUALS_EXEC_PATH}" --library "${LUA_SOURCE_PATH}" --output "${API_OUTPUT_DIR}"
+          "cargo run --manifest-path ${LUALS_PATH}/Cargo.toml ${LUA_SOURCE_PATH} ${DOCS_OUTPUT_BASE_PATH}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
