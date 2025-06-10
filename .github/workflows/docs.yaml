@@ -30,9 +30,10 @@ jobs:
           toolchain: stable
           profile: minimal
 
-      - name: Install mdbook
-        run: |
-          cargo install mdbook
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@v2
+        with:
+          mdbook-version: 'latest'
 
       - name: Generate Markdown with luals-docs-gen
         run: |
