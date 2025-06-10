@@ -2,7 +2,7 @@ local global = _G
 local api = global.api
 local setmetatable = global.setmetatable
 
---- @class SceneryPartBuilder
+--- @class ForgeUtils.DB.SceneryBuilder
 --- @field contentPack string
 --- @field contentPackID integer
 --- @field dataPrefab string
@@ -12,7 +12,7 @@ local setmetatable = global.setmetatable
 --- SceneryPartBuilder is a fluent builder for database values in ForgeUtils.
 --- Example usage, which creates a scenery part with ID PC_ExampleTestID and name and description:
 --- ```lua
---- SceneryPartBuilder:new()
+--- SceneryPartBuilder.new()
 ---     :withID("PC_ExampleTestID")
 ---     :withNameFile("PC_ExampleTestID_Name")
 ---     :withDescriptionFile("PC_ExampleTestID_Desc")
@@ -25,7 +25,7 @@ local SceneryPartBuilder = {}
 SceneryPartBuilder.__index = SceneryPartBuilder
 
 ---Creates a SceneryPartBuilder, to define database information.
----@return SceneryPartBuilder
+---@return ForgeUtils.DB.SceneryBuilder
 function SceneryPartBuilder.new()
     local instance = setmetatable({}, SceneryPartBuilder)
 
@@ -39,7 +39,7 @@ end
 --- Sets the ID of the scenery part.
 --- Unless the prefab and icon names are set, this will also be those.
 --- @param partID string The ID to use for this scenery part
---- @returns SceneryPartBuilder
+--- @returns ForgeUtils.DB.SceneryBuilder
 function SceneryPartBuilder:withID(partID)
     self.partID = partID
     return self
@@ -47,7 +47,7 @@ end
 
 ---Sets the translation file for the scenery part name.
 ---@param nameFile string The name of the translation file.
----@return SceneryPartBuilder
+---@return ForgeUtils.DB.SceneryBuilder
 function SceneryPartBuilder:withNameFile(nameFile)
     self.nameFile = nameFile
     return self
@@ -55,7 +55,7 @@ end
 
 ---Sets the translation file for the scenery part description.
 ---@param descFile string The name of the translation file.
----@return SceneryPartBuilder
+---@return ForgeUtils.DB.SceneryBuilder
 function SceneryPartBuilder:withDescriptionFile(descFile)
     self.descFile = descFile
     return self
