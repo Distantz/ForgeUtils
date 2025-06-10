@@ -54,7 +54,13 @@ def generate_mdbook_summary():
         else:
             f.write("\nNo API documentation generated.\n")
 
-    print(f"Generated SUMMARY.md with {len(markdown_files)} API entries.")
+    print(f"Generated SUMMARY.md with {len(markdown_files)} API entries")
+
+    print("SUMMARY FILE:")
+    print()
+    with open(SUMMARY_FILE_PATH, 'r') as f:
+        for line in f.readlines():
+            print(line)
 
 if __name__ == '__main__':
     generate_mdbook_summary()
