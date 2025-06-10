@@ -1,6 +1,6 @@
 import os
 
-LUADOCS_OUTPUT_SUBDIR = 'api'
+LUADOCS_OUTPUT_SUBDIR = 'API'
 MDBOOK_SOURCE_DIR = 'src'
 
 # Path to mdbook's SUMMARY.md
