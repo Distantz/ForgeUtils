@@ -26,14 +26,13 @@ SceneryPartBuilder.__index = SceneryPartBuilder
 
 ---Creates a SceneryPartBuilder, to define database information.
 ---@return SceneryPartBuilder
-function SceneryPartBuilder:new()
-    local instance = setmetatable({}, self)
+function SceneryPartBuilder.new()
+    local instance = setmetatable({}, SceneryPartBuilder)
 
     -- Defaults
     instance.contentPack = "BaseGame"
     instance.contentPackID = 0
     instance.dataPrefab = "SurfaceScaling"
-
     return instance
 end
 
