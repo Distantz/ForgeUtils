@@ -25,7 +25,7 @@ local SceneryPartBuilder = {}
 SceneryPartBuilder.__index = SceneryPartBuilder
 
 ---Creates a SceneryPartBuilder, to define database information.
----@return ForgeUtils.DB.SceneryBuilder
+---@return self
 function SceneryPartBuilder.new()
     local instance = setmetatable({}, SceneryPartBuilder)
 
@@ -39,7 +39,7 @@ end
 --- Sets the ID of the scenery part.
 --- Unless the prefab and icon names are set, this will also be those.
 --- @param partID string The ID to use for this scenery part
---- @returns ForgeUtils.DB.SceneryBuilder
+--- @returns self
 function SceneryPartBuilder:withID(partID)
     self.partID = partID
     return self
@@ -47,7 +47,7 @@ end
 
 ---Sets the translation file for the scenery part name.
 ---@param nameFile string The name of the translation file.
----@return ForgeUtils.DB.SceneryBuilder
+---@return self
 function SceneryPartBuilder:withNameFile(nameFile)
     self.nameFile = nameFile
     return self
@@ -55,7 +55,7 @@ end
 
 ---Sets the translation file for the scenery part description.
 ---@param descFile string The name of the translation file.
----@return ForgeUtils.DB.SceneryBuilder
+---@return self
 function SceneryPartBuilder:withDescriptionFile(descFile)
     self.descFile = descFile
     return self
