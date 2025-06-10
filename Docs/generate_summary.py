@@ -1,7 +1,5 @@
 import os
 
-# Path to the directory where luals-docs-gen outputs its Markdown files
-# This is relative to mdbook's source directory (docs/src)
 LUADOCS_OUTPUT_SUBDIR = 'api'
 MDBOOK_SOURCE_DIR = 'src'
 
@@ -9,7 +7,6 @@ MDBOOK_SOURCE_DIR = 'src'
 SUMMARY_FILE_PATH = os.path.join(MDBOOK_SOURCE_DIR, 'SUMMARY.md')
 
 def generate_mdbook_summary():
-    # Ensure we are operating relative to the docs/ directory
     current_mdbook_src_dir = os.path.join(os.getcwd(), MDBOOK_SOURCE_DIR)
     luals_output_path = os.path.join(current_mdbook_src_dir, LUADOCS_OUTPUT_SUBDIR)
 
@@ -34,6 +31,7 @@ def generate_mdbook_summary():
                 markdown_files.append(relative_path)
 
     markdown_files.sort() # Sort alphabetically for consistent order
+    print(markdown_files)
 
     with open(SUMMARY_FILE_PATH, 'w') as f:
         f.write("# Summary\n\n")
@@ -50,7 +48,9 @@ def generate_mdbook_summary():
                 indent_level = md_file.count(os.sep) - LUADOCS_OUTPUT_SUBDIR.count(os.sep)
                 indent_str = "  " * indent_level
 
-                f.write(f"{indent_str}- [{title}]({md_file})\n")
+                content = f"{indent_str}- [{title}]({md_file})\n"
+                f.write(content)
+                print(f"Wrote: {content}")
         else:
             f.write("\nNo API documentation generated.\n")
 
