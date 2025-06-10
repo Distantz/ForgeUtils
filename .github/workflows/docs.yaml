@@ -3,48 +3,34 @@ name: Build & Deploy Lua Docs (luals-docs-gen + mdbook)
 on:
   push:
     branches:
-      - main # Trigger on pushes to the 'main' branch
-      # IMPORTANT: If you're on a different branch for testing (e.g., 'feature/my-docs-branch'),
-      # uncomment and add your branch here:
-      # - feature/my-docs-branch
+      - main
   pull_request:
     branches:
-      - main # Optional: run on pull requests targeting 'main' for documentation previews
-      # IMPORTANT: If you want PRs from your testing branch to trigger, uncomment and add:
-      # - feature/my-docs-branch
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Use a Linux environment for the build process
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout main repository code
         uses: actions/checkout@v4
         with:
-          # Clones your main repo into a subdirectory named 'repo_main'
           path: repo_main
 
       - name: Checkout luals-docs-gen repository
         uses: actions/checkout@v4
         with:
-          repository: emuell/luals-docs-gen # Using 'emuell' as per your last input
-          # Clones luals-docs-gen into a subdirectory named 'luals_docs_gen_repo'
+          repository: emuell/luals-docs-gen
           path: luals_docs_gen_repo
-          token: ${{ secrets.GITHUB_TOKEN }} # Use the automatically provided token
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          profile: minimal # Install only essential components for faster setup
-
-      # - name: Install luals-docs-gen from source
-      #   # Navigate to the cloned luals-docs-gen repo and build its executable.
-      #   run: |
-      #     cd "${GITHUB_WORKSPACE}/luals_docs_gen_repo"
-      #     cargo build --release # Build the optimized executable
+          profile: minimal
 
       - name: Install mdbook
-        # Install mdbook globally using cargo.
         run: |
           cargo install mdbook
 
@@ -82,9 +68,9 @@ jobs:
           echo "Contents of book dir (if exists):"
           ls -l "${GITHUB_WORKSPACE}/repo_main/Docs/book" || echo "No book directory found"
 
-      - name: Upload static files as artifact
-        id: deployment
-        uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
+      - name: Upload mdBook output as artifact
+        id: upload-pages
+        uses: actions/upload-pages-artifact@v3
         with:
           path: repo_main/Docs/book
 
@@ -94,10 +80,15 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy-pages.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Deploy to GitHub Pages
-        id: deployment
+        id: deploy-pages
         uses: actions/deploy-pages@v4
+
+      - name: Debug deployed contents
+        run: |
+          echo "Deployed directory listing:"
+          find .
