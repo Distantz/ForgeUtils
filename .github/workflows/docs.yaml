@@ -89,6 +89,9 @@ jobs:
           path: repo_main/Docs/book
 
   deploy:
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
