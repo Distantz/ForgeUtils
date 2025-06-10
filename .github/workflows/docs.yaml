@@ -84,9 +84,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Download GitHub Pages artifact
-        uses: actions/download-pages-artifact@v3
-
       - name: Deploy to GitHub Pages
         id: deploy-pages
         uses: actions/deploy-pages@v4
