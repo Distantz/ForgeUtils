@@ -82,21 +82,19 @@ jobs:
           echo "Contents of book dir (if exists):"
           ls -l "${GITHUB_WORKSPACE}/repo_main/Docs/book" || echo "No book directory found"
 
-      - name: Upload documentation artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload static files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
           path: repo_main/Docs/book
 
   deploy:
-    needs: build # This job will only run if the 'build' job completes successfully
-    permissions:
-      pages: write      # Required to deploy to GitHub Pages
-      id-token: write   # Required for OpenID Connect (OIDC) authentication
     environment:
-      name: github-pages # The GitHub Pages environment
-      url: ${{ steps.deployment.outputs.page_url }} # The URL of the deployed page
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 # The official GitHub Pages deploy action
+        uses: actions/deploy-pages@v4
