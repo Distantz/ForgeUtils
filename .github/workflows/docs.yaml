@@ -51,10 +51,10 @@ jobs:
       #   with:
       #     python-version: '3.x'
 
-      - name: Generate mdbook SUMMARY.md
-        run: |
-          cd "${GITHUB_WORKSPACE}/repo_main/Docs"
-          python generate_summary.py
+      # - name: Generate mdbook SUMMARY.md
+      #   run: |
+      #     cd "${GITHUB_WORKSPACE}/repo_main/Docs"
+      #     python generate_summary.py
 
       - name: Build mdbook documentation
         run: |
