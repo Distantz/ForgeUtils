@@ -3,6 +3,6 @@
 
 - [Home](GUIDES.md)
 
-- API Reference
+# API Reference
 <!-- API TOC START -->
 <!-- API TOC END -->
