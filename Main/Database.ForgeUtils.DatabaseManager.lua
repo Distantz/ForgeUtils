@@ -7,6 +7,8 @@ local type = type
 local table = global.table
 local tostring = global.tostring
 local GameDatabase = require("Database.GameDatabase")
+local database = api.database
+---@class Database.ForgeUtils.DatabaseManager
 local ForgeUtilsDatabaseManager = {}
 
 --
@@ -24,9 +26,9 @@ ForgeUtilsDatabaseManager.tDatabaseFunctions = {}
 -- This method will be called when our manager gets initialized to inject custom functions
 -- in the Game Database. These functions will be available for the rest of the game Lua modules.
 ForgeUtilsDatabaseManager.AddDatabaseFunctions = function(_tDatabaseFunctions)
-	for sMethod, fnMethod in pairs(ForgeUtilsDatabaseManager.tDatabaseFunctions) do
-		_tDatabaseFunctions[sMethod] = fnMethod
-	end
+    for sMethod, fnMethod in pairs(ForgeUtilsDatabaseManager.tDatabaseFunctions) do
+        _tDatabaseFunctions[sMethod] = fnMethod
+    end
 end
 
 -- This method will be called after our manager gets initialized, all Database and Player methods have
@@ -42,31 +44,29 @@ ForgeUtilsDatabaseManager.Setup = function() end
 ---@param _sDatabase string
 ---@param _sQueryName string
 ---@param ...args
----@return any
+---@return table|nil Query results
 ForgeUtilsDatabaseManager.ExecuteQuery = function(_sDatabase, _sQueryName, ...)
-	local result = nil
-	GameDatabase.SetReadOnly(_sDatabase, false)
-	local tArgs = table.pack(...)
+    local result = nil
+    database.SetReadOnly(_sDatabase, false)
+    local tArgs = table.pack(...)
 
-	local cPSInstance = GameDatabase.GetPreparedStatementInstance(_sDatabase, _sQueryName)
-	if cPSInstance ~= nil then
-		--dbgTrace("binding to: " .. _sInstance)
-		if #tArgs > 0 then
-			for i, j in ipairs(tArgs) do
-				--dbgTrace("binding parameter: " .. j)
-				GameDatabase.BindParameter(cPSInstance, i, j)
-			end
-		end
-		GameDatabase.BindComplete(cPSInstance)
-		GameDatabase.Step(cPSInstance)
+    local cPSInstance = database.GetPreparedStatementInstance(_sDatabase, _sQueryName)
+    if cPSInstance ~= nil then
+        if #tArgs > 0 then
+            for i, j in ipairs(tArgs) do
+                database.BindParameter(cPSInstance, i, j)
+            end
+        end
+        database.BindComplete(cPSInstance)
+        database.Step(cPSInstance)
 
-		local tRows = GameDatabase.GetAllResults(cPSInstance, false)
-		result = tRows or nil
-	else
-		dbgTrace("WARNING: COULD NOT GET INSTANCE: " .. _sInstance .. " IN: " .. _sPSCollection)
-	end
-	GameDatabase.SetReadOnly(_sDatabase, true)
-	return result
+        local tRows = database.GetAllResults(cPSInstance, false)
+        result = tRows or nil
+    else
+        api.debug.Trace("[FORGE UTILS] WARNING: COULD NOT GET INSTANCE: " .. _sInstance)
+    end
+    database.SetReadOnly(_sDatabase, true)
+    return result
 end
 
 --
