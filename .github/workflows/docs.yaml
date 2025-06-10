@@ -37,11 +37,11 @@ jobs:
           toolchain: stable
           profile: minimal # Install only essential components for faster setup
 
-      - name: Install luals-docs-gen from source
-        # Navigate to the cloned luals-docs-gen repo and build its executable.
-        run: |
-          cd "${GITHUB_WORKSPACE}/luals_docs_gen_repo"
-          cargo build --release # Build the optimized executable
+      # - name: Install luals-docs-gen from source
+      #   # Navigate to the cloned luals-docs-gen repo and build its executable.
+      #   run: |
+      #     cd "${GITHUB_WORKSPACE}/luals_docs_gen_repo"
+      #     cargo build --release # Build the optimized executable
 
       - name: Install mdbook
         # Install mdbook globally using cargo.
@@ -56,15 +56,9 @@ jobs:
 
           LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/Main"
           DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/Docs/src"
-          API_OUTPUT_DIR="${DOCS_OUTPUT_BASE_PATH}/api"
 
-          # Ensure the output directory for API docs exists
-          mkdir -p "${API_OUTPUT_DIR}"
-
-          echo "$GITHUB_WORKSPACE"
-          ls
           # Run luals-docs-gen using absolute paths
-          cargo run --manifest-path "${GITHUB_WORKSPACE}/luals_docs_gen_repo/Cargo.toml" -- "${LUA_SOURCE_PATH}" "${API_OUTPUT_DIR}"
+          cargo run --manifest-path "${GITHUB_WORKSPACE}/luals_docs_gen_repo/Cargo.toml" -- "${LUA_SOURCE_PATH}" "${DOCS_OUTPUT_BASE_PATH}"
 
       - name: Set up Python
         uses: actions/setup-python@v5
