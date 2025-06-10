@@ -21,7 +21,7 @@ local setmetatable = global.setmetatable
 --- Note the use of the `addToDB()` call at the end. This is actually what adds the defined values
 --- into the DB.
 ---
-SceneryPartBuilder = {}
+local SceneryPartBuilder = {}
 SceneryPartBuilder.__index = SceneryPartBuilder
 
 ---Creates a SceneryPartBuilder, to define database information.
@@ -68,3 +68,5 @@ end
 function SceneryPartBuilder:addToDB()
     -- TODO: Define functionality
 end
+
+return SceneryPartBuilder
