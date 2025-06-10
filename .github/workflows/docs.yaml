@@ -37,11 +37,11 @@ jobs:
           toolchain: stable
           profile: minimal # Install only essential components for faster setup
 
-      - name: Install luals-docs-gen from source
-        # Navigate to the cloned luals-docs-gen repo and build its executable.
-        run: |
-          cd "${GITHUB_WORKSPACE}/luals_docs_gen_repo"
-          cargo build --release # Build the optimized executable
+      # - name: Install luals-docs-gen from source
+      #   # Navigate to the cloned luals-docs-gen repo and build its executable.
+      #   run: |
+      #     cd "${GITHUB_WORKSPACE}/luals_docs_gen_repo"
+      #     cargo build --release # Build the optimized executable
 
       - name: Install mdbook
         # Install mdbook globally using cargo.
