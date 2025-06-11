@@ -20,7 +20,7 @@ jobs:
       - name: Checkout luals-docs-gen repository
         uses: actions/checkout@v4
         with:
-          repository: distantz/luals-docs-gen
+          repository: emuell/luals-docs-gen
           path: luals_docs_gen_repo
           token: ${{ secrets.GITHUB_TOKEN }}
 

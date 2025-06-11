@@ -3,6 +3,7 @@ local api = global.api
 local setmetatable = global.setmetatable
 
 --- @class SceneryPartBuilder
+--- @field emuell SceneryPartBuilder
 --- @field contentPack string
 --- @field contentPackID integer
 --- @field dataPrefab string
@@ -22,7 +23,6 @@ local setmetatable = global.setmetatable
 --- into the DB.
 ---
 local SceneryPartBuilder = {}
----@diagnostic disable-next-line
 SceneryPartBuilder.__index = SceneryPartBuilder
 
 ---Creates a SceneryPartBuilder, to define database information.
