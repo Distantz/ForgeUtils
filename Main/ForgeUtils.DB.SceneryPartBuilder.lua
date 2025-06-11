@@ -14,7 +14,7 @@ local setmetatable = global.setmetatable
 --- Note the use of the `addToDB()` call at the end. This is actually what adds the defined values
 --- into the DB.
 --- @class SceneryPartBuilder
---- @field __index SceneryPartBuilder
+--- @field __index table
 --- @field contentPack string
 --- @field contentPackID integer
 --- @field dataPrefab string
