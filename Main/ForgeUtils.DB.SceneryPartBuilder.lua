@@ -2,7 +2,6 @@ local global = _G
 local api = global.api
 local setmetatable = global.setmetatable
 
---- @class SceneryPartBuilder
 --- SceneryPartBuilder is a fluent builder for database values in ForgeUtils.
 --- Example usage, which creates a scenery part with ID PC_ExampleTestID and name and description:
 --- ```lua
@@ -14,7 +13,7 @@ local setmetatable = global.setmetatable
 --- ```
 --- Note the use of the `addToDB()` call at the end. This is actually what adds the defined values
 --- into the DB.
----
+--- @class SceneryPartBuilder
 --- @field __index SceneryPartBuilder
 --- @field contentPack string
 --- @field contentPackID integer
