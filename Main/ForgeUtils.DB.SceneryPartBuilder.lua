@@ -3,7 +3,7 @@ local api = global.api
 local setmetatable = global.setmetatable
 
 --- @class SceneryPartBuilder
---- @field emuell SceneryPartBuilder
+--- @field __index SceneryPartBuilder
 --- @field contentPack string
 --- @field contentPackID integer
 --- @field dataPrefab string
