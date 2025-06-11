@@ -2,7 +2,7 @@ local global = _G
 local api = global.api
 local setmetatable = global.setmetatable
 
---- @class ForgeUtils.DB.SceneryPartBuilder
+--- @class SceneryPartBuilder
 --- @field contentPack string
 --- @field contentPackID integer
 --- @field dataPrefab string
@@ -22,6 +22,7 @@ local setmetatable = global.setmetatable
 --- into the DB.
 ---
 local SceneryPartBuilder = {}
+---@diagnostic disable-next-line
 SceneryPartBuilder.__index = SceneryPartBuilder
 
 ---Creates a SceneryPartBuilder, to define database information.
@@ -38,6 +39,7 @@ end
 --- Sets the ID of the scenery part.
 --- Unless the prefab and icon names are set, this will also be those.
 --- @param partID string The ID to use for this scenery part
+--- @return SceneryPartBuilder
 function SceneryPartBuilder:withID(partID)
     self.partID = partID
     return self
@@ -45,6 +47,7 @@ end
 
 ---Sets the translation file for the scenery part name.
 ---@param nameFile string The name of the translation file.
+---@return SceneryPartBuilder
 function SceneryPartBuilder:withNameFile(nameFile)
     self.nameFile = nameFile
     return self
@@ -52,6 +55,7 @@ end
 
 ---Sets the translation file for the scenery part description.
 ---@param descFile string The name of the translation file.
+---@return SceneryPartBuilder
 function SceneryPartBuilder:withDescriptionFile(descFile)
     self.descFile = descFile
     return self
@@ -59,6 +63,7 @@ end
 
 --- Adds the built part within the builder to the DB.
 --- This can be called multiple times.
+---@return nil
 function SceneryPartBuilder:addToDB()
     -- TODO: Define functionality
 end
