@@ -2,7 +2,7 @@ local global = _G
 local api = global.api
 local setmetatable = global.setmetatable
 
---- @class ForgeUtils.DB.SceneryPartBuilder : table
+--- @class ForgeUtils.DB.SceneryPartBuilder
 --- @field contentPack string
 --- @field contentPackID integer
 --- @field dataPrefab string
