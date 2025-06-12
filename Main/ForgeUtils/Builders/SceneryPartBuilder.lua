@@ -13,6 +13,7 @@ local setmetatable = global.setmetatable
 --- ```
 --- Note the use of the `addToDB()` call at the end. This is actually what adds the defined values
 --- into the DB.
+---
 --- @class SceneryPartBuilder
 --- @field __index table
 --- @field contentPack string
@@ -21,14 +22,13 @@ local setmetatable = global.setmetatable
 --- @field partID string
 --- @field nameFile string
 --- @field descFile string
----
 local SceneryPartBuilder = {}
 SceneryPartBuilder.__index = SceneryPartBuilder
 
 ---Creates a SceneryPartBuilder, to define database information.
+---@return SceneryPartBuilder
 function SceneryPartBuilder.new()
     local instance = setmetatable({}, SceneryPartBuilder)
-
     -- Defaults
     instance.contentPack = "BaseGame"
     instance.contentPackID = 0
@@ -68,4 +68,5 @@ function SceneryPartBuilder:addToDB()
     -- TODO: Define functionality
 end
 
+---@returns SceneryPartBuilder
 return SceneryPartBuilder

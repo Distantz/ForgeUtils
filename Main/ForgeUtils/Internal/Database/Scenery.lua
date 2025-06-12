@@ -7,48 +7,47 @@ local type = type
 local table = global.table
 local tostring = global.tostring
 local GameDatabase = require("Database.GameDatabase")
-local DatabaseManager = require("Database.ForgeUtils.DatabaseManager")
+local DatabaseUtils = require("ForgeUtils.Internal.Database.DatabaseUtils")
 
----@class Database.ForgeUtils.SceneryDatabaseManager
+local logger = require("ForgeUtils.Logger").Get("SceneryDatabaseManager")
+
+---@class SceneryDatabaseManager
 local SceneryDatabaseManager = {}
 
---
--- Initialization functions. These functions are called during the initialization process only
---
-
--- This method will be called when our manager gets initialized, early in the game launch after
--- all data has been merged for all the Content Packs. This method allows our manager to know
--- the database is getting initialized.
+---@private
+--- This method will be called when our manager gets initialized, early in the game launch after
+--- all data has been merged for all the Content Packs. This method allows our manager to know
+--- the database is getting initialized.
 SceneryDatabaseManager.Init = function()
-
+    SceneryDatabaseManager.BindPreparedStatements()
 end
 
 SceneryDatabaseManager.tPreparedStatements = {
     ModularScenery = "ForgeUtils_Scenery"
 }
 
-SceneryDatabaseManager.BindPreparedStatements = function()
-    api.debug.Trace("SceneryDatabaseManager.BindPreparedStatements()")
+---@private
+function SceneryDatabaseManager.BindPreparedStatements()
+    logger:Debug("SceneryDatabaseManager.BindPreparedStatements()")
     local database = api.database
     local bSuccess = 0
 
-    api.debug.Trace("Starting bind")
+    logger:Debug("Starting bind")
     for k, ps in pairs(SceneryDatabaseManager.tPreparedStatements) do
-        api.debug.Trace("Write: " .. k)
+        logger:Debug("Write: " .. k)
         database.SetReadOnly(k, false)
 
-        api.debug.Trace("Bind: " .. k)
+        logger:Debug("Bind: " .. k)
         bSuccess = database.BindPreparedStatementCollection(k, ps)
         if bSuccess == 0 then
-            api.debug.Trace("Warning: Prepared Statement " .. ps .. " can not be bound to table " .. k)
+            logger:Warn("Warning: Prepared Statement " .. ps .. " can not be bound to table " .. k)
             return nil
         end
 
-        api.debug.Trace("Readonly: " .. k)
+        logger:Debug("Readonly: " .. k)
         database.SetReadOnly(k, true)
     end
 end
-
 
 -- This table contains the list of functions our module wants to add to the Game Database.
 SceneryDatabaseManager.tDatabaseFunctions = {
@@ -80,24 +79,15 @@ SceneryDatabaseManager.tDatabaseFunctions = {
 
 }
 
--- This method will be called when our manager gets initialized to inject custom functions
--- in the Game Database. These functions will be available for the rest of the game Lua modules.
-SceneryDatabaseManager.AddDatabaseFunctions = function(_tDatabaseFunctions)
-    api.debug.Trace("AddDatabaseFunctions called for FORGE")
+---@private
+--- This method will be called when our manager gets initialized to inject custom functions
+--- in the Game Database. These functions will be available for the rest of the game Lua modules.
+function SceneryDatabaseManager.AddDatabaseFunctions(_tDatabaseFunctions)
+    logger:Debug("AddDatabaseFunctions called for FORGE")
     for sMethod, fnMethod in pairs(SceneryDatabaseManager.tDatabaseFunctions) do
         _tDatabaseFunctions[sMethod] = fnMethod
     end
 end
-
--- This method will be called after our manager gets initialized, all Database and Player methods have
--- been added to the main Game Databases.
-SceneryDatabaseManager.PreBuildPrefabs = function()
-    SceneryDatabaseManager.BindPreparedStatements()
-end
-
---
--- Database active functions. These functions are optional and can be called while our Database Manager is active.
---
 
 --- Adds needed ownership for a Scenery part
 ---@param UniqueKey string
@@ -108,7 +98,7 @@ SceneryDatabaseManager.Forge_AddSceneryOwnership = function(UniqueKey, ContentPa
         ContentPack = "BaseGame"
     end
 
-    DatabaseManager.ExecuteQuery("ModularScenery_Ownership", "ForgeAddSceneryOwnership", UniqueKey, ContentPack)
+    DatabaseUtils.ExecuteQuery("ModularScenery_Ownership", "ForgeAddSceneryOwnership", UniqueKey, ContentPack)
 end
 
 --- Adds needed data for a Scenery Part
@@ -131,7 +121,7 @@ SceneryDatabaseManager.Forge_AddModularSceneryPart = function(SceneryPartName, P
         UGCID = "NULL"
     end
 
-    DatabaseManager.ExecuteQuery("ModularScenery", "ForgeAddModularSceneryPart", SceneryPartName, PrefabName,
+    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddModularSceneryPart", SceneryPartName, PrefabName,
         DataPrefabName, ContentPack, UGCID, BoxXSize, BoxYSize, BoxZSize)
 end
 --- Adds UI data for a Scenery Part
@@ -152,7 +142,7 @@ SceneryDatabaseManager.Forge_AddSceneryUIData = function(SceneryPartName, LabelT
         Icon = "NULL"
     end
 
-    DatabaseManager.ExecuteQuery("ModularScenery", "ForgeAddSceneryUIData", SceneryPartName, LabelTextSymbol,
+    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddSceneryUIData", SceneryPartName, LabelTextSymbol,
         DescriptionTextSymbol, Icon, ReleaseGroup)
 end
 
@@ -177,7 +167,7 @@ SceneryDatabaseManager.Forge_AddScenerySimulationData = function(SceneryPartName
         RequiresUnlockInSandbox = 0
     end
 
-    DatabaseManager.ExecuteQuery("ModularScenery", "ForgeAddScenerySimulationData", SceneryPartName, BuildCost,
+    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddScenerySimulationData", SceneryPartName, BuildCost,
         HourlyRunningCost, ResearchPack, RequiresUnlockInSandbox)
 end
 
@@ -185,24 +175,20 @@ end
 ---@param SceneryPartName string
 ---@param Tag string
 SceneryDatabaseManager.Forge_AddSceneryTag = function(SceneryPartName, Tag)
-    DatabaseManager.ExecuteQuery("ModularScenery", "ForgeAddSceneryTag", SceneryPartName, Tag)
+    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddSceneryTag", SceneryPartName, Tag)
 end
 
---
--- De-initialization functions. These functions are called during the shutdown or restart processes only
---
 
--- This method will be called when the Game Database is shutting down for re-initialization. It is a soft Re-Init
--- of the database. We don't need to close or free resources if we don't want, but remember we have them open when
--- the Game Database calls our :Init() function again.
-SceneryDatabaseManager.ShutdownForReInit = function()
+---@private
+--- This method will be called when the Game Database is shutting down for re-initialization. It is a soft Re-Init
+--- of the database. We don't need to close or free resources if we don't want, but remember we have them open when
+--- the Game Database calls our :Init() function again.
+SceneryDatabaseManager.ShutdownForReInit = function() end
 
-end
+---@private
+--- This method will be called when the Game Database is shutting down and we need to close any
+--- or free any resource we have open. The module will be unloaded after.
+SceneryDatabaseManager.Shutdown = function() end
 
--- This method will be called when the Game Database is shutting down and we need to close any
--- or free any resource we have open. The module will be unloaded after.
-SceneryDatabaseManager.Shutdown = function()
-
-end
-
+---@returns SceneryDatabaseManager
 return SceneryDatabaseManager

@@ -7,32 +7,32 @@
 --/
 --/  @see    https://github.com/OpenNaja/ACSE
 -----------------------------------------------------------------------
-local global  = _G
-local api     = global.api
-local Vector3 = require('Vector3')
-local Vector2 = require('Vector2')
-local require = global.require
-local pairs   = global.pairs
-local ipairs  = global.ipairs
-local string = global.string
-local tostring = global.tostring
-local type = global.type
-local table = global.table
-local math = global.math
-local tonumber = global.tonumber
+local global                         = _G
+local api                            = global.api
+local Vector3                        = require('Vector3')
+local Vector2                        = require('Vector2')
+local require                        = global.require
+local pairs                          = global.pairs
+local ipairs                         = global.ipairs
+local string                         = global.string
+local tostring                       = global.tostring
+local type                           = global.type
+local table                          = global.table
+local math                           = global.math
+local tonumber                       = global.tonumber
 
----@class ForgeUtils.Prefabs.Train
-local TrainLibrary = {}
+---@class TrainLibrary
+local TrainLibrary                   = {}
 
 -- #region Constants
 
-TrainLibrary.BogC_Platform = "BogCar"
-TrainLibrary.CarF_Platform = "CarF"
+TrainLibrary.BogC_Platform           = "BogCar"
+TrainLibrary.CarF_Platform           = "CarF"
 -- Note the use of the index in this string. It's used to separate each mid-car into its own platform.
-TrainLibrary.CarM_Platform = "CarM{1}"
-TrainLibrary.CarR_Platform = "CarR"
+TrainLibrary.CarM_Platform           = "CarM{1}"
+TrainLibrary.CarR_Platform           = "CarR"
 
-TrainLibrary.BaseCarPrefab = "CoasterCarBase"
+TrainLibrary.BaseCarPrefab           = "CoasterCarBase"
 TrainLibrary.BaseWheelAssemblyPrefab = "CoasterCarAnimatedWheelBase"
 
 --#endregion
@@ -40,21 +40,19 @@ TrainLibrary.BaseWheelAssemblyPrefab = "CoasterCarAnimatedWheelBase"
 --#region Simple utils
 
 function TrainLibrary.PrintPrefab(tbl, indent)
-  if not indent then indent = 0 end
-  for k, v in pairs(tbl) do
-    local formatting = string.rep("  ", indent) .. k .. ": "
-    if type(v) == "table" then
-      api.debug.Trace(formatting)
-      TrainLibrary.PrintPrefab(v, indent+1)
-    else
-      api.debug.Trace(formatting .. tostring(v))
+    if not indent then indent = 0 end
+    for k, v in pairs(tbl) do
+        local formatting = string.rep("  ", indent) .. k .. ": "
+        if type(v) == "table" then
+            api.debug.Trace(formatting)
+            TrainLibrary.PrintPrefab(v, indent + 1)
+        else
+            api.debug.Trace(formatting .. tostring(v))
+        end
     end
-  end
 end
 
-
 function TrainLibrary.HexCodeToFlexiColour(hex)
-
     -- Remove leading '#' if present
     hex = hex:gsub("^#", "")
 
@@ -82,8 +80,8 @@ function TrainLibrary.GetSimpleBoneAttachment(boneName)
                 BoneName = boneName
             },
             Transform = TrainLibrary.GetTransformComponent(
-                Vector3:new(0.0, 0.0, 0.0), 
-                Vector3:new(0.0, 0.0, 0.0), 
+                Vector3:new(0.0, 0.0, 0.0),
+                Vector3:new(0.0, 0.0, 0.0),
                 1.0
             )
         }
@@ -105,7 +103,7 @@ end
 ---@return table
 function TrainLibrary.GetSimpleAttachPoint(boneName)
     return {
-        Components = {Transform = {}},
+        Components = { Transform = {} },
         Prefab = 'AttachPoint',
         Properties = {
             AttachBone = {
@@ -136,7 +134,6 @@ function TrainLibrary.GetRenderMaterialEffects(numberLevelsUp)
     }
 end
 
-
 ---Returns a transfom component with these values
 ---@param position any A Vector3 noting the position
 ---@param rotation any A Vector3 noting the rotation in euler angles, radians unit
@@ -156,10 +153,10 @@ end
 --- Returns a wheel bogie prefab with wheel flexicolours set to reference the parent.
 ---@param wheelAssemblyPrefabName string The name of the Wheel Assembly prefab to spawn.
 ---@param numberOfWheels integer The number of wheels present on this prefab.
----@return table 
+---@return table
 function TrainLibrary.GetSimpleWheelAssemblyPrefab(wheelAssemblyPrefabName, numberOfWheels)
     local children = {}
-    for i=1, numberOfWheels do
+    for i = 1, numberOfWheels do
         local wheelName = "Wheel" .. i
         children[wheelName] = {
             Components = {
@@ -181,7 +178,6 @@ end
 ---@param attachToBoneName string The bone on the outer wheel assembly to attach to.
 ---@param wheelModelName string The name of the Wheel model to use.
 function TrainLibrary.GetSimpleWheelChildPrefab(attachToBoneName, wheelModelName)
-
     return {
         Properties = {
             WheelBoneName = {
@@ -195,7 +191,6 @@ function TrainLibrary.GetSimpleWheelChildPrefab(attachToBoneName, wheelModelName
     }
 end
 
-
 --- Returns a simple set of components for a train prefab with needed fields.
 --- Note, packages requires the same syntax as passed into regular prefabs.
 ---@param carModelName string The name of the car model. This will also be used as it's model skeleton.
@@ -204,17 +199,16 @@ end
 ---@param mass number The mass, in kilograms, of the trian car. Used in physics. Usually around 1000.0
 ---@return table
 function TrainLibrary.GetSimpleTrainComponents(carModelName, assetPackageLoader, numFlexiChannels, mass)
-
     local semantics = {}
     local numChannels = math.max(0, math.min(4, numFlexiChannels))
 
-    for i=1, numChannels do
+    for i = 1, numChannels do
         local semantic = {
             SemanticTag = "CoasterCar" .. i
         }
 
         if (i ~= 1) then
-           semantic["MaterialCustomisationProviderSlot"] = i-1
+            semantic["MaterialCustomisationProviderSlot"] = i - 1
         end
 
         semantics[i] = semantic
@@ -222,22 +216,22 @@ function TrainLibrary.GetSimpleTrainComponents(carModelName, assetPackageLoader,
 
     return {
         Model = {
-			UpdateCullingVolume = false,
-			ModelName = carModelName
-		},
-		ModelSkeleton = {ModelName = carModelName},
+            UpdateCullingVolume = false,
+            ModelName = carModelName
+        },
+        ModelSkeleton = { ModelName = carModelName },
         TrackedRideCar = {
-			Mass = mass
-		},
+            Mass = mass
+        },
         AssetPackageProvider = {
-			LoaderPath = '.'
-		},
-		AssetPackageLoader = assetPackageLoader,
+            LoaderPath = '.'
+        },
+        AssetPackageLoader = assetPackageLoader,
         SemanticTag = {
-			SemanticTagMap = semantics
-		},
-		Transform = {},
-	}
+            SemanticTagMap = semantics
+        },
+        Transform = {},
+    }
 end
 
 --- Returns a simple set of components with needed fields for a Bogie (WAS, or Wheel Assembly) prefab with needed fields.
@@ -255,7 +249,7 @@ function TrainLibrary.GetBogieComponents(assetPackageLoader)
     }
 end
 
----Returns a SceneryPlatform child filled out with the basic information. 
+---Returns a SceneryPlatform child filled out with the basic information.
 --- Note, does not use RotationalSymmetryAxis.
 ---@see TrainLibrary.GetRotationalSymmetryAxisSceneryPlatform
 ---@param sceneryPlatformMeshName string The scenery platform mesh name.
@@ -292,8 +286,8 @@ function TrainLibrary.GetSimpleSceneryPlatform(sceneryPlatformMeshName, platform
                 TrackedRideCarEntity = '..'
             },
             Transform = TrainLibrary.GetTransformComponent(
-                Vector3:new(0.0, 0.0, 0.0), 
-                Vector3:new(0.0, 0.0, 0.0), 
+                Vector3:new(0.0, 0.0, 0.0),
+                Vector3:new(0.0, 0.0, 0.0),
                 1.0
             ),
             AssetPackageProvider = {
@@ -323,8 +317,8 @@ end
 ---@param platformNameSuffix string The suffix to add to the PlatformNameFormat and used within twinning.
 ---@param symmetryAxisTransform any The transfom of the rotational symmetry axis. It will use the Y (up) axis of this transform.
 ---@return table
-function TrainLibrary.GetRotationalSymmetryAxisSceneryPlatform(sceneryPlatformMeshName, platformNameSuffix, symmetryAxisTransform)
-
+function TrainLibrary.GetRotationalSymmetryAxisSceneryPlatform(sceneryPlatformMeshName, platformNameSuffix,
+                                                               symmetryAxisTransform)
     local basePlatform = TrainLibrary.GetSimpleSceneryPlatform(sceneryPlatformMeshName, platformNameSuffix)
 
     -- Point to our child that we will add
@@ -342,7 +336,6 @@ function TrainLibrary.GetRotationalSymmetryAxisSceneryPlatform(sceneryPlatformMe
     }
 
     return basePlatform
-
 end
 
 --#region Camera utils
