@@ -27,7 +27,7 @@ DatabaseUtils.ExecuteQuery = function(databaseName, queryName, ...)
     database.SetReadOnly(databaseName, false)
     local cPSInstance = database.GetPreparedStatementInstance(databaseName, queryName)
     if cPSInstance ~= nil then
-        logger:Info("[" .. cPSInstance .. "] SQL Query start")
+        logger:Info("[" .. queryName .. "] SQL Query start")
         if #args > 0 then
             for i, v in ipairs(args) do
                 logger:Info(" - [" .. i .. "] = " .. tostring(v))
@@ -38,10 +38,10 @@ DatabaseUtils.ExecuteQuery = function(databaseName, queryName, ...)
         database.Step(cPSInstance)
 
         local tRows = database.GetAllResults(cPSInstance, false)
-        logger:Info("[" .. cPSInstance .. "] SQL Query finished")
+        logger:Info("[" .. queryName .. "] SQL Query finished")
         result = tRows or nil
     else
-        logger:Error("[" .. cPSInstance .. "] SQL Query failed")
+        logger:Error("[" .. queryName .. "] SQL Query failed")
     end
     database.SetReadOnly(databaseName, true)
     return result
