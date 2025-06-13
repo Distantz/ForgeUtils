@@ -41,7 +41,7 @@ jobs:
 
           PROJECT_ROOT_ON_RUNNER="${GITHUB_WORKSPACE}/repo_main"
 
-          LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/Main"
+          LUA_SOURCE_PATH="${PROJECT_ROOT_ON_RUNNER}/Main/forgeutils"
           DOCS_OUTPUT_BASE_PATH="${PROJECT_ROOT_ON_RUNNER}/Docs/src"
 
           find "${LUA_SOURCE_PATH}" -type d
