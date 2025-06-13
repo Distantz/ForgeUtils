@@ -10,7 +10,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+
+    # Needs 20.04 because openssl 1.1 is needed.
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout main repository code
         uses: actions/checkout@v4
@@ -23,12 +25,6 @@ jobs:
       #     repository: emuell/luals-docs-gen
       #     path: luals_docs_gen_repo
       #     token: ${{ secrets.GITHUB_TOKEN }}
-
-      # It needs openssl 1.1 for whatever reason. Really stupid.
-      - name: Install OpenSSL 1.1
-        run: |
-          sudo apt update
-          sudo apt install -y libssl1.1
 
       - name: Download prebuilt luals-docs-gen binary
         run: |
