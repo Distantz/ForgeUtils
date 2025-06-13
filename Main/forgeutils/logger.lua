@@ -91,4 +91,17 @@ function Logger:Error(string)
     self:PrintLevel("ERROR", string)
 end
 
+---Helper that checks if `name` is nil, prints an error
+---if it is, and returns whether it was nil or not.
+---@param object any The object to check.
+---@param name string The name of the object.
+---@return boolean wasNil Whether the object was nil.
+function Logger:IsNil(object, name)
+    if object == nil then
+        self:PrintLevel("ERROR", name .. " was nil!")
+        return true
+    end
+    return false
+end
+
 return Logger
