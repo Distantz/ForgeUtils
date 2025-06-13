@@ -7,44 +7,28 @@ local type = type
 local table = global.table
 local tostring = global.tostring
 local GameDatabase = require("Database.GameDatabase")
-local DatabaseUtils = require("ForgeUtils.Internal.Database.DatabaseUtils")
+local DatabaseUtils = require("forgeutils.internal.database.databaseutils")
 
-local logger = require("ForgeUtils.Logger").Get("SceneryDatabaseManager")
+local logger = require("forgeutils.logger").Get("SceneryDatabaseManager")
 
 ---@class forgeutils.internal.database.SceneryDatabaseManager
 local SceneryDatabaseManager = {}
 
 ---@private
---- This method will be called when our manager gets initialized, early in the game launch after
---- all data has been merged for all the Content Packs. This method allows our manager to know
---- the database is getting initialized.
-SceneryDatabaseManager.Init = function()
+--- This method is called after data is merged
+SceneryDatabaseManager.Setup = function()
     SceneryDatabaseManager.BindPreparedStatements()
 end
 
 SceneryDatabaseManager.tPreparedStatements = {
-    ModularScenery = "ForgeUtils_Scenery"
+    ModularScenery = "forgeutils_scenery"
 }
 
 ---@private
 function SceneryDatabaseManager.BindPreparedStatements()
-    logger:Debug("SceneryDatabaseManager.BindPreparedStatements()")
-    local database = api.database
-    local bSuccess = 0
-
-    logger:Debug("Starting binds")
+    logger:Debug("BindPreparedStatements()")
     for k, ps in pairs(SceneryDatabaseManager.tPreparedStatements) do
-        database.SetReadOnly(k, false)
-
-        logger:Debug("Binding " .. ps .. ".pscollection to " .. k)
-        bSuccess = database.BindPreparedStatementCollection(k, ps)
-        if bSuccess == 0 then
-            logger:Warn("Warning: Prepared Statement " .. ps .. " can not be bound to table " .. k)
-            return nil
-        end
-
-        logger:Debug("Readonly: " .. k)
-        database.SetReadOnly(k, true)
+        DatabaseUtils.BindPreparedStatement(k, ps)
     end
 end
 
@@ -99,9 +83,9 @@ end
 --- Adds needed data for a Scenery Part
 ---@param SceneryPartName string
 ---@param PrefabName string
----@param DataPrefabName string|nil
----@param ContentPack string|nil
----@param UGCID string|nil
+---@param DataPrefabName string
+---@param ContentPack string
+---@param UGCID string
 ---@param BoxXSize number
 ---@param BoxYSize number
 ---@param BoxZSize number

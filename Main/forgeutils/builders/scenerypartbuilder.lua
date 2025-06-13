@@ -142,7 +142,7 @@ function SceneryPartBuilder:addToDB()
         self.visualsPrefab,
         self.dataPrefab,
         self.contentPack,
-        nil,
+        "",
         -- for some reason in the DB, size is defined in MM. so we convert from M.
         self.sizeX * 100.0,
         self.sizeY * 100.0,

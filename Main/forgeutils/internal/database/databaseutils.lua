@@ -18,11 +18,17 @@ local DatabaseUtils = {}
 ---@param queryName string The SQL PCStatement to use to query
 ---@param ... any Parameters to pass to the SQL query
 ---@return table|nil Query results
-DatabaseUtils.ExecuteQuery = function(databaseName, queryName, ...)
+function DatabaseUtils.ExecuteQuery(databaseName, queryName, ...)
     logger:Info("Executing query on " .. databaseName .. ": " .. queryName)
 
     local args = { ... }
     local result = nil
+
+    if #args > 0 then
+        for i, v in ipairs(args) do
+            logger:Info(" - [" .. i .. "] = " .. tostring(v))
+        end
+    end
 
     database.SetReadOnly(databaseName, false)
     local cPSInstance = database.GetPreparedStatementInstance(databaseName, queryName)
@@ -45,6 +51,29 @@ DatabaseUtils.ExecuteQuery = function(databaseName, queryName, ...)
     end
     database.SetReadOnly(databaseName, true)
     return result
+end
+
+---Binds a prepared statement to a database
+---@param databaseName string
+---@param pscollectionName string
+---@return boolean result
+function DatabaseUtils.BindPreparedStatement(databaseName, pscollectionName)
+    logger:Debug("BindPreparedStatements()")
+    local database = api.database
+    local bSuccess = false
+
+    database.SetReadOnly(databaseName, false)
+    logger:Debug("Binding " .. pscollectionName .. ".pscollection to " .. databaseName)
+    bSuccess = database.BindPreparedStatementCollection(databaseName, pscollectionName)
+    database.SetReadOnly(databaseName, true)
+
+    if not bSuccess then
+        logger:Warn("Warning: Prepared Statement " .. pscollectionName .. " can not be bound to table " .. databaseName)
+    else
+        logger:Info("Binding succeeded")
+    end
+
+    return bSuccess
 end
 
 return DatabaseUtils
