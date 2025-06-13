@@ -1,6 +1,7 @@
 local global = _G
 local api = global.api
 local setmetatable = global.setmetatable
+local pairs = global.pairs
 
 local SceneryDB = require("forgeutils.internal.database.scenery")
 local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
@@ -25,6 +26,7 @@ local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
 --- @field contentPackID integer Default is 0.
 --- @field visualsPrefab string? Default is nil, mapping to `*PART_ID*`.
 --- @field dataPrefab string Default is SurfaceScaling.
+--- @field tags { [string]: boolean } Default is none. You will need to add at least one though. Values are not used in this, it's exclusively a set.
 --- @field nameFile string
 --- @field descFile string
 --- @field iconFile string? Default is nil, mapping to `uigameface\img\modularscenery\*PART_ID*`.
@@ -35,7 +37,7 @@ local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
 --- @field sizeZ number Default is 1m.
 --- @field buildCost integer Default is 0.
 --- @field hourlyRunningCost integer Default is 0.
---- @field researchPack integer Default is 0.
+--- @field researchPack integer Default is nil.
 --- @field requiresUnlock boolean Default is false.
 local SceneryPartBuilder = {}
 SceneryPartBuilder.__index = SceneryPartBuilder
@@ -54,8 +56,9 @@ function SceneryPartBuilder.new()
 
     instance.buildCost = 0
     instance.hourlyRunningCost = 0
-    instance.researchPack = 0
+    instance.researchPack = nil
     instance.requiresUnlock = false
+    instance.tags = {}
 
     return instance
 end
@@ -127,6 +130,14 @@ function SceneryPartBuilder:withScaleRange(minScale, maxScale)
     return self
 end
 
+---Adds a tag to the scenery part. Default is none, but you will need to add one.
+---@param tag string
+---@return forgeutils.builders.SceneryPartBuilder
+function SceneryPartBuilder:withTag(tag)
+    self.tags[tag] = true
+    return self
+end
+
 --- Adds the built part within the builder to the DB.
 --- This object can be reused afterwards to reuse parameters if desired.
 ---@return nil
@@ -142,7 +153,7 @@ function SceneryPartBuilder:addToDB()
         self.visualsPrefab,
         self.dataPrefab,
         self.contentPack,
-        "",
+        nil,
         -- for some reason in the DB, size is defined in MM. so we convert from M.
         self.sizeX * 100.0,
         self.sizeY * 100.0,
@@ -168,6 +179,13 @@ function SceneryPartBuilder:addToDB()
         self.iconFile,
         self.contentPackID
     )
+
+    for k, v in pairs(self.tags) do
+        SceneryDB.Forge_AddSceneryTag(
+            self.partID,
+            k
+        )
+    end
 
     logger:Info("Finished adding new Scenery Part with ID: " .. self.partID)
 end

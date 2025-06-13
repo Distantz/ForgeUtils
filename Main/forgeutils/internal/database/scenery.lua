@@ -70,13 +70,8 @@ end
 
 --- Adds needed ownership for a Scenery part
 ---@param UniqueKey string
----@param ContentPack nil|string
+---@param ContentPack string
 SceneryDatabaseManager.Forge_AddSceneryOwnership = function(UniqueKey, ContentPack)
-    -- Default to basegame
-    if ContentPack == nil then
-        ContentPack = "BaseGame"
-    end
-
     DatabaseUtils.ExecuteQuery("ModularScenery_Ownership", "ForgeAddSceneryOwnership", UniqueKey, ContentPack)
 end
 
@@ -85,76 +80,45 @@ end
 ---@param PrefabName string
 ---@param DataPrefabName string
 ---@param ContentPack string
----@param UGCID string
+---@param UGCID string|nil
 ---@param BoxXSize number
 ---@param BoxYSize number
 ---@param BoxZSize number
 SceneryDatabaseManager.Forge_AddModularSceneryPart = function(SceneryPartName, PrefabName, DataPrefabName, ContentPack,
                                                               UGCID, BoxXSize, BoxYSize, BoxZSize)
-    -- Default to basegame
-    if ContentPack == nil then
-        ContentPack = "BaseGame"
-    end
-
-    if UGCID == nil then
-        UGCID = ""
-    end
-
-    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddModularSceneryPart", SceneryPartName, PrefabName,
-        DataPrefabName, ContentPack, UGCID, BoxXSize, BoxYSize, BoxZSize)
+    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddModularSceneryPart", { SceneryPartName, PrefabName,
+        DataPrefabName, ContentPack, UGCID, BoxXSize, BoxYSize, BoxZSize }, 8)
 end
 --- Adds UI data for a Scenery Part
 ---@param SceneryPartName string
 ---@param LabelTextSymbol string
 ---@param DescriptionTextSymbol string
 ---@param Icon string|nil
----@param ReleaseGroup integer|nil
+---@param ReleaseGroup integer
 ---@return nil
 SceneryDatabaseManager.Forge_AddSceneryUIData = function(SceneryPartName, LabelTextSymbol, DescriptionTextSymbol, Icon,
                                                          ReleaseGroup)
-    -- Default to basegame
-    if ReleaseGroup == nil then
-        ReleaseGroup = 0
-    end
-
-    if Icon == nil then
-        Icon = "NULL"
-    end
-
-    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddSceneryUIData", SceneryPartName, LabelTextSymbol,
-        DescriptionTextSymbol, Icon, ReleaseGroup)
+    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddSceneryUIData", { SceneryPartName, LabelTextSymbol,
+        DescriptionTextSymbol, Icon, ReleaseGroup }, 5)
 end
 
 --- Adds simulation data for a Scenery Part
 ---@param SceneryPartName string
----@param BuildCost integer|nil
----@param HourlyRunningCost nil|integer
----@param ResearchPack nil
----@param RequiresUnlockInSandbox nil|integer
+---@param BuildCost integer
+---@param HourlyRunningCost integer
+---@param ResearchPack nil|integer
+---@param RequiresUnlockInSandbox integer
 SceneryDatabaseManager.Forge_AddScenerySimulationData = function(SceneryPartName, BuildCost, HourlyRunningCost,
                                                                  ResearchPack, RequiresUnlockInSandbox)
-    -- Defaults
-    if BuildCost == nil then
-        BuildCost = 0
-    end
-
-    if HourlyRunningCost == nil then
-        HourlyRunningCost = 0
-    end
-
-    if RequiresUnlockInSandbox == nil then
-        RequiresUnlockInSandbox = 0
-    end
-
-    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddScenerySimulationData", SceneryPartName, BuildCost,
-        HourlyRunningCost, ResearchPack, RequiresUnlockInSandbox)
+    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddScenerySimulationData", { SceneryPartName, BuildCost,
+        HourlyRunningCost, ResearchPack, RequiresUnlockInSandbox }, 5)
 end
 
 --- Adds a metatag for a Scenery Part
 ---@param SceneryPartName string
 ---@param Tag string
 SceneryDatabaseManager.Forge_AddSceneryTag = function(SceneryPartName, Tag)
-    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddSceneryTag", SceneryPartName, Tag)
+    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddSceneryTag", { SceneryPartName, Tag })
 end
 
 

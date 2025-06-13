@@ -7,6 +7,7 @@ local type = type
 local table = global.table
 local tostring = global.tostring
 local database = api.database
+local trainutils = require("forgeutils.prefabs.train")
 
 local logger = require("forgeutils.logger").Get("DatabaseUtils")
 
@@ -14,37 +15,38 @@ local logger = require("forgeutils.logger").Get("DatabaseUtils")
 local DatabaseUtils = {}
 
 --- Exceutes any Prepared Statement query for database modifications.
----@param databaseName string The database to execute the query on
----@param queryName string The SQL PCStatement to use to query
----@param ... any Parameters to pass to the SQL query
+---@param databaseName string The database to execute the query on.
+---@param queryName string The SQL PCStatement to use to query.
+---@param args any[] Parameters to pass to the SQL query.
+---@param numArgs integer|nil The number of parameters to pass. Leave nil if you want to use #args.
 ---@return table|nil Query results
-function DatabaseUtils.ExecuteQuery(databaseName, queryName, ...)
+function DatabaseUtils.ExecuteQuery(databaseName, queryName, args, numArgs)
     logger:Info("Executing query on " .. databaseName .. ": " .. queryName)
 
-    local args = { ... }
     local result = nil
-
-    if #args > 0 then
-        for i, v in ipairs(args) do
-            logger:Info(" - [" .. i .. "] = " .. tostring(v))
-        end
-    end
 
     database.SetReadOnly(databaseName, false)
     local cPSInstance = database.GetPreparedStatementInstance(databaseName, queryName)
     if cPSInstance ~= nil then
         logger:Info("[" .. queryName .. "] SQL Query start")
-        if #args > 0 then
-            for i, v in ipairs(args) do
+        local num = numArgs ~= nil and numArgs or #args
+        if num > 0 then
+            for i = 1, num do
+                local v = args[i]
                 logger:Info(" - [" .. i .. "] = " .. tostring(v))
-                database.BindParameter(cPSInstance, i, v)
+
+                -- Don't bind if nil, that allows us to have NULL
+                if v ~= nil then
+                    database.BindParameter(cPSInstance, i, v)
+                end
             end
         end
         database.BindComplete(cPSInstance)
         database.Step(cPSInstance)
 
         local tRows = database.GetAllResults(cPSInstance, false)
-        logger:Info("[" .. queryName .. "] SQL Query finished")
+        trainutils.PrintPrefab(tRows, 2)
+        logger:Info("[" .. queryName .. "] SQL Query finished with result: " .. tostring(table))
         result = tRows or nil
     else
         logger:Error("[" .. queryName .. "] SQL Query failed")
