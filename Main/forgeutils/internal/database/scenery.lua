@@ -16,12 +16,12 @@ local SceneryDatabaseManager = {}
 
 ---@private
 --- This method is called after data is merged
-SceneryDatabaseManager.Setup = function()
+SceneryDatabaseManager.PreBuildPrefabs = function()
     SceneryDatabaseManager.BindPreparedStatements()
 end
 
 SceneryDatabaseManager.tPreparedStatements = {
-    ModularScenery = "forgeutils_scenery"
+    ModularScenery = "forgeutils_scenery",
 }
 
 ---@private
