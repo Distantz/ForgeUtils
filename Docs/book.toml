@@ -3,3 +3,6 @@ authors = ["Distantz"]
 language = "en"
 src = "src"
 title = "ForgeUtils"
+
+[build]
+create-missing = true
