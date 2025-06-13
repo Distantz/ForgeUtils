@@ -1,0 +1,4 @@
+---@meta
+---This is a simple namespace for forgeutils.
+---It is not meant to be executed.
+---@class forgeutils

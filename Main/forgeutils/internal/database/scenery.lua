@@ -11,7 +11,7 @@ local DatabaseUtils = require("ForgeUtils.Internal.Database.DatabaseUtils")
 
 local logger = require("ForgeUtils.Logger").Get("SceneryDatabaseManager")
 
----@class SceneryDatabaseManager
+---@class forgeutils.internal.database.SceneryDatabaseManager
 local SceneryDatabaseManager = {}
 
 ---@private
@@ -190,5 +190,4 @@ SceneryDatabaseManager.ShutdownForReInit = function() end
 --- or free any resource we have open. The module will be unloaded after.
 SceneryDatabaseManager.Shutdown = function() end
 
----@returns SceneryDatabaseManager
 return SceneryDatabaseManager

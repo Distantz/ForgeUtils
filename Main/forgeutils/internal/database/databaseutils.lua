@@ -11,7 +11,7 @@ local database = api.database
 
 local logger = require("ForgeUtils.Logger").Get("DatabaseUtils")
 
----@class DatabaseUtils
+---@class forgeutils.internal.database.DatabaseUtils
 local DatabaseUtils = {}
 
 --- Exceutes any Prepared Statement query for database modifications.
@@ -46,5 +46,4 @@ DatabaseUtils.ExecuteQuery = function(_sDatabase, _sQueryName, ...)
     return result
 end
 
----@returns DatabaseUtils
 return DatabaseUtils

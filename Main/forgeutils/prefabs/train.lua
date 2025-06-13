@@ -23,7 +23,7 @@ local table                          = global.table
 local math                           = global.math
 local tonumber                       = global.tonumber
 
----@class TrainLibrary
+---@class forgeutils.prefabs.TrainLibrary
 local TrainLibrary                   = {}
 
 -- #region Constants
