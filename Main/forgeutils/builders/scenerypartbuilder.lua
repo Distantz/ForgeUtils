@@ -33,6 +33,7 @@ function SceneryPartBuilder.new()
     instance.contentPack = "BaseGame"
     instance.contentPackID = 0
     instance.dataPrefab = "SurfaceScaling"
+
     return instance
 end
 

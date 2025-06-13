@@ -1,5 +1,3 @@
----@module "ForgeUtils.Logger"
-
 local global = _G
 local api = global.api
 local setmetatable = global.setmetatable
@@ -16,7 +14,7 @@ local setmetatable = global.setmetatable
 --- logger.Info("Hello World")
 --- ```
 ---
---- @class ForgeUtils.Logger
+--- @class Logger
 --- @field __index table
 --- @field name string The name of the logger
 --- @field levelOverride levels The level override for this specific logger
@@ -40,7 +38,7 @@ Logger.GLOBAL_LEVEL = "ERROR"
 ---Returns a Logger instance with this name.
 ---@param name string The name of this logger.
 ---@param levelOverride levels? The level override of this logger.
----@return ForgeUtils.Logger
+---@return Logger
 function Logger.Get(name, levelOverride)
     local instance = setmetatable({}, Logger)
     instance.name = name
@@ -93,5 +91,4 @@ function Logger:Error(string)
     self:PrintLevel("ERROR", string)
 end
 
----@returns ForgeUtils.Logger
 return Logger
