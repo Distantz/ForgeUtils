@@ -1,3 +1,5 @@
+---@module "ForgeUtils.Logger"
+
 local global = _G
 local api = global.api
 local setmetatable = global.setmetatable

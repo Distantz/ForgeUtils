@@ -1,3 +1,5 @@
+---@module "ForgeUtils.Prefabs.Train"
+
 -----------------------------------------------------------------------
 --/  @file    Utils.Train.lua
 --/  @author  Distantz
