@@ -47,7 +47,7 @@ jobs:
           cat "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md"
 
           # Run luals-docs-gen using absolute paths
-          cargo run --manifest-path "${GITHUB_WORKSPACE}/luals_docs_gen_repo/Cargo.toml" -- "${LUA_SOURCE_PATH}" "${DOCS_OUTPUT_BASE_PATH}"
+          cargo run --manifest-path "${GITHUB_WORKSPACE}/luals_docs_gen_repo/Cargo.toml" -- --order ByClass --namespace ForgeUtils "${LUA_SOURCE_PATH}" "${DOCS_OUTPUT_BASE_PATH}"
 
           cat "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md"
 
