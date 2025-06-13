@@ -17,12 +17,18 @@ jobs:
         with:
           path: repo_main
 
-      - name: Checkout luals-docs-gen repository
-        uses: actions/checkout@v4
-        with:
-          repository: emuell/luals-docs-gen
-          path: luals_docs_gen_repo
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Checkout luals-docs-gen repository
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: emuell/luals-docs-gen
+      #     path: luals_docs_gen_repo
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download prebuilt luals-docs-gen binary
+        run: |
+          curl -sL https://github.com/emuell/luals-docs-gen/releases/latest/download/luals_docs_gen-linux_x86_64.zip -o luals_docs_gen.zip
+          unzip luals_docs_gen.zip -d luals_docs_gen_bin
+          chmod +x luals_docs_gen_bin/luals_docs_gen
 
       - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
@@ -46,9 +52,7 @@ jobs:
 
           cat "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md"
 
-          # Run luals-docs-gen using absolute paths
-          cargo run --manifest-path "${GITHUB_WORKSPACE}/luals_docs_gen_repo/Cargo.toml" -- --order by-class --namespace ForgeUtils "${LUA_SOURCE_PATH}" "${DOCS_OUTPUT_BASE_PATH}"
-
+          luals_docs_gen_bin/luals_docs_gen "${LUA_SOURCE_PATH}" "${DOCS_OUTPUT_BASE_PATH}"
           cat "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md"
 
       # - name: Set up Python
