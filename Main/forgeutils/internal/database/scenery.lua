@@ -32,12 +32,11 @@ function SceneryDatabaseManager.BindPreparedStatements()
     local database = api.database
     local bSuccess = 0
 
-    logger:Debug("Starting bind")
+    logger:Debug("Starting binds")
     for k, ps in pairs(SceneryDatabaseManager.tPreparedStatements) do
-        logger:Debug("Write: " .. k)
         database.SetReadOnly(k, false)
 
-        logger:Debug("Bind: " .. k)
+        logger:Debug("Binding " .. ps .. ".pscollection to " .. k)
         bSuccess = database.BindPreparedStatementCollection(k, ps)
         if bSuccess == 0 then
             logger:Warn("Warning: Prepared Statement " .. ps .. " can not be bound to table " .. k)
@@ -51,10 +50,6 @@ end
 
 -- This table contains the list of functions our module wants to add to the Game Database.
 SceneryDatabaseManager.tDatabaseFunctions = {
-
-    Forge_AddSceneryOwnership = function(UniqueKey, ContentPack)
-        return SceneryDatabaseManager.Forge_AddSceneryOwnership(UniqueKey, ContentPack)
-    end,
 
     Forge_AddModularSceneryPart = function(SceneryPartName, PrefabName, DataPrefabName, ContentPack, UGCID, BoxXSize,
                                            BoxYSize, BoxZSize)
@@ -118,7 +113,7 @@ SceneryDatabaseManager.Forge_AddModularSceneryPart = function(SceneryPartName, P
     end
 
     if UGCID == nil then
-        UGCID = "NULL"
+        UGCID = ""
     end
 
     DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddModularSceneryPart", SceneryPartName, PrefabName,

@@ -6,31 +6,32 @@ local ipairs = ipairs
 local type = type
 local table = global.table
 local tostring = global.tostring
-local GameDatabase = require("Database.GameDatabase")
 local database = api.database
 
-local logger = require("ForgeUtils.Logger").Get("DatabaseUtils")
+local logger = require("forgeutils.logger").Get("DatabaseUtils")
 
 ---@class forgeutils.internal.database.DatabaseUtils
 local DatabaseUtils = {}
 
 --- Exceutes any Prepared Statement query for database modifications.
----@param _sDatabase string The database to execute the query on
----@param _sQueryName string The SQL PCStatement to use to query
+---@param databaseName string The database to execute the query on
+---@param queryName string The SQL PCStatement to use to query
 ---@param ... any Parameters to pass to the SQL query
 ---@return table|nil Query results
-DatabaseUtils.ExecuteQuery = function(_sDatabase, _sQueryName, ...)
-    local result = nil
-    database.SetReadOnly(_sDatabase, false)
-    local tArgs = table.pack(...)
+DatabaseUtils.ExecuteQuery = function(databaseName, queryName, ...)
+    logger:Info("Executing query on " .. databaseName .. ": " .. queryName)
 
-    local cPSInstance = database.GetPreparedStatementInstance(_sDatabase, _sQueryName)
+    local args = { ... }
+    local result = nil
+
+    database.SetReadOnly(databaseName, false)
+    local cPSInstance = database.GetPreparedStatementInstance(databaseName, queryName)
     if cPSInstance ~= nil then
         logger:Info("[" .. cPSInstance .. "] SQL Query start")
-        if #tArgs > 0 then
-            for i, j in ipairs(tArgs) do
-                logger:Info(" - [" .. i .. "] = " .. tostring(j))
-                database.BindParameter(cPSInstance, i, j)
+        if #args > 0 then
+            for i, v in ipairs(args) do
+                logger:Info(" - [" .. i .. "] = " .. tostring(v))
+                database.BindParameter(cPSInstance, i, v)
             end
         end
         database.BindComplete(cPSInstance)
@@ -42,7 +43,7 @@ DatabaseUtils.ExecuteQuery = function(_sDatabase, _sQueryName, ...)
     else
         logger:Error("[" .. cPSInstance .. "] SQL Query failed")
     end
-    database.SetReadOnly(_sDatabase, true)
+    database.SetReadOnly(databaseName, true)
     return result
 end
 
