@@ -6,7 +6,6 @@ local require = require
 
 -- Setup logger
 local loggerSetup = require("ForgeUtils.Logger")
-loggerSetup.GLOBAL_LEVEL = "DEBUG"
 local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
 
 logger:Info("Starting ForgeUtils...")
