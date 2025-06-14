@@ -26,7 +26,7 @@ SceneryDatabaseManager.tPreparedStatements = {
 
 ---@private
 function SceneryDatabaseManager.BindPreparedStatements()
-    logger:Debug("BindPreparedStatements()")
+    logger:DebugQuery("BindPreparedStatements()")
     for k, ps in pairs(SceneryDatabaseManager.tPreparedStatements) do
         DatabaseUtils.BindPreparedStatement(k, ps)
     end
@@ -62,7 +62,7 @@ SceneryDatabaseManager.tDatabaseFunctions = {
 --- This method will be called when our manager gets initialized to inject custom functions
 --- in the Game Database. These functions will be available for the rest of the game Lua modules.
 function SceneryDatabaseManager.AddDatabaseFunctions(_tDatabaseFunctions)
-    logger:Debug("AddDatabaseFunctions called for FORGE")
+    logger:DebugQuery("AddDatabaseFunctions called for FORGE")
     for sMethod, fnMethod in pairs(SceneryDatabaseManager.tDatabaseFunctions) do
         _tDatabaseFunctions[sMethod] = fnMethod
     end

@@ -23,10 +23,11 @@ Logger.__index = Logger
 
 ---@enum (key) levels
 Logger.LEVELS = {
-    DEBUG = 1,
-    INFO = 2,
-    WARN = 3,
-    ERROR = 4
+    DEBUG_QUERY = 1,
+    DEBUG = 2,
+    INFO = 3,
+    WARN = 4,
+    ERROR = 5
 }
 
 --- The global default level is ERROR.
@@ -61,6 +62,13 @@ function Logger:PrintLevel(level, string)
     end
 
     api.debug.Trace("[" .. level .. "] " .. self.name .. ": " .. string)
+end
+
+---Prints to log with the level of debug query.
+---@param string string The string to print to the console.
+---@return nil
+function Logger:DebugQuery(string)
+    self:PrintLevel("DEBUG_QUERY", string)
 end
 
 ---Prints to log with the level of debug.

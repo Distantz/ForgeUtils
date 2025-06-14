@@ -144,7 +144,7 @@ end
 function SceneryPartBuilder:addToDB()
     logger:Info("Creating new Scenery Part with ID: " .. self.partID)
 
-    if (logger:IsNil(self.partID, "Part ID") or logger:IsNil(self.visualsPrefab, "Prefab visuals")) then
+    if (logger:IsNil(self.partID, "Part ID") or logger:IsNil(self.dataPrefab, "Data prefab")) then
         return
     end
 

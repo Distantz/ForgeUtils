@@ -21,19 +21,19 @@ local DatabaseUtils = {}
 ---@param numArgs integer|nil The number of parameters to pass. Leave nil if you want to use #args.
 ---@return table|nil Query results
 function DatabaseUtils.ExecuteQuery(databaseName, queryName, args, numArgs)
-    logger:Info("Executing query on " .. databaseName .. ": " .. queryName)
+    logger:DebugQuery("Executing query on " .. databaseName .. ": " .. queryName)
 
     local result = nil
 
     database.SetReadOnly(databaseName, false)
     local cPSInstance = database.GetPreparedStatementInstance(databaseName, queryName)
     if cPSInstance ~= nil then
-        logger:Info("[" .. queryName .. "] SQL Query start")
+        logger:DebugQuery("[" .. queryName .. "] SQL Query start")
         local num = numArgs ~= nil and numArgs or #args
         if num > 0 then
             for i = 1, num do
                 local v = args[i]
-                logger:Info(" - [" .. i .. "] = " .. tostring(v))
+                logger:DebugQuery(" - [" .. i .. "] = " .. tostring(v))
 
                 -- Don't bind if nil, that allows us to have NULL
                 if v ~= nil then
@@ -46,7 +46,7 @@ function DatabaseUtils.ExecuteQuery(databaseName, queryName, args, numArgs)
 
         local tRows = database.GetAllResults(cPSInstance, false)
         trainutils.PrintPrefab(tRows, 2)
-        logger:Info("[" .. queryName .. "] SQL Query finished with result: " .. tostring(table))
+        logger:DebugQuery("[" .. queryName .. "] SQL Query finished with result: " .. tostring(table))
         result = tRows or nil
     else
         logger:Error("[" .. queryName .. "] SQL Query failed")
@@ -60,19 +60,19 @@ end
 ---@param pscollectionName string
 ---@return boolean result
 function DatabaseUtils.BindPreparedStatement(databaseName, pscollectionName)
-    logger:Debug("BindPreparedStatements()")
+    logger:DebugQuery("BindPreparedStatements()")
     local database = api.database
     local bSuccess = false
 
     database.SetReadOnly(databaseName, false)
-    logger:Debug("Binding " .. pscollectionName .. ".pscollection to " .. databaseName)
+    logger:DebugQuery("Binding " .. pscollectionName .. ".pscollection to " .. databaseName)
     bSuccess = database.BindPreparedStatementCollection(databaseName, pscollectionName)
     database.SetReadOnly(databaseName, true)
 
     if not bSuccess then
         logger:Warn("Warning: Prepared Statement " .. pscollectionName .. " can not be bound to table " .. databaseName)
     else
-        logger:Info("Binding succeeded")
+        logger:DebugQuery("Binding succeeded")
     end
 
     return bSuccess
