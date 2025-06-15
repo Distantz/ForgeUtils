@@ -13,7 +13,8 @@
                 <arg arg_type="2" arg_index="8" />
             </args>
             <statement_name>ForgeAddModularSceneryPart</statement_name>
-            <sql_query>INSERT INTO ModularSceneryParts (SceneryPartName, PrefabName, DataPrefabName,
+            <sql_query>INSERT OR IGNORE INTO ModularSceneryParts (SceneryPartName, PrefabName,
+                DataPrefabName,
                 ContentPack, UGCID, BoxXSize, BoxYSize, BoxZSize) VALUES (?1, ?2, ?3, ?4, ?5, ?6,
                 ?7, ?8);</sql_query>
         </preparedstatement>
@@ -27,7 +28,7 @@
                 <arg arg_type="1" arg_index="5" />
             </args>
             <statement_name>ForgeAddSceneryUIData</statement_name>
-            <sql_query>INSERT INTO UIData
+            <sql_query>INSERT OR IGNORE INTO UIData
                 (SceneryPartName,LabelTextSymbol,DescriptionTextSymbol,Icon,ReleaseGroup) VALUES
                 (?1, ?2,
                 ?3, ?4, ?5);</sql_query>
@@ -42,7 +43,7 @@
                 <arg arg_type="0" arg_index="5" />
             </args>
             <statement_name>ForgeAddScenerySimulationData</statement_name>
-            <sql_query>INSERT INTO Simulation
+            <sql_query>INSERT OR IGNORE INTO Simulation
                 (SceneryPartName,BuildCost,HourlyRunningCost,ResearchPack,RequiresUnlockInSandbox)
                 VALUES
                 (?1, ?2, ?3, ?4, ?5);</sql_query>
@@ -54,7 +55,7 @@
                 <arg arg_type="3" arg_index="2" />
             </args>
             <statement_name>ForgeAddSceneryTag</statement_name>
-            <sql_query>INSERT INTO Metadata_Tags (SceneryPart, Tag) VALUES (?1, ?2);</sql_query>
+            <sql_query>INSERT OR IGNORE INTO Metadata_Tags (SceneryPart, Tag) VALUES (?1, ?2);</sql_query>
         </preparedstatement>
     </prepared_statements>
 </PscollectionRoot>
