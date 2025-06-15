@@ -7,7 +7,7 @@ local pairs = global.pairs
 
 -- Setup logger
 local loggerSetup = require("forgeutils.logger")
-local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
+local logger = loggerSetup.Get("ForgeUtilsLuaDatabase", "INFO")
 
 logger:Info("Starting ForgeUtils...")
 
@@ -41,7 +41,6 @@ function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModifi
 
         for mod, ver in pairs(outOfDate) do
             local line = tostring(mod) .. ": " .. tostring(ver)
-            logger:Warn(line)
             table.insert(lines, line)
             foundOutOfDate = true
         end
@@ -53,6 +52,8 @@ function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModifi
         if not foundOutOfDate then
             return
         end
+
+        logger:Warn("Some mods are out of date.")
 
         local popup = require("Helpers.PopUpDialogUtils")
         popup.RunOKDialog(
