@@ -7,7 +7,7 @@ local pairs = global.pairs
 
 -- Setup logger
 local loggerSetup = require("forgeutils.logger")
-local logger = loggerSetup.Get("ForgeUtilsLuaDatabase", "INFO")
+local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
 
 logger:Info("Starting ForgeUtils...")
 
@@ -19,6 +19,22 @@ function _ForgeUtilsLuaDatabase.AddContentToCall(_tContentToCall)
     -- You can add as many as you want, ideally separating each manager for each content type you add
     table.insert(_tContentToCall, require("database.forgeutilsluadatabase"))
     table.insert(_tContentToCall, require("forgeutils.internal.database.scenery"))
+end
+
+_ForgeUtilsLuaDatabase.bAddedToContent = false
+function _ForgeUtilsLuaDatabase.AddPlayer()
+    logger:Info("AddPlayer")
+
+    -- Make sure htis is ONLY called once.
+    if (_ForgeUtilsLuaDatabase.bAddedToContent) then
+        return
+    end
+    _ForgeUtilsLuaDatabase.bAddedToContent = true
+
+    logger:Error("Calling InsertToDBs")
+    require("Database.Main").CallOnContent(
+        "InsertToDBs"
+    )
 end
 
 function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModification(tModule)
@@ -71,11 +87,11 @@ _ForgeUtilsLuaDatabase.tDefaultHooks = {
 }
 
 function _ForgeUtilsLuaDatabase.AddLuaHooks(_fnAdd)
-    logger:Info("Adding hooks")
-    for sModuleName, tFunc in pairs(_ForgeUtilsLuaDatabase.tDefaultHooks) do
-        logger:Info("Adding hook for module [" .. sModuleName .. "]")
-        _fnAdd(sModuleName, tFunc)
-    end
+    -- logger:Info("Adding hooks")
+    -- for sModuleName, tFunc in pairs(_ForgeUtilsLuaDatabase.tDefaultHooks) do
+    --     logger:Info("Adding hook for module [" .. sModuleName .. "]")
+    --     _fnAdd(sModuleName, tFunc)
+    -- end
 end
 
 return _ForgeUtilsLuaDatabase

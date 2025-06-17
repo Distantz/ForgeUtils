@@ -34,7 +34,7 @@ Logger.LEVELS = {
 --- This allows mod developers to override this.
 --- They can also do it for specific loggers as well.
 --- @type levels
-Logger.GLOBAL_LEVEL = "ERROR"
+Logger.GLOBAL_LEVEL = "DEBUG_QUERY"
 
 ---Returns a Logger instance with this name.
 ---@param name string The name of this logger.

@@ -187,6 +187,10 @@ function SceneryPartBuilder:addToDB()
         )
     end
 
+    if (self.minScale ~= nil and self.maxScale ~= nil) then
+        SceneryDB.Forge_AddSceneryPartScaling(self.partID, self.minScale, self.maxScale)
+    end
+
     logger:Info("Finished adding new Scenery Part with ID: " .. self.partID)
 end
 

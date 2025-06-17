@@ -16,7 +16,8 @@ local SceneryDatabaseManager = {}
 
 ---@private
 --- This method is called after data is merged
-SceneryDatabaseManager.PreBuildPrefabs = function()
+SceneryDatabaseManager.InsertToDBs = function()
+    logger:Info("InsertToDBs")
     SceneryDatabaseManager.BindPreparedStatements()
 end
 
@@ -68,13 +69,6 @@ function SceneryDatabaseManager.AddDatabaseFunctions(_tDatabaseFunctions)
     end
 end
 
---- Adds needed ownership for a Scenery part
----@param UniqueKey string
----@param ContentPack string
-SceneryDatabaseManager.Forge_AddSceneryOwnership = function(UniqueKey, ContentPack)
-    DatabaseUtils.ExecuteQuery("ModularScenery_Ownership", "ForgeAddSceneryOwnership", UniqueKey, ContentPack)
-end
-
 --- Adds needed data for a Scenery Part
 ---@param SceneryPartName string
 ---@param PrefabName string
@@ -119,6 +113,14 @@ end
 ---@param Tag string
 SceneryDatabaseManager.Forge_AddSceneryTag = function(SceneryPartName, Tag)
     DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddSceneryTag", { SceneryPartName, Tag })
+end
+
+--- Adds scaling data for a Scenery Part
+---@param SceneryPartName string
+---@param MinScale number
+---@param MaxScale number
+SceneryDatabaseManager.Forge_AddSceneryPartScaling = function(SceneryPartName, MinSize, MaxSize)
+    DatabaseUtils.ExecuteQuery("ModularScenery", "ForgeAddSceneryPartScaling", { SceneryPartName, MinSize, MaxSize })
 end
 
 

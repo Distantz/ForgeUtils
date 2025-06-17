@@ -22,9 +22,7 @@ local DatabaseUtils = {}
 ---@return table|nil Query results
 function DatabaseUtils.ExecuteQuery(databaseName, queryName, args, numArgs)
     logger:DebugQuery("Executing query on " .. databaseName .. ": " .. queryName)
-
     local result = nil
-
     database.SetReadOnly(databaseName, false)
     local cPSInstance = database.GetPreparedStatementInstance(databaseName, queryName)
     if cPSInstance ~= nil then
@@ -61,7 +59,6 @@ end
 ---@return boolean result
 function DatabaseUtils.BindPreparedStatement(databaseName, pscollectionName)
     logger:DebugQuery("BindPreparedStatements()")
-    local database = api.database
     local bSuccess = false
 
     database.SetReadOnly(databaseName, false)
