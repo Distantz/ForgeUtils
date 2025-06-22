@@ -9,7 +9,7 @@ local pairs = global.pairs
 local loggerSetup = require("forgeutils.logger")
 local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
 
-logger:Info("Starting ForgeUtils...")
+logger:Info("Loading ForgeUtils...")
 
 local _ForgeUtilsLuaDatabase = {}
 _ForgeUtilsLuaDatabase.hasShownPopup = false
@@ -21,21 +21,31 @@ function _ForgeUtilsLuaDatabase.AddContentToCall(_tContentToCall)
     table.insert(_tContentToCall, require("forgeutils.internal.database.scenery"))
 end
 
-_ForgeUtilsLuaDatabase.bAddedToContent = false
-function _ForgeUtilsLuaDatabase.AddPlayer()
-    logger:Info("AddPlayer")
+function _ForgeUtilsLuaDatabase.Init()
+    logger:Info("Init ForgeUtils")
 
-    -- Make sure htis is ONLY called once.
-    if (_ForgeUtilsLuaDatabase.bAddedToContent) then
-        return
-    end
-    _ForgeUtilsLuaDatabase.bAddedToContent = true
-
-    logger:Error("Calling InsertToDBs")
-    require("Database.Main").CallOnContent(
-        "InsertToDBs"
-    )
+    global.api.player.RegisterGameOwnerChangeCallback(function(_playerID)
+        require("Database.Main").CallOnContent(
+            "InsertToDBs"
+        )
+    end)
 end
+
+-- _ForgeUtilsLuaDatabase.bAddedToContent = false
+-- function _ForgeUtilsLuaDatabase.AddPlayer()
+--     logger:Info("AddPlayer")
+
+--     -- Make sure htis is ONLY called once.
+--     if (_ForgeUtilsLuaDatabase.bAddedToContent) then
+--         return
+--     end
+--     _ForgeUtilsLuaDatabase.bAddedToContent = true
+
+--     logger:Error("Calling InsertToDBs")
+--     require("Database.Main").CallOnContent(
+--         "InsertToDBs"
+--     )
+-- end
 
 function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModification(tModule)
     tModule.RunCheckLocalModification_Base = tModule._RunCheckLocalModification
@@ -87,11 +97,11 @@ _ForgeUtilsLuaDatabase.tDefaultHooks = {
 }
 
 function _ForgeUtilsLuaDatabase.AddLuaHooks(_fnAdd)
-    -- logger:Info("Adding hooks")
-    -- for sModuleName, tFunc in pairs(_ForgeUtilsLuaDatabase.tDefaultHooks) do
-    --     logger:Info("Adding hook for module [" .. sModuleName .. "]")
-    --     _fnAdd(sModuleName, tFunc)
-    -- end
+    logger:Info("Adding hooks")
+    for sModuleName, tFunc in pairs(_ForgeUtilsLuaDatabase.tDefaultHooks) do
+        logger:Info("Adding hook for module [" .. sModuleName .. "]")
+        _fnAdd(sModuleName, tFunc)
+    end
 end
 
 return _ForgeUtilsLuaDatabase
