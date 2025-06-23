@@ -24,11 +24,8 @@ end
 function _ForgeUtilsLuaDatabase.Init()
     logger:Info("Init ForgeUtils")
 
-    global.api.player.RegisterGameOwnerChangeCallback(function(_playerID)
-        require("Database.Main").CallOnContent(
-            "InsertToDBs"
-        )
-    end)
+    -- Manually hook to Managers.BrowserDataManager
+    _ForgeUtilsLuaDatabase._Hook_BrowserDataManager_SetupCache(require("Managers.BrowserDataManager"))
 end
 
 -- _ForgeUtilsLuaDatabase.bAddedToContent = false
@@ -91,9 +88,29 @@ function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModifi
     end
 end
 
+function _ForgeUtilsLuaDatabase._Hook_BrowserDataManager_SetupCache(tModule)
+    logger:Info("Managers.BrowserDataManager = " .. global.tostring(tModule))
+    tModule._SetupCache_Base = tModule._SetupCache
+    tModule._SetupCache = function(self)
+        logger:Info("SetupCache called, inserting DB data...")
+        require("Database.Main").CallOnContent(
+            "InsertToDBs"
+        )
+        logger:Info("Finished InsertToDBs.")
+
+        -- Call setup cache as normal, but now all of the prefab stuff is loaded!
+        tModule._SetupCache_Base(self)
+    end
+end
+
 _ForgeUtilsLuaDatabase.tDefaultHooks = {
+
     ["StartScreen.Shared.StartScreenPopupHelper"] = _ForgeUtilsLuaDatabase
-        ._Hook_StartScreenPopupHelper_RunCheckLocalModification
+        ._Hook_StartScreenPopupHelper_RunCheckLocalModification,
+
+    -- ["Managers.BrowserDataManager"] = _ForgeUtilsLuaDatabase
+    --     ._Hook_BrowserDataManager_SetupCache,
+
 }
 
 function _ForgeUtilsLuaDatabase.AddLuaHooks(_fnAdd)
