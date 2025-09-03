@@ -51,7 +51,6 @@ end
 return {0}
 """
 
-
 def generate_lua_source_file(
         manager_name : str,
         manager_luapath : str, 
@@ -73,7 +72,7 @@ def generate_lua_source_file(
 def get_luadoc_desc(param_data : TableParam) -> str:
     res = ""
     if (param_data.default != None):
-        res += f"Default = {param_data.default}. "
+        res += f"Default = {get_pretty_print_for_value(param_data.default)}. "
 
     if (len(param_data.most_common_values) > 0):
         res += f"Common Values = {", ".join(param_data.most_common_values)}. "
@@ -86,6 +85,13 @@ def get_luadoc_comment(param_name : str, param_data : TableParam) -> str:
         get_luadoc_desc(param_data)
     )
 
+def get_pretty_print_for_value(val : any) -> str:
+    if isinstance(val, str):
+        return f"\"{val}\""
+    if val == None:
+        return "nil"
+    return str(val)
+
 def map_sqltype_to_lua(sql_type: str) -> str:
     sql_type = sql_type.lower()
     if sql_type in ("integer", "int"):
@@ -96,10 +102,14 @@ def map_sqltype_to_lua(sql_type: str) -> str:
         return "string"
     return sql_type
 
-def get_insert_method(manager_name : str, table : str, table_data : TableData) -> str:
+def get_insert_method(manager_name : str, database : str, table : str, table_data : TableData) -> str:
     required_parameters = table_data.get_insert_parameters()
 
     luadoc_comments = "\n".join(
+        [
+            f"--- Inserter for table {table}."
+        ] 
+        + 
         [
             get_luadoc_comment(param_name, param_data)
             for param_name, param_data in required_parameters.items()
@@ -114,19 +124,22 @@ def get_insert_method(manager_name : str, table : str, table_data : TableData) -
         manager_name,
         pscol_name,
         param_names,
-        table,
+        database,
         pscol_name,
         param_count
     )
 
-def get_update_method(manager_name : str, table : str, lookup_name : str, lookup_param : TableParam, param_name : str, param_data : TableParam) -> str:
+def get_update_method(manager_name : str, database : str, table : str, lookup_name : str, lookup_param : TableParam, param_name : str, param_data : TableParam) -> str:
     pscol_name = get_update_name(table, param_name)
+
+    desc = f"--- Updates field \"{param_name}\" in {table}. {get_luadoc_desc(param_data)}"
+
     return sql_luafunc_template.format(
-        f"{get_luadoc_comment(lookup_name, lookup_param)}(Lookup Key)\n{get_luadoc_comment(param_name, param_data)}",
+        f"{desc}\n{get_luadoc_comment(lookup_name, lookup_param)}(Lookup Key)\n{get_luadoc_comment(param_name, param_data)}",
         manager_name,
         pscol_name,
         f"{lookup_name}, {param_name}",
-        table,
+        database,
         pscol_name,
         2
     )

@@ -1,9 +1,7 @@
 -- This file is responsible of managing the data inside the TestCustomData.fdb and providing it to the game
 local global = _G
 local api = global.api
-local pairs = pairs
-local ipairs = ipairs
-local type = type
+local type = global.type
 local table = global.table
 local tostring = global.tostring
 local database = api.database
@@ -21,13 +19,22 @@ local DatabaseUtils = {}
 ---@param numArgs integer|nil The number of parameters to pass. Leave nil if you want to use #args.
 ---@return table|nil Query results
 function DatabaseUtils.ExecuteQuery(databaseName, queryName, args, numArgs)
+    local num = numArgs ~= nil and numArgs or #args
+
     logger:DebugQuery("Executing query on " .. databaseName .. ": " .. queryName)
+    logger:DebugQuery("Args:")
+    if num > 0 then
+        for i = 1, num do
+            local v = args[i]
+            logger:DebugQuery(" - [" .. i .. "] = " .. tostring(v))
+        end
+    end
+
     local result = nil
     database.SetReadOnly(databaseName, false)
     local cPSInstance = database.GetPreparedStatementInstance(databaseName, queryName)
     if cPSInstance ~= nil then
         logger:DebugQuery("[" .. queryName .. "] SQL Query start")
-        local num = numArgs ~= nil and numArgs or #args
         if num > 0 then
             for i = 1, num do
                 local v = args[i]
@@ -35,6 +42,11 @@ function DatabaseUtils.ExecuteQuery(databaseName, queryName, args, numArgs)
 
                 -- Don't bind if nil, that allows us to have NULL
                 if v ~= nil then
+                    -- one more easy conversion. if a boolean, convert to an int.
+                    if type(v) == "boolean" then
+                        v = v and 1 or 0
+                    end
+
                     database.BindParameter(cPSInstance, i, v)
                 end
             end

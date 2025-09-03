@@ -7,7 +7,7 @@ from tabletypes import TableParam
 # arg_type 3 indicates a string value.
 def map_sqltype_to_pscollection_type(sql_type : str) -> str:
     sql_type = sql_type.lower()
-    if sql_type in ("integer"):
+    if sql_type in ("integer", "boolean"):
         return "0"
     if sql_type in ("real", "double"):
         return "2"

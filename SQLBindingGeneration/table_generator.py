@@ -1,17 +1,10 @@
 import sqlite3
 from tabletypes import TableData, TableParam
 from shared_gen import get_insert_name, get_update_name
-from luagen import get_update_method, get_insert_method, generate_lua_source_file
+from luagen import get_pretty_print_for_value, get_update_method, get_insert_method, generate_lua_source_file
 from pscolgen import get_root_file, get_insert_statement, get_update_statement
 import xml.etree.ElementTree as ET
 import sys
-
-def _get_pretty_print_for_value(val : any) -> str:
-    if isinstance(val, str):
-        return f"\"{val}\""
-    if val == None:
-        return "nil"
-    return str(val)
 
 def _extract_table_data(table_name, cursor) -> TableData:
     cursor.execute(f"PRAGMA table_info({table_name});")
@@ -33,7 +26,7 @@ def _extract_table_data(table_name, cursor) -> TableData:
         cursor.execute(f"SELECT {param_name}, COUNT(*) AS freq, ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct_of_total FROM {table_name} GROUP BY {param_name} ORDER BY freq DESC LIMIT 5;")
         results = cursor.fetchall()
         param_data.most_common_values = [
-            _get_pretty_print_for_value(val[0])
+            get_pretty_print_for_value(val[0])
             for val in results
         ]
 
@@ -46,7 +39,7 @@ def _extract_table_data(table_name, cursor) -> TableData:
 
     return data
 
-def _generate_for_table(table_name : str, table_data : TableData, lua_manager : str = "TestManager") -> tuple[ET.Element, str] :
+def _generate_for_table(database_name : str, table_name : str, table_data : TableData, lua_manager : str = "TestManager") -> tuple[ET.Element, str] :
     statements : list[ET.Element] = []
 
     insert_params = table_data.get_insert_parameters()
@@ -58,6 +51,7 @@ def _generate_for_table(table_name : str, table_data : TableData, lua_manager : 
     statements.append(get_insert_statement(table_name, get_insert_name(table_name), insert_params))
     lua += get_insert_method(
         lua_manager,
+        database_name,
         table_name,
         table_data
     )
@@ -78,6 +72,7 @@ def _generate_for_table(table_name : str, table_data : TableData, lua_manager : 
             )
             lua += get_update_method(
                 lua_manager,
+                database_name,
                 table_name,
                 lookup_key,
                 lookup_param,
@@ -104,23 +99,22 @@ def generate_for_database(
 
     db_lua = ""
     pscollections : dict[str, ET.Element] = {}
-    db_name = database_name
 
     for table in tables:
         data = _extract_table_data(table, cursor)
-        pscoll, table_lua = _generate_for_table(table, data, db_name)
-        pscollections[f"{db_name}_{table}"] = pscoll
+        pscoll, table_lua = _generate_for_table(database_name, table, data, database_name)
+        pscollections[f"{database_name}_{table}"] = pscoll
         db_lua += table_lua
 
     lua_source = generate_lua_source_file(
-        db_name,
+        database_name,
         lua_namespace,
-        db_name,
+        database_name,
         list(pscollections.keys()),
         db_lua
     )
 
-    with open(lua_save_dir + f"\\{db_name}.lua", "w+") as file:
+    with open(lua_save_dir + f"\\{database_name}.lua", "w+") as file:
         file.write(lua_source)
 
     for name, xml in pscollections.items():

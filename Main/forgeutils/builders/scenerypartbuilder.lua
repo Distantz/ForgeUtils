@@ -3,7 +3,7 @@ local api = global.api
 local setmetatable = global.setmetatable
 local pairs = global.pairs
 
-local SceneryDB = require("forgeutils.internal.database.scenery")
+local SceneryDBBindings = require("forgeutils.internal.database.ModularScenery")
 local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
 
 --- SceneryPartBuilder is a fluent builder for database values in ForgeUtils.
@@ -148,47 +148,69 @@ function SceneryPartBuilder:addToDB()
         return
     end
 
-    SceneryDB.Forge_AddModularSceneryPart(
+    SceneryDBBindings.ModularSceneryParts__Insert(
         self.partID,
-        self.visualsPrefab,
         self.dataPrefab,
-        self.contentPack,
-        nil,
-        -- for some reason in the DB, size is defined in MM. so we convert from M.
-        self.sizeX * 100.0,
-        self.sizeY * 100.0,
+        self.contentPack
+    )
+    SceneryDBBindings.ModularSceneryParts__Update__PrefabName(
+        self.partID,
+        self.visualsPrefab
+    )
+    SceneryDBBindings.ModularSceneryParts__Update__BoxXSize(
+        self.partID,
+        self.sizeX * 100.0
+    )
+    SceneryDBBindings.ModularSceneryParts__Update__BoxYSize(
+        self.partID,
+        self.sizeY * 100.0
+    )
+    SceneryDBBindings.ModularSceneryParts__Update__BoxZSize(
+        self.partID,
         self.sizeZ * 100.0
     )
 
-    SceneryDB.Forge_AddScenerySimulationData(
+    SceneryDBBindings.Simulation__Insert(
         self.partID,
-        self.buildCost,
-        self.hourlyRunningCost,
-        self.researchPack,
-        self.requiresUnlock and 1 or 0
+        self.buildCost
+    )
+    SceneryDBBindings.Simulation__Update__HourlyRunningCost(
+        self.partID,
+        self.hourlyRunningCost
+    )
+    SceneryDBBindings.Simulation__Update__ResearchPack(
+        self.partID,
+        self.researchPack
+    )
+    SceneryDBBindings.Simulation__Update__RequiresUnlockInSandbox(
+        self.partID,
+        self.requiresUnlock
     )
 
     if (logger:IsNil(self.nameFile, "Part name") or logger:IsNil(self.descFile, "Part description")) then
         return
     end
 
-    SceneryDB.Forge_AddSceneryUIData(
+    SceneryDBBindings.UIData__Insert(
         self.partID,
         self.nameFile,
-        self.descFile,
-        self.iconFile,
-        self.contentPackID
+        self.descFile
+    )
+
+    SceneryDBBindings.UIData__Update__Icon(
+        self.partID,
+        self.iconFile
     )
 
     for k, v in pairs(self.tags) do
-        SceneryDB.Forge_AddSceneryTag(
+        SceneryDBBindings.Metadata_Tags__Insert(
             self.partID,
             k
         )
     end
 
     if (self.minScale ~= nil and self.maxScale ~= nil) then
-        SceneryDB.Forge_AddSceneryPartScaling(self.partID, self.minScale, self.maxScale)
+        SceneryDBBindings.SceneryScaling__Insert(self.partID, self.minScale, self.maxScale)
     end
 
     logger:Info("Finished adding new Scenery Part with ID: " .. self.partID)

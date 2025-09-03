@@ -14,7 +14,7 @@ local ModDB = {}
 ModDB.registeredMods = {}
 
 -- Set current version whenever a new release occurs.
-ModDB.CURRENT_VERSION = 1.0
+ModDB.CURRENT_VERSION = 1.1
 
 ---Registers a mod with the ModDB.
 ---If a mod is using a version that is higher than the installed ForgeUtils mod,

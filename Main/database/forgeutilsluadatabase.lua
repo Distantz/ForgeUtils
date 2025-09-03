@@ -18,7 +18,10 @@ function _ForgeUtilsLuaDatabase.AddContentToCall(_tContentToCall)
     -- We tell the Database Manager to load our custom Database Manager by its Lua name
     -- You can add as many as you want, ideally separating each manager for each content type you add
     table.insert(_tContentToCall, require("database.forgeutilsluadatabase"))
-    table.insert(_tContentToCall, require("forgeutils.internal.database.scenery"))
+    table.insert(_tContentToCall, require("forgeutils.internal.database.TrackedRides"))
+    table.insert(_tContentToCall, require("forgeutils.internal.database.TrackedRideCars"))
+    table.insert(_tContentToCall, require("forgeutils.internal.database.ModularScenery"))
+    table.insert(_tContentToCall, require("forgeutils.internal.database.Audio"))
 end
 
 function _ForgeUtilsLuaDatabase.Init()
