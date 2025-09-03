@@ -18,13 +18,7 @@ db_manager_file = """---
 --- REGENERATE VIA THE EXT FOLDER.
 --- 
 local global = _G
-local api = global.api
-local pairs = pairs
-local ipairs = ipairs
-local type = type
-local table = global.table
-local tostring = global.tostring
-local GameDatabase = require("Database.GameDatabase")
+local ipairs = global.ipairs
 local DatabaseUtils = require("forgeutils.internal.database.databaseutils")
 
 local logger = require("forgeutils.logger").Get("{0}")
@@ -94,7 +88,9 @@ def get_luadoc_comment(param_name : str, param_data : TableParam) -> str:
 
 def map_sqltype_to_lua(sql_type: str) -> str:
     sql_type = sql_type.lower()
-    if sql_type in ("integer", "real", "double"):
+    if sql_type in ("integer", "int"):
+        return "integer"
+    if sql_type in ("real", "double"):
         return "number"
     if sql_type in ("text"):
         return "string"
