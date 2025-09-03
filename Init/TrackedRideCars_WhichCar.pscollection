@@ -1,0 +1,1 @@
+<PscollectionRoot count="1" game="Planet Coaster 2"><prepared_statements pool_type="4"><prepared_statement arg_count="1"><args pool_type="4"><arg arg_type="3" arg_index="1" /></args><statement_name>WhichCar__Insert</statement_name><sql_query>INSERT OR IGNORE INTO WhichCar (ID) VALUES (?1);</sql_query></prepared_statement></prepared_statements></PscollectionRoot>
