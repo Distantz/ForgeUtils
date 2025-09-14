@@ -2,6 +2,7 @@ local global = _G
 local table = global.table
 local require = require
 local pairs = global.pairs
+local ForgeUtils = require("forgeutils")
 
 -- Setup logger
 local loggerSetup = require("forgeutils.logger")
@@ -9,12 +10,8 @@ local logger = loggerSetup.Get("ForgeUtilsModDB", "DEBUG")
 
 ---@class forgeutils.ModDB
 ---@field registeredMods {[string]: number } Registered mods with the DB.
----@field CURRENT_VERSION number The current version for ForgeUtils.
 local ModDB = {}
 ModDB.registeredMods = {}
-
--- Set current version whenever a new release occurs.
-ModDB.CURRENT_VERSION = 1.1
 
 ---Registers a mod with the ModDB.
 ---If a mod is using a version that is higher than the installed ForgeUtils mod,
@@ -23,7 +20,7 @@ ModDB.CURRENT_VERSION = 1.1
 ---@param usingVersion number|nil The version that this mod was developed for. If nil, will be installed version.
 function ModDB.RegisterMod(modName, usingVersion)
     if usingVersion == nil then
-        usingVersion = ModDB.CURRENT_VERSION
+        usingVersion = ForgeUtils.version
     end
     logger:Info("Registered new mod with ForgeUtils: " .. tostring(modName) .. "[" .. usingVersion .. "]")
     ModDB.registeredMods[modName] = usingVersion
@@ -39,7 +36,7 @@ function ModDB.GetModsOutOfDate()
     local results = {}
     for mod, ver in pairs(ModDB.registeredMods) do
         logger:Info("Found mod: " .. mod)
-        if ver > ModDB.CURRENT_VERSION then
+        if ver > ForgeUtils.version then
             logger:Info("OUT OF DATE: " .. mod)
             results[mod] = ver
         end
