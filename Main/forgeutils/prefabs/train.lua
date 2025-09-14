@@ -179,7 +179,25 @@ end
 ---Returns a wheel prefab, with needed fields.
 ---@param attachToBoneName string The bone on the outer wheel assembly to attach to.
 ---@param wheelModelName string The name of the Wheel model to use.
-function TrainLibrary.GetSimpleWheelChildPrefab(attachToBoneName, wheelModelName)
+---@param wheelRadius number|nil The radius of the wheel to use (optional).
+function TrainLibrary.GetSimpleWheelChildPrefab(attachToBoneName, wheelModelName, wheelRadius)
+    if wheelRadius then
+        return {
+            Properties = {
+                WheelBoneName = {
+                    Default = attachToBoneName
+                },
+                ModelName = {
+                    Default = wheelModelName
+                },
+                WheelRadius = {
+                    Default = wheelRadius
+                }
+            },
+            Prefab = "CC_Mod_Wheel_Base"
+        }
+    end
+
     return {
         Properties = {
             WheelBoneName = {
