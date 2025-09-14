@@ -34,26 +34,29 @@ class TableParam:
 class TableData:
     """Class to hold all table parameters"""
     parameters: dict[str, TableParam] = field(default_factory=dict)
+    primary_keys : dict[str, TableParam] = field(default_factory=dict)
     required_parameters: dict[str, TableParam] = field(default_factory=dict)
     optional_parameters: dict[str, TableParam] = field(default_factory=dict)
 
     def get_insert_parameters(self):
-        if (len(self.required_parameters) > 0):
-            return self.required_parameters
+        default = {k: v for k, v in self.parameters.items() if k in self.primary_keys.keys() or k in self.required_parameters.keys()}
+        if (len(default) > 0):
+            return default
+
         return self.parameters
 
     def get_update_parameters(self):
-        pk, _ = self.get_primary_key()
-        return {k: v for k, v in self.parameters.items() if k != pk}
+        primary_keys = self.get_primary_keys()
+        return {k: v for k, v in self.parameters.items() if k not in primary_keys.keys()}
     
-    def get_primary_key(self) -> tuple[str, TableParam]:
-        # iterate through params, find the primary key
-        for name, param in self.parameters.items():
-            if param.primary_key:
-                return (name, param)
+    def get_primary_keys(self) -> dict[str, TableParam]:
+
+        if (len(self.primary_keys) > 0):
+            return self.primary_keys
             
         # sane default is the first insert param
-        return next(iter(self.get_insert_parameters().items()))
+        tupl = next(iter(self.get_insert_parameters().items()))
+        return {tupl[0]: tupl[1]}
 
     def __str__(self):
-        return f"Required: {self.required_parameters}, Optional: {self.optional_parameters}"
+        return f"PKs: {self.primary_keys}, Required: {self.required_parameters}, Optional: {self.optional_parameters}"

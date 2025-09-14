@@ -129,17 +129,22 @@ def get_insert_method(manager_name : str, database : str, table : str, table_dat
         param_count
     )
 
-def get_update_method(manager_name : str, database : str, table : str, lookup_name : str, lookup_param : TableParam, param_name : str, param_data : TableParam) -> str:
+def get_update_method(manager_name : str, database : str, table : str, primary_keys : dict[str, TableParam], param_name : str, param_data : TableParam) -> str:
     pscol_name = get_update_name(table, param_name)
+
+    key_lookups = "\n".join(
+        f"{get_luadoc_comment(name, value)} (Lookup Key)"
+        for name, value in primary_keys.items()
+    )
 
     desc = f"--- Updates field \"{param_name}\" in {table}. {get_luadoc_desc(param_data)}"
 
     return sql_luafunc_template.format(
-        f"{desc}\n{get_luadoc_comment(lookup_name, lookup_param)}(Lookup Key)\n{get_luadoc_comment(param_name, param_data)}",
+        f"{desc}\n{key_lookups}\n{get_luadoc_comment(param_name, param_data)}",
         manager_name,
         pscol_name,
-        f"{lookup_name}, {param_name}",
+        f"{", ".join(primary_keys.keys())}, {param_name}",
         database,
         pscol_name,
-        2
+        len(primary_keys) + 1
     )

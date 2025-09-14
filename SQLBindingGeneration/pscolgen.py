@@ -51,16 +51,29 @@ def get_insert_statement(table : str, statement_name : str, params : dict[str, T
     params_str = ", ".join(params.keys())
     return get_prepared_statement(
         statement_name,
-        f"INSERT OR IGNORE INTO {table} ({params_str}) VALUES ({args_str});",
+        f"INSERT OR REPLACE INTO {table} ({params_str}) VALUES ({args_str});",
         list(params.values())
     )
 
-def get_update_statement(table : str, statement_name : str, lookup_name : str, lookup_param : TableParam, param_name : str, param_data : TableParam) -> ET.Element:
+def get_update_statement(table : str, statement_name : str, primary_keys : dict[str, TableParam], param_name : str, param_data : TableParam) -> ET.Element:
+    
+    where_clause_parts = []
+    params = []
+    for i, (pk_name, pk_param) in enumerate(primary_keys.items(), start=1):
+        where_clause_parts.append(f"{pk_name} = ?{i}")
+        params.append(pk_param)
+
+    where_clause = " AND ".join(where_clause_parts)
+
+    # SET clause with the last parameter index
+    set_param_index = len(primary_keys) + 1
+    update_sql = f"UPDATE {table} SET {param_name} = ?{set_param_index} WHERE {where_clause};"
+
+    # Add the updated column value last
+    params.append(param_data)
+
     return get_prepared_statement(
         statement_name,
-        f"UPDATE {table} SET {param_name} = ?2 WHERE {lookup_name} = ?1;",
-        [
-            lookup_param,
-            param_data
-        ]
+        update_sql,
+        params
     )

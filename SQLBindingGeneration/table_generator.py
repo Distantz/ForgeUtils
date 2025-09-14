@@ -6,7 +6,7 @@ from pscolgen import get_root_file, get_insert_statement, get_update_statement
 import xml.etree.ElementTree as ET
 import sys
 
-def _extract_table_data(table_name, cursor) -> TableData:
+def extract_table_data(table_name, cursor) -> TableData:
     cursor.execute(f"PRAGMA table_info({table_name});")
     columns = cursor.fetchall()
     params : dict[str, TableParam] = {
@@ -31,8 +31,10 @@ def _extract_table_data(table_name, cursor) -> TableData:
         ]
 
         data.parameters[param_name] = param_data
-        optional = param_data.default is not None or not param_data.not_null
-        if not optional:
+
+        if param_data.primary_key:
+            data.primary_keys[param_name] = param_data
+        elif not (param_data.default is not None or not param_data.not_null):
             data.required_parameters[param_name] = param_data
         else:
             data.optional_parameters[param_name] = param_data
@@ -44,6 +46,7 @@ def _generate_for_table(database_name : str, table_name : str, table_data : Tabl
 
     insert_params = table_data.get_insert_parameters()
     update_params = table_data.get_update_parameters()
+    primary_keys = table_data.get_primary_keys()
 
     lua = ""
 
@@ -57,15 +60,13 @@ def _generate_for_table(database_name : str, table_name : str, table_data : Tabl
     )
 
     if len(update_params) > 0:
-        lookup_key, lookup_param = table_data.get_primary_key()
 
         for param_name, param_data in update_params.items():
             statements.append(
                 get_update_statement(
                     table_name, 
                     get_update_name(table_name, param_name), 
-                    lookup_key,
-                    lookup_param,
+                    primary_keys,
                     param_name,
                     param_data
                 )
@@ -74,8 +75,7 @@ def _generate_for_table(database_name : str, table_name : str, table_data : Tabl
                 lua_manager,
                 database_name,
                 table_name,
-                lookup_key,
-                lookup_param,
+                primary_keys,
                 param_name,
                 param_data
             )
@@ -101,7 +101,7 @@ def generate_for_database(
     pscollections : dict[str, ET.Element] = {}
 
     for table in tables:
-        data = _extract_table_data(table, cursor)
+        data = extract_table_data(table, cursor)
         pscoll, table_lua = _generate_for_table(database_name, table, data, database_name)
         pscollections[f"{database_name}_{table}"] = pscoll
         db_lua += table_lua
