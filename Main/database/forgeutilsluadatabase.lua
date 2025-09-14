@@ -31,22 +31,6 @@ function _ForgeUtilsLuaDatabase.Init()
     _ForgeUtilsLuaDatabase._Hook_BrowserDataManager_SetupCache(require("Managers.BrowserDataManager"))
 end
 
--- _ForgeUtilsLuaDatabase.bAddedToContent = false
--- function _ForgeUtilsLuaDatabase.AddPlayer()
---     logger:Info("AddPlayer")
-
---     -- Make sure htis is ONLY called once.
---     if (_ForgeUtilsLuaDatabase.bAddedToContent) then
---         return
---     end
---     _ForgeUtilsLuaDatabase.bAddedToContent = true
-
---     logger:Error("Calling InsertToDBs")
---     require("Database.Main").CallOnContent(
---         "InsertToDBs"
---     )
--- end
-
 function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModification(tModule)
     tModule.RunCheckLocalModification_Base = tModule._RunCheckLocalModification
     tModule._RunCheckLocalModification = function(self)
@@ -87,7 +71,8 @@ function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModifi
             stringBuilder
         )
 
-        tModule.RunCheckLocalModification_Base(self) -- run base
+        -- run base
+        tModule.RunCheckLocalModification_Base(self)
     end
 end
 
@@ -107,13 +92,8 @@ function _ForgeUtilsLuaDatabase._Hook_BrowserDataManager_SetupCache(tModule)
 end
 
 _ForgeUtilsLuaDatabase.tDefaultHooks = {
-
     ["StartScreen.Shared.StartScreenPopupHelper"] = _ForgeUtilsLuaDatabase
         ._Hook_StartScreenPopupHelper_RunCheckLocalModification,
-
-    -- ["Managers.BrowserDataManager"] = _ForgeUtilsLuaDatabase
-    --     ._Hook_BrowserDataManager_SetupCache,
-
 }
 
 function _ForgeUtilsLuaDatabase.AddLuaHooks(_fnAdd)
@@ -121,6 +101,19 @@ function _ForgeUtilsLuaDatabase.AddLuaHooks(_fnAdd)
     for sModuleName, tFunc in pairs(_ForgeUtilsLuaDatabase.tDefaultHooks) do
         logger:Info("Adding hook for module [" .. sModuleName .. "]")
         _fnAdd(sModuleName, tFunc)
+    end
+end
+
+function _ForgeUtilsLuaDatabase.AddLuaPrefabs(_fnAdd)
+    -- these are the name of the Lua files with the prefab data
+    local tPrefabs = {
+        "CC_Mod_Wheel_Base",
+    }
+
+    for _, sPrefab in global.ipairs(tPrefabs) do
+        local root = require(sPrefab).GetRoot()
+        logger:Info("Adding: " .. sPrefab)
+        _fnAdd(sPrefab, root)
     end
 end
 

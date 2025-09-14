@@ -4,7 +4,6 @@ local setmetatable = global.setmetatable
 local pairs = global.pairs
 local ipairs = global.ipairs
 
-local SceneryDB = require("forgeutils.internal.database.scenery")
 local logger = require("forgeutils.logger").Get("TrackedRideBuilder")
 
 --- TrackedRideBuilder is a fluent builder for database values in ForgeUtils.
