@@ -9,6 +9,7 @@ local pairs = global.pairs
 -- Setup logger
 local loggerSetup = require("forgeutils.logger")
 local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
+local hookManager = require("forgeutils.hookmanager")
 
 logger:Info("Loading ForgeUtils...")
 
@@ -28,81 +29,78 @@ end
 function _ForgeUtilsLuaDatabase.Init()
     logger:Info("Init ForgeUtils")
 
-    -- Manually hook to Managers.BrowserDataManager
-    _ForgeUtilsLuaDatabase._Hook_BrowserDataManager_SetupCache(require("Managers.BrowserDataManager"))
+    -- Setup hooks.
+    hookManager:AddHook(
+        "Managers.BrowserDataManager",
+        "_SetupCache",
+        function(originalFunction, browserDataManager)
+            logger:Info("SetupCache called, inserting DB data...")
+            require("Database.Main").CallOnContent(
+                "InsertToDBs"
+            )
+            logger:Info("Finished InsertToDBs.")
+            originalFunction(browserDataManager)
+        end
+    )
+
+    hookManager:AddHook(
+        "StartScreen.Shared.StartScreenPopupHelper",
+        "_RunCheckLocalModification",
+        _ForgeUtilsLuaDatabase.RunCheckLocalModification
+    )
+
+    -- This one makes the basegame always rehook when it enters a new world.
+    hookManager:AddHook(
+        "World.World",
+        "Load",
+        function(originalMethod, slf, loader)
+            -- Hook us
+            originalMethod(slf, loader)
+            logger:Info("PreloadWorld, revalidating hooks")
+            hookManager:ValidateAllHooks()
+        end
+    )
 end
 
-function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModification(tModule)
-    tModule.RunCheckLocalModification_Base = tModule._RunCheckLocalModification
-    tModule._RunCheckLocalModification = function(self)
-        if _ForgeUtilsLuaDatabase.hasShownPopup then
-            tModule.RunCheckLocalModification_Base(self)
-            return
-        end
-
-        -- Check if we actually have any out of date mods
-        local moddb = require("forgeutils.moddb")
-        local outOfDate = moddb.GetModsOutOfDate()
-        local foundOutOfDate = false
-
-        local lines = {
-            "Some installed mods require a newer version of ForgeUtils. Consider updating if things don't work.\n",
-            "ForgeUtils: " .. tostring(require("forgeutils").version)
-        }
-
-        for mod, ver in pairs(outOfDate) do
-            local line = tostring(mod) .. ": " .. tostring(ver)
-            table.insert(lines, line)
-            foundOutOfDate = true
-        end
-
-        local stringBuilder = "[STRING_LITERAL:Value=|" .. table.concat(lines, "\n") .. "|]"
-
-        _ForgeUtilsLuaDatabase.hasShownPopup = true
-
-        if not foundOutOfDate then
-            return
-        end
-
-        logger:Warn("Some mods are out of date.")
-
-        local popup = require("Helpers.PopUpDialogUtils")
-        popup.RunOKDialog(
-            "[STRING_LITERAL:Value=|ForgeUtils version|]",
-            stringBuilder
-        )
-
-        -- run base
-        tModule.RunCheckLocalModification_Base(self)
+function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
+    if _ForgeUtilsLuaDatabase.hasShownPopup then
+        originalMethod(self)
+        return
     end
-end
 
-function _ForgeUtilsLuaDatabase._Hook_BrowserDataManager_SetupCache(tModule)
-    logger:Info("Managers.BrowserDataManager = " .. tostring(tModule))
-    tModule._SetupCache_Base = tModule._SetupCache
-    tModule._SetupCache = function(self)
-        logger:Info("SetupCache called, inserting DB data...")
-        require("Database.Main").CallOnContent(
-            "InsertToDBs"
-        )
-        logger:Info("Finished InsertToDBs.")
+    -- Check if we actually have any out of date mods
+    local moddb = require("forgeutils.moddb")
+    local outOfDate = moddb.GetModsOutOfDate()
+    local foundOutOfDate = false
+    local lines = {
+        "Some installed mods require a newer version of ForgeUtils. Consider updating if things don't work.\n",
+        "ForgeUtils: " .. tostring(require("forgeutils").version)
+    }
 
-        -- Call setup cache as normal, but now all of the prefab stuff is loaded!
-        tModule._SetupCache_Base(self)
+    for mod, ver in pairs(outOfDate) do
+        local line = tostring(mod) .. ": " .. tostring(ver)
+        table.insert(lines, line)
+        foundOutOfDate = true
     end
-end
 
-_ForgeUtilsLuaDatabase.tDefaultHooks = {
-    ["StartScreen.Shared.StartScreenPopupHelper"] = _ForgeUtilsLuaDatabase
-        ._Hook_StartScreenPopupHelper_RunCheckLocalModification,
-}
+    local stringBuilder = "[STRING_LITERAL:Value=|" .. table.concat(lines, "\n") .. "|]"
 
-function _ForgeUtilsLuaDatabase.AddLuaHooks(_fnAdd)
-    logger:Info("Adding hooks")
-    for sModuleName, tFunc in pairs(_ForgeUtilsLuaDatabase.tDefaultHooks) do
-        logger:Info("Adding hook for module [" .. sModuleName .. "]")
-        _fnAdd(sModuleName, tFunc)
+    _ForgeUtilsLuaDatabase.hasShownPopup = true
+
+    if not foundOutOfDate then
+        return
     end
+
+    logger:Warn("Some mods are out of date.")
+
+    local popup = require("Helpers.PopUpDialogUtils")
+    popup.RunOKDialog(
+        "[STRING_LITERAL:Value=|ForgeUtils version|]",
+        stringBuilder
+    )
+
+    -- run base
+    originalMethod(self)
 end
 
 function _ForgeUtilsLuaDatabase.AddLuaPrefabs(_fnAdd)

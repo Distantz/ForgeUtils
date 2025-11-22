@@ -6,7 +6,7 @@ local ForgeUtils = require("forgeutils")
 
 -- Setup logger
 local loggerSetup = require("forgeutils.logger")
-local logger = loggerSetup.Get("ForgeUtilsModDB", "DEBUG")
+local logger = loggerSetup.Get("ForgeUtilsModDB")
 
 ---@class forgeutils.ModDB
 ---@field registeredMods {[string]: number } Registered mods with the DB.
