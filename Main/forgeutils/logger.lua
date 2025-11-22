@@ -1,4 +1,5 @@
 local global = _G
+---@diagnostic disable-next-line: undefined-field
 local api = global.api
 local setmetatable = global.setmetatable
 

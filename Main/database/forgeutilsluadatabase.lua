@@ -2,7 +2,8 @@
 ---@diagnostic disable: param-type-mismatch
 local global = _G
 local table = global.table
-local require = require
+local require = global.require
+local tostring = global.tostring
 local pairs = global.pairs
 
 -- Setup logger
@@ -46,7 +47,7 @@ function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModifi
 
         local lines = {
             "Some installed mods require a newer version of ForgeUtils. Consider updating if things don't work.\n",
-            "ForgeUtils: " .. tostring(moddb.CURRENT_VERSION)
+            "ForgeUtils: " .. tostring(require("forgeutils").version)
         }
 
         for mod, ver in pairs(outOfDate) do
@@ -77,7 +78,7 @@ function _ForgeUtilsLuaDatabase._Hook_StartScreenPopupHelper_RunCheckLocalModifi
 end
 
 function _ForgeUtilsLuaDatabase._Hook_BrowserDataManager_SetupCache(tModule)
-    logger:Info("Managers.BrowserDataManager = " .. global.tostring(tModule))
+    logger:Info("Managers.BrowserDataManager = " .. tostring(tModule))
     tModule._SetupCache_Base = tModule._SetupCache
     tModule._SetupCache = function(self)
         logger:Info("SetupCache called, inserting DB data...")

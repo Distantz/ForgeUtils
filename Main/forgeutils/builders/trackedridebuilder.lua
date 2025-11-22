@@ -1,4 +1,5 @@
 local global = _G
+---@diagnostic disable-next-line: undefined-field
 local api = global.api
 local setmetatable = global.setmetatable
 local pairs = global.pairs
@@ -343,6 +344,7 @@ function TrackedRideBuilder:withRatings(excitement, intensity, nausea)
     self.excitementRating = excitement
     self.intensityRating = intensity
     self.nauseaRating = nausea
+    return self
 end
 
 --#region UI Data
