@@ -21,7 +21,7 @@ jobs:
 
       - name: Bump version in ForgeUtils.lua
         run: |
-          sed -i "s/ForgeUtils.version = .*/ForgeUtils.version = ${{ github.event.inputs.new_version }}/" Main/ForgeUtils.lua
+          sed -i "s/ForgeUtils.version = .*/ForgeUtils.version = ${{ github.event.inputs.new_version }}/" ./Main/forgeutils.lua
 
       - name: Commit bumped version
         run: |
