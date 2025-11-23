@@ -42,7 +42,7 @@ jobs:
           git add .
           $status = $(git diff --cached --quiet; echo $?)
           if ($status -eq 1) {
-            git commit -m "Bump version to ${{ github.event.inputs.new_version }}"
+            git commit -m "chore: bump version to ${{ github.event.inputs.new_version }}"
             git push
           } else {
             echo "No changes to commit (version already up to date)."
