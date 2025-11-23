@@ -11,15 +11,15 @@ gamestr = sys.argv[2]
 ovlpaths = None
 
 sys.path.append(cobratools)
-from ovl_util.logs import logging_setup
+from ovl_util.logs import logging_setup # type: ignore
 import logging
 logging_setup("pack_tool_cmd")
 
 with open(sys.argv[3], "r", ) as file:
     ovlpaths = file.read().splitlines()
 
-from generated.formats.ovl import OvlFile
-from ovl_util.config import Config
+from generated.formats.ovl import OvlFile # type: ignore
+from ovl_util.config import Config # type: ignore
 
 config = Config(cobratools)
 config.load()
