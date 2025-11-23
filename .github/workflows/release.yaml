@@ -25,9 +25,10 @@ jobs:
 
       - name: Commit bumped version
         run: |
+          git status
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add Main/forgeutils.lua
+          git add .
           git commit -m "Bump version to ${{ github.event.inputs.new_version }}"
 
       - name: Set up Python
