@@ -46,7 +46,6 @@ jobs:
         with:
           repository: OpenNaja/cobra-tools
           path: Build/cobra-tools
-          ref: main
 
       - name: Install cobratools with GUI extras
         run: |
