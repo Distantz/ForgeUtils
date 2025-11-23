@@ -6,11 +6,12 @@ if len(sys.argv) < 4:
     print("First argument needs to be the path to Cobra Tools! Second argument needs to be the game name! Third argument needs to be a path to an .ovlpaths file!")
     exit(-1)
 
-cobratools = sys.argv[1]
+cobratools = os.path.abspath(sys.argv[1])
 gamestr = sys.argv[2]
 ovlpaths = None
 
-sys.path.append(os.path.abspath(cobratools))
+print(f"Cobra tools path: {cobratools}")
+sys.path.append(cobratools)
 from ovl_util.logs import logging_setup # type: ignore
 import logging
 logging_setup("pack_tool_cmd")
