@@ -71,7 +71,8 @@ for path in ovlpaths:
         ovl_data.create(path)
         ovl_data.save(ovl_dest)
         if len(ovl_data.reporter.error_files) > 0:
-            raise Exception(f"Ovl packing had errors in some files:\n{"\n".join(ovl_data.reporter.error_files)}\n")
+            error_files_str = "\n".join(ovl_data.reporter.error_files)
+            raise Exception(f"Ovl packing had errors in some files:\n{error_files_str}\n")
     except Exception as e:
         import traceback
         logging.error(f"Could not create OVL from \"{path}\":\n{e}\n\ntraceback: {traceback.format_exc()}")
