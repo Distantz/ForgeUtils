@@ -15,6 +15,17 @@
                 ".ovlpaths"
             ],
             "console": "integratedTerminal",
+        },
+        {
+            "name": "Package Build",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./Build/package.py",
+            "args": [
+                ".",
+                "${workspaceFolderBasename}.zip"
+            ],
+            "console": "integratedTerminal",
         }
     ]
 }
