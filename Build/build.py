@@ -10,7 +10,7 @@ cobratools = sys.argv[1]
 gamestr = sys.argv[2]
 ovlpaths = None
 
-sys.path.append(cobratools)
+sys.path.append(os.path.abspath(cobratools))
 from ovl_util.logs import logging_setup # type: ignore
 import logging
 logging_setup("pack_tool_cmd")
