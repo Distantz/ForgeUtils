@@ -1,0 +1,88 @@
+# .github/workflows/release.yml
+name: "Release to GitHub"
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_version:
+        description: "New version, decimal format."
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Bump version in ForgeUtils.lua
+        run: |
+          sed -i "s/ForgeUtils.version = .*/ForgeUtils.version = ${{ github.event.inputs.new_version }}/" Main/ForgeUtils.lua
+
+      - name: Commit bumped version
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add Main/ForgeUtils.lua
+          git commit -m "Bump ForgeUtils version to ${{ github.event.inputs.new_version }}"
+          git push
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Checkout cobratools
+        uses: actions/checkout@v4
+        with:
+          repository: OpenNaja/cobra-tools
+          path: Build/cobra-tools
+          ref: main
+
+      - name: Install cobratools with GUI extras
+        run: |
+          cd Build/cobra-tools
+          python -m pip install --upgrade pip
+          pip install ".[gui]"
+
+      - name: Run build script
+        run: |
+          cd Build
+          python package.py ../ ${{github.event.repository.name}}.zip 
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: mod-artifact
+          path: Build/${{github.event.repository.name}}.zip 
+
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{github.event.inputs.new_version}}
+          release_name: "v${{github.event.inputs.new_version}}"
+          body: "Release ${{github.event.inputs.new_version}}"  # you can customize
+          draft: false
+          prerelease: false
+
+      - name: Upload asset to release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Build/${{github.event.repository.name}}.zip 
+          asset_name: ${{github.event.repository.name}}_${{github.event.inputs.new_version}}
+          asset_content_type: application/zip
+
+    #   - name: Publish to Nexus Mods
+    #     uses: BUTR/workflows/.github/workflows/release-nexusmods.yml@master
+    #     with:
+    #       nexusmods_game_id: ${{ secrets.NEXUS_GAME_ID }}        # set in your repo secrets
+    #       nexusmods_mod_id: ${{ secrets.NEXUS_MOD_ID }}
+    #       mod_filename: your-mod-${{ github.event.inputs.new_version }}.zip
+    #       mod_version: ${{ github.event.inputs.new_version }}
+    #       mod_description: "Release ${{ github.event.inputs.new_version }}"
+    #     env:
+    #       NEXUSMODS_APIKEY: ${{ secrets.NEXUSMODS_APIKEY }}
+    #       NEXUSMODS_COOKIES: ${{ secrets.NEXUSMODS_COOKIES }}
