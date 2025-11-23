@@ -56,8 +56,14 @@ jobs:
       - name: Install cobratools with GUI extras
         run: |
           cd cobra-tools
+          pwd
           python -m pip install --upgrade pip
           pip install ".[gui]"
+
+      - name: Print debug information about structure
+        run: |
+          cd /
+          ls -R
 
       - name: Run build script
         run: |
