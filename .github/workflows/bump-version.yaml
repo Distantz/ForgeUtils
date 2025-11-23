@@ -1,0 +1,27 @@
+name: Bump ForgeUtils version
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_version:
+        description: "New version number"
+        required: true
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update version in ForgeUtils.lua
+        run: |
+          sed -i "s/ForgeUtils.version = .*/ForgeUtils.version = ${{ github.event.inputs.new_version }}/" Main/ForgeUtils.lua
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add Main/ForgeUtils.lua
+          git commit -m "chore: bump version to ${{ github.event.inputs.new_version }}"
+          git push
