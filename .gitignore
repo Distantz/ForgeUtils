@@ -41,4 +41,6 @@ luac.out
 
 **/__pycache__/
 
+# Archives
 *.ovl
+*.zip
