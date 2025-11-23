@@ -62,18 +62,18 @@ jobs:
       - name: Run build script
         run: |
           cd ForgeUtils
-          python ./Build/build.py "../cobra-tools" "Planet Coaster 2" ".ovlpaths"
+          python Build/build.py "../cobra-tools" "Planet Coaster 2" ".ovlpaths"
 
       - name: Run package script
         run: |
           cd ForgeUtils
-          python ./Build/package.py . ${{github.event.repository.name}}.zip 
+          python Build/package.py . ${{github.event.repository.name}}.zip 
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: mod-artifact
-          path: ./ForgeUtils/${{github.event.repository.name}}.zip 
+          path: ForgeUtils/${{github.event.repository.name}}.zip 
 
       - name: Create GitHub release
         id: create_release
@@ -89,7 +89,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./ForgeUtils/${{github.event.repository.name}}.zip 
+          asset_path: ForgeUtils/${{github.event.repository.name}}.zip 
           asset_name: ${{github.event.repository.name}}_${{github.event.inputs.new_version}}
           asset_content_type: application/zip
 
