@@ -62,7 +62,7 @@ jobs:
 
       - name: Print debug information about structure
         run: |
-          cd /
+          cd ../
           ls -R
 
       - name: Run build script
