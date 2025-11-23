@@ -12,7 +12,7 @@ ovlpaths = None
 
 print(f"Cobra tools path: {cobratools}")
 sys.path.append(cobratools)
-from ovl_util.logs import logging_setup # type: ignore
+from utils.logs import logging_setup # type: ignore
 import logging
 logging_setup("pack_tool_cmd")
 
@@ -20,7 +20,7 @@ with open(sys.argv[3], "r", ) as file:
     ovlpaths = file.read().splitlines()
 
 from generated.formats.ovl import OvlFile # type: ignore
-from ovl_util.config import Config # type: ignore
+from utils.config import Config # type: ignore
 
 import contextlib
 from modules.formats.shared import DummyReporter # type: ignore
