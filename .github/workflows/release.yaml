@@ -27,8 +27,8 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add Main/ForgeUtils.lua
-          git commit -m "Bump ForgeUtils version to ${{ github.event.inputs.new_version }}"
+          git add Main/forgeutils.lua
+          git commit -m "Bump version to ${{ github.event.inputs.new_version }}"
 
       - name: Set up Python
         uses: actions/setup-python@v4
