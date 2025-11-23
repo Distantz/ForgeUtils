@@ -21,6 +21,31 @@ with open(sys.argv[3], "r", ) as file:
 from generated.formats.ovl import OvlFile # type: ignore
 from ovl_util.config import Config # type: ignore
 
+import contextlib
+from modules.formats.shared import DummyReporter # type: ignore
+
+class BuildReporter(DummyReporter):
+    def __init__(self):
+        self.warnings = []
+        self.errors = []
+        self.error_files = []
+
+    def show_warning(self, msg: str):
+        self.warnings.append(msg)
+
+    def show_error(self, exception: Exception):
+        self.errors.append(exception)
+
+    def iter_progress(self, iterable, message, cond=True):
+        for item in iterable:
+            yield item
+
+    @contextlib.contextmanager
+    def report_error_files(self, operation):
+        yield self.error_files
+        pass
+        
+
 config = Config(cobratools)
 config.load()
 
@@ -28,6 +53,7 @@ ovl_data = OvlFile()
 ovl_data.cfg = config
 ovl_data.game = gamestr
 ovl_data.load_hash_table()
+ovl_data.reporter = BuildReporter()
 
 for path in ovlpaths:
 
@@ -44,7 +70,9 @@ for path in ovlpaths:
         ovl_data.clear()
         ovl_data.create(path)
         ovl_data.save(ovl_dest)
+        if len(ovl_data.reporter.error_files) > 0:
+            raise Exception(f"Ovl packing had errors in some files:\n{"\n".join(ovl_data.reporter.error_files)}\n")
     except Exception as e:
         import traceback
-        logging.error(f"Could not create OVL from \"{path}\": {e}, traceback: {traceback.format_exc()}")
+        logging.error(f"Could not create OVL from \"{path}\":\n{e}\n\ntraceback: {traceback.format_exc()}")
         exit(-1)
