@@ -80,6 +80,7 @@ jobs:
           path: repo_main/Docs/book
 
   deploy:
+    if: github.event_name != 'pull_request'
     permissions:
       pages: write
       id-token: write
