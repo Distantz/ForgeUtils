@@ -45,24 +45,27 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: OpenNaja/cobra-tools
-          path: Build/cobra-tools
+          path: ../cobra-tools
 
       - name: Install cobratools with GUI extras
         run: |
-          cd Build/cobra-tools
+          cd ../cobra-tools
           python -m pip install --upgrade pip
           pip install ".[gui]"
 
       - name: Run build script
         run: |
-          cd Build
-          python package.py ../ ${{github.event.repository.name}}.zip 
+          python ./Build/build.py "../cobra-tools" "Planet Coaster 2" ".ovlpaths"
+
+      - name: Run package script
+        run: |
+          python ./Build/package.py . ${{github.event.repository.name}}.zip 
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: mod-artifact
-          path: Build/${{github.event.repository.name}}.zip 
+          path: ${{github.event.repository.name}}.zip 
 
       - name: Push bump
         run: |
@@ -82,7 +85,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: Build/${{github.event.repository.name}}.zip 
+          asset_path: ${{github.event.repository.name}}.zip 
           asset_name: ${{github.event.repository.name}}_${{github.event.inputs.new_version}}
           asset_content_type: application/zip
 
