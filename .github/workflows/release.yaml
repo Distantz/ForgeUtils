@@ -62,8 +62,7 @@ jobs:
       - name: Run build script
         run: |
           cd ForgeUtils
-          echo "${{github.workspace}}/cobra-tools"
-          python Build/build.py "${{github.workspace}}/../cobra-tools" "Planet Coaster 2" ".ovlpaths"
+          python Build/build.py "${{github.workspace}}/cobra-tools" "Planet Coaster 2" ".ovlpaths"
 
       - name: Run package script
         run: |
