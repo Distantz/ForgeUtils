@@ -10,8 +10,10 @@ on:
 
 jobs:
   release:
-    runs-on: windows-latest # because cobra-tools uses luadec, which is windows only unless i want to compile it :/
-
+    runs-on: windows-latest 
+    defaults:
+      run:
+        shell: powershell
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -21,12 +23,13 @@ jobs:
       - name: Print repo files
         run: |
           cd ForgeUtils
-          ls -R
+          Get-ChildItem -Recurse
 
       - name: Bump version in ForgeUtils.lua
         run: |
-          cd ForgeUtils
-          sed -i "s/ForgeUtils.version = .*/ForgeUtils.version = ${{ github.event.inputs.new_version }}/" ./Main/forgeutils.lua
+          $file = "./ForgeUtils/Main/forgeutils.lua"
+          $new_version = "${{ github.event.inputs.new_version }}"
+          (Get-Content $file) -replace "ForgeUtils.version = .*", "ForgeUtils.version = $new_version" | Set-Content $file
 
       - name: Commit bumped version
         run: |
@@ -35,12 +38,13 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add .
-          if ! git diff --cached --quiet; then
+          $status = $(git diff --cached --quiet; echo $?)
+          if ($status -eq 1) {
             git commit -m "Bump version to ${{ github.event.inputs.new_version }}"
             git push
-          else
+          } else {
             echo "No changes to commit (version already up to date)."
-          fi
+          }
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -81,7 +85,7 @@ jobs:
         with:
           tag_name: ${{github.event.inputs.new_version}}
           release_name: "v${{github.event.inputs.new_version}}"
-          body: "Release ${{github.event.inputs.new_version}}"  # you can customize
+          body: "Release ${{github.event.inputs.new_version}}"
           draft: false
           prerelease: false
 
