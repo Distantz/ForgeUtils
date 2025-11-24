@@ -1,0 +1,18 @@
+{
+	"current_game": "Planet Coaster 2",
+	"dds_extract": false,
+	"dds_use_gpu": true,
+	"enable_logger_widget": true,
+	"logger_level": "INFO",
+	"logger_orientation": "H",
+	"logger_show": false,
+	"lua_decompile": true,
+	"lua_flatten": true,
+	"lua_unflatten": false,
+	"motiongraph_rename_sound": false,
+	"num_recent": 5,
+	"oodle_level": 6,
+	"play_on_saving": false,
+	"theme": "dark",
+	"version": "1.0.2"
+}
