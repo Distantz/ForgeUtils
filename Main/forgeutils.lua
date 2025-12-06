@@ -4,6 +4,6 @@
 ---@field version number The version of ForgeUtils
 local ForgeUtils = {}
 
-ForgeUtils.version = 1.3
+ForgeUtils.version = 1.4
 
 return ForgeUtils
