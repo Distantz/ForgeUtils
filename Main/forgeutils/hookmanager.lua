@@ -106,20 +106,20 @@ function HookManager:ValidateHook(moduleName, functionName)
     end
 
     local tHookCallbacks = {}
+    local callback = hookContainer.originalFunction
 
-    -- Setup hook callbacks, in reverse order
+
     for i = #hookContainer.hooks, 1, -1 do
-        local originalMethod = hookContainer.hooks[i + 1] or hookContainer.originalFunction
-        tHookCallbacks[i] = function(...)
-            return hookContainer.hooks[i](originalMethod, ...)
+        local nextCallback = callback
+        local hookFn = hookContainer.hooks[i]
+
+        callback = function(...)
+            ---@diagnostic disable-next-line: param-type-mismatch
+            return hookFn(nextCallback, ...)
         end
     end
 
-    -- Set module to use the first hook in the chain.
-    if tHookCallbacks[1] ~= nil then
-        logger:Info("Hooked for " .. id)
-        moduleTable[functionName] = tHookCallbacks[1]
-    end
+    moduleTable[functionName] = callback
 
     return true
 end
