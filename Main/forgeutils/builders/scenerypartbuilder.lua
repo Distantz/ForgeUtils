@@ -155,18 +155,26 @@ function SceneryPartBuilder:addToDB()
     )
     SceneryDBBindings.ModularSceneryParts__Update__PrefabName(
         self.partID,
+        self.dataPrefab,
+        self.contentPack,
         self.visualsPrefab
     )
     SceneryDBBindings.ModularSceneryParts__Update__BoxXSize(
         self.partID,
+        self.dataPrefab,
+        self.contentPack,
         self.sizeX * 100.0
     )
     SceneryDBBindings.ModularSceneryParts__Update__BoxYSize(
         self.partID,
+        self.dataPrefab,
+        self.contentPack,
         self.sizeY * 100.0
     )
     SceneryDBBindings.ModularSceneryParts__Update__BoxZSize(
         self.partID,
+        self.dataPrefab,
+        self.contentPack,
         self.sizeZ * 100.0
     )
 
