@@ -36,12 +36,11 @@ jobs:
       - name: Commit bumped version
         run: |
           cd ForgeUtils
-          git status
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add .
-          $status = $(git diff --cached --quiet; echo $?)
-          if ($status -eq 1) {
+          git add Main/forgeutils.lua
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 1) {
             git commit -m "chore: bump version to ${{ github.event.inputs.new_version }}"
             git push
           } else {
