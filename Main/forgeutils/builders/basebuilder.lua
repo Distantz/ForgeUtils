@@ -1,11 +1,12 @@
 local global = _G
 local setmetatable = global.setmetatable
-local check = require("forgeutils.validators")
+local check = require("forgeutils.check")
 
---- @class forgeutils.builders.sub.trackedrides.BaseBuilder
+--- @class forgeutils.builders.BaseBuilder
 --- @field __index table
---- @field rideID string The ride ID.
---- @field contentPack string The content pack. Default is BaseGame.
+--- @field ID string The ID
+--- @field contentPack string Default = BaseGame
+--- @field contentPackId integer Default = 0
 local BaseBuilder = {}
 BaseBuilder.__index = BaseBuilder
 
@@ -17,7 +18,7 @@ function BaseBuilder.new()
     return instance
 end
 
---- Sets the ID of the tracked ride.
+--- Sets the ID.
 --- @generic T
 --- @param self T
 --- @param id string
@@ -27,13 +28,15 @@ function BaseBuilder:withID(id)
     return self
 end
 
---- Sets the content pack of the tracked ride.
+--- Sets the content pack.
 --- @generic T
 --- @param self T
 --- @param contentPack string
+--- @param contentPackId integer
 --- @return T
-function BaseBuilder:withContentPack(contentPack)
+function BaseBuilder:withContentPack(contentPack, contentPackId)
     self.contentPack = contentPack
+    self.contentPackId = contentPackId
     return self
 end
 
@@ -42,7 +45,7 @@ end
 --- @return boolean valid If the builder contains valid data.
 function BaseBuilder:validate()
     local issues = false
-    issues = check.ValueNil("rideID", self.rideID) or issues
+    issues = check.ValueNil("ID", self.ID) or issues
     issues = check.ValueNil("contentPack", self.contentPack) or issues
     return issues
 end

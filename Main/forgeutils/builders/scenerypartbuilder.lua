@@ -5,6 +5,7 @@ local pairs = global.pairs
 
 local SceneryDBBindings = require("forgeutils.internal.database.ModularScenery")
 local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
+local base = require("forgeutils.builders.basebuilder")
 
 --- SceneryPartBuilder is a fluent builder for database values in ForgeUtils.
 --- Example usage, which creates a scenery part with ID PC_ExampleTestID and name and description:
@@ -19,7 +20,7 @@ local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
 --- Note the use of the `addToDB()` call at the end. This is actually what adds the defined values
 --- into the DB.
 ---
---- @class forgeutils.builders.SceneryPartBuilder
+--- @class forgeutils.builders.SceneryPartBuilder : forgeutils.builders.BaseBuilder
 --- @field __index table
 --- @field partID string
 --- @field contentPack string Default is BaseGame.
@@ -41,14 +42,13 @@ local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
 --- @field requiresUnlock boolean Default is false.
 local SceneryPartBuilder = {}
 SceneryPartBuilder.__index = SceneryPartBuilder
+setmetatable(SceneryPartBuilder, { __index = base })
 
 ---Creates a SceneryPartBuilder, to define database information.
----@return forgeutils.builders.SceneryPartBuilder
+---@return self
 function SceneryPartBuilder.new()
-    local instance = setmetatable({}, SceneryPartBuilder)
+    local instance = setmetatable(base.new(), SceneryPartBuilder)
     -- Defaults
-    instance.contentPack = "BaseGame"
-    instance.contentPackID = 0
     instance.dataPrefab = "SurfaceScaling"
     instance.sizeX = 1.0
     instance.sizeY = 1.0
