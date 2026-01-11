@@ -4,7 +4,7 @@ local check = require("forgeutils.check")
 
 --- @class forgeutils.builders.BaseBuilder
 --- @field __index table
---- @field ID string The ID
+--- @field id string The ID
 --- @field contentPack string Default = BaseGame
 --- @field contentPackId integer Default = 0
 local BaseBuilder = {}
@@ -24,7 +24,7 @@ end
 --- @param id string
 --- @return T
 function BaseBuilder:withID(id)
-    self.rideID = id
+    self.id = id
     return self
 end
 
@@ -45,8 +45,8 @@ end
 --- @return boolean valid If the builder contains valid data.
 function BaseBuilder:validate()
     local issues = false
-    issues = check.ValueNil("ID", self.ID) or issues
-    issues = check.ValueNil("contentPack", self.contentPack) or issues
+    issues = check.IsNil("ID", self.id) or issues
+    issues = check.IsNil("contentPack", self.contentPack) or issues
     return issues
 end
 
