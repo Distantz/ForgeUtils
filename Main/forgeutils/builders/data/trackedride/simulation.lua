@@ -2,7 +2,6 @@ local global = _G
 local setmetatable = global.setmetatable
 
 --- @class forgeutils.builders.data.trackedride.Simulation
---- @field name string
 --- @field excitementRating number
 --- @field intensityRating number
 --- @field nauseaRating number
