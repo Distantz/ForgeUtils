@@ -22,6 +22,16 @@ def extract_table_data(table_name, cursor) -> TableData:
     cursor.execute(f"PRAGMA foreign_key_list({table_name});")
     foreign_keys = cursor.fetchall()
     foreign_key_columns = {fk[3] for fk in foreign_keys}
+
+    cursor.execute(f"PRAGMA index_list({table_name});")
+    indexes = cursor.fetchall()
+    unique_columns = []
+    for _, index_name, unique, *_ in indexes:
+        if unique:
+            cursor.execute(f"PRAGMA index_info({index_name});")
+            index_cols = cursor.fetchall()
+            for col in index_cols:
+                unique_columns.append(col[2])
     
     data = TableData()
 
@@ -37,7 +47,7 @@ def extract_table_data(table_name, cursor) -> TableData:
 
         data.parameters[param_name] = param_data
 
-        if param_data.primary_key or param_name in foreign_key_columns:
+        if param_data.primary_key or param_name in foreign_key_columns or param_name in unique_columns:
             data.primary_keys[param_name] = param_data
         elif not (param_data.default is not None or not param_data.not_null):
             data.required_parameters[param_name] = param_data
