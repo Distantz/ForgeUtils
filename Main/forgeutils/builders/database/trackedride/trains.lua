@@ -6,7 +6,7 @@ local db = require("forgeutils.internal.database.TrackedRides")
 local Trains = {}
 Trains.__index = Trains
 
---- Adds simulation data to the database
+--- Adds train data to the database
 ---@param rideId string The ID (or name) of the tracked ride.
 ---@param trainData forgeutils.builders.data.trackedride.Train
 function Trains.addToDb(rideId, trainData)
