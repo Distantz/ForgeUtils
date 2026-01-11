@@ -1,6 +1,7 @@
 local global = _G
 local setmetatable = global.setmetatable
 local check = require("forgeutils.check")
+local logger = require("forgeutils.logger").Get("ForgeUtils Builder")
 
 --- @class forgeutils.builders.BaseBuilder
 --- @field __index table
@@ -52,9 +53,13 @@ end
 
 --- Validates and, if no errors, executes the builder.
 function BaseBuilder:tryBuild()
+    logger:Info("Trying to build \"" .. self.id .. "\"")
     if self:validate() then
         self:addToDB()
+        logger:Info("Finished adding \"" .. self.id .. "\"")
+        return
     end
+    logger:Info("Error building \"" .. self.id .. "\", skipped.")
 end
 
 --- Non-implemented stub. Intended to be overriden.
