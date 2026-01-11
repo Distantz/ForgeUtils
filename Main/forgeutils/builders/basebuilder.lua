@@ -23,7 +23,7 @@ end
 --- @param self T
 --- @param id string
 --- @return T
-function BaseBuilder:withID(id)
+function BaseBuilder:withId(id)
     self.id = id
     return self
 end
