@@ -5,7 +5,7 @@ local ipairs = global.ipairs
 
 local TrackedRideDBBindings = require("forgeutils.internal.database.TrackedRides")
 local logger = require("forgeutils.logger").Get("TrackedRideBuilder")
-local base = require("Main.forgeutils.builders.basebuilder")
+local base = require("forgeutils.builders.basebuilder")
 local check = require("forgeutils.check")
 
 --- @class forgeutils.builders.sub.trackedrides.TrackedRideBuilder: forgeutils.builders.BaseBuilder
