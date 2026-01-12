@@ -4,9 +4,11 @@ local setmetatable = global.setmetatable
 local ipairs = global.ipairs
 
 local db = require("forgeutils.internal.database.TrackedRides")
-local logger = require("forgeutils.logger").Get("TrackedRideBuilder")
+local logger = require("forgeutils.logger").Get("TrackedRideBuilder", "DEBUG_QUERY")
 local base = require("forgeutils.builders.basebuilder")
 local check = require("forgeutils.check")
+
+local rideParams = require("forgeutils.builders.database.trackedride.rideparams")
 
 --- @class forgeutils.builders.sub.trackedrides.TrackedRideBuilder: forgeutils.builders.BaseBuilder
 --- @field __index table
@@ -15,6 +17,7 @@ local check = require("forgeutils.check")
 --- @field browserEntry forgeutils.builders.data.trackedride.BrowserEntry
 --- @field trains forgeutils.builders.data.trackedride.Train[]
 --- @field elements string[]
+--- @field params forgeutils.builders.data.trackedride.RideParam[]
 local TrackedRideBuilder = {}
 TrackedRideBuilder.__index = TrackedRideBuilder
 setmetatable(TrackedRideBuilder, { __index = base })
@@ -23,8 +26,20 @@ setmetatable(TrackedRideBuilder, { __index = base })
 --- @return self
 function TrackedRideBuilder.new()
     local self = setmetatable(base.new(), TrackedRideBuilder)
+
     self.trains = {}
     self.elements = {}
+
+    local rideParamsDefault = require("forgeutils.builders.data.trackedride.rideparam")
+    self.params = {
+        rideParamsDefault.LengthParam,
+        rideParamsDefault.CatwalkParam,
+        rideParamsDefault.SupportParam,
+        rideParamsDefault.BankingOffsetParam,
+        rideParamsDefault.CurveRangeParam,
+        rideParamsDefault.SlopeRangeParam,
+        rideParamsDefault.BankingRangeParam_Invert -- default is invert because our default is a thrill coaster.
+    }
     return self
 end
 
@@ -72,10 +87,15 @@ end
 --- @return boolean valid If the builder has errors.
 function TrackedRideBuilder:hasErrors()
     local issues = base.hasErrors(self)
+
     issues = check.IsNil("simulationData", self.simulationData) or issues
     issues = check.IsNil("rideData", self.rideData) or issues
     issues = check.IsNil("browserEntry", self.browserEntry) or issues
     issues = check.IsEmpty("trains", self.trains) or issues
+    for _, param in ipairs(self.params) do
+        issues = rideParams.hasErrors(param) or issues
+    end
+
     return issues
 end
 
@@ -96,6 +116,9 @@ function TrackedRideBuilder:addToDB()
 
     for _, element in ipairs(self.elements) do
         db.ElementLists__Insert(self.id, element)
+    end
+    for _, param in ipairs(self.params) do
+        rideParams.addToDb(self.id, param)
     end
 
     require("forgeutils.builders.database.trackedride.browserentries").addToDb(self.id, self.browserEntry)
