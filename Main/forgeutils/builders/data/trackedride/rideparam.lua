@@ -15,6 +15,98 @@ local setmetatable = global.setmetatable
 local RideParam = {}
 RideParam.__index = RideParam
 
+--- Create a new RideParams data object.
+--- @return self
+function RideParam.new()
+    local self = setmetatable({}, RideParam)
+
+    -- Sane defaults
+    self.param = nil
+    self.min = 0
+    self.max = 0
+    self.initial = 0
+    self.step = 0
+
+    -- DB defaults
+    self.stepIsRelativeToMin = nil
+    self.labelOverride = nil
+    self.valueLabelSetName = nil
+    self.absoluteMin = nil
+    self.absoluteMax = nil
+
+    return self
+end
+
+--- @param param string
+--- @return self
+function RideParam:withParam(param)
+    self.param = param
+    return self
+end
+
+--- @param min number
+--- @return self
+function RideParam:withMin(min)
+    self.min = min
+    return self
+end
+
+--- @param max number
+--- @return self
+function RideParam:withMax(max)
+    self.max = max
+    return self
+end
+
+--- @param initial number
+--- @return self
+function RideParam:withInitial(initial)
+    self.initial = initial
+    return self
+end
+
+--- @param step number
+--- @return self
+function RideParam:withStep(step)
+    self.step = step
+    return self
+end
+
+--- @param stepIsRelativeToMin integer
+--- @return self
+function RideParam:withStepIsRelativeToMin(stepIsRelativeToMin)
+    self.stepIsRelativeToMin = stepIsRelativeToMin
+    return self
+end
+
+--- @param labelOverride string
+--- @return self
+function RideParam:withLabelOverride(labelOverride)
+    self.labelOverride = labelOverride
+    return self
+end
+
+--- @param valueLabelSetName string
+--- @return self
+function RideParam:withValueLabelSetName(valueLabelSetName)
+    self.valueLabelSetName = valueLabelSetName
+    return self
+end
+
+--- @param absoluteMin number
+--- @return self
+function RideParam:withAbsoluteMin(absoluteMin)
+    self.absoluteMin = absoluteMin
+    return self
+end
+
+--- @param absoluteMax number
+--- @return self
+function RideParam:withAbsoluteMax(absoluteMax)
+    self.absoluteMax = absoluteMax
+    return self
+end
+
 -- Constants
 
 --- The track length parameter name.
@@ -116,97 +208,5 @@ RideParam.BankingRangeParam_Invert = RideParam.new()
     :withMax(50000)
     :withInitial(0)
     :withStep(0)
-
---- Create a new RideParams data object.
---- @return self
-function RideParam.new()
-    local self = setmetatable({}, RideParam)
-
-    -- Sane defaults
-    self.param = nil
-    self.min = 0
-    self.max = 0
-    self.initial = 0
-    self.step = 0
-
-    -- DB defaults
-    self.stepIsRelativeToMin = nil
-    self.labelOverride = nil
-    self.valueLabelSetName = nil
-    self.absoluteMin = nil
-    self.absoluteMax = nil
-
-    return self
-end
-
---- @param param string
---- @return self
-function RideParam:withParam(param)
-    self.param = param
-    return self
-end
-
---- @param min number
---- @return self
-function RideParam:withMin(min)
-    self.min = min
-    return self
-end
-
---- @param max number
---- @return self
-function RideParam:withMax(max)
-    self.max = max
-    return self
-end
-
---- @param initial number
---- @return self
-function RideParam:withInitial(initial)
-    self.initial = initial
-    return self
-end
-
---- @param step number
---- @return self
-function RideParam:withStep(step)
-    self.step = step
-    return self
-end
-
---- @param stepIsRelativeToMin integer
---- @return self
-function RideParam:withStepIsRelativeToMin(stepIsRelativeToMin)
-    self.stepIsRelativeToMin = stepIsRelativeToMin
-    return self
-end
-
---- @param labelOverride string
---- @return self
-function RideParam:withLabelOverride(labelOverride)
-    self.labelOverride = labelOverride
-    return self
-end
-
---- @param valueLabelSetName string
---- @return self
-function RideParam:withValueLabelSetName(valueLabelSetName)
-    self.valueLabelSetName = valueLabelSetName
-    return self
-end
-
---- @param absoluteMin number
---- @return self
-function RideParam:withAbsoluteMin(absoluteMin)
-    self.absoluteMin = absoluteMin
-    return self
-end
-
---- @param absoluteMax number
---- @return self
-function RideParam:withAbsoluteMax(absoluteMax)
-    self.absoluteMax = absoluteMax
-    return self
-end
 
 return RideParam
