@@ -42,9 +42,8 @@ function BaseBuilder:withContentPack(contentPack, contentPackId)
 end
 
 --- Validates the builder data.
---- Not intended to be used externally but can be if desired.
---- @return boolean valid If the builder contains valid data.
-function BaseBuilder:validate()
+--- @return boolean valid If the builder contains invalid data.
+function BaseBuilder:hasErrors()
     local issues = false
     issues = check.IsNil("ID", self.id) or issues
     issues = check.IsNil("contentPack", self.contentPack) or issues
@@ -54,7 +53,7 @@ end
 --- Validates and, if no errors, executes the builder.
 function BaseBuilder:tryBuild()
     logger:Info("Trying to build \"" .. self.id .. "\"")
-    if self:validate() then
+    if not self:hasErrors() then
         self:addToDB()
         logger:Info("Finished adding \"" .. self.id .. "\"")
         return

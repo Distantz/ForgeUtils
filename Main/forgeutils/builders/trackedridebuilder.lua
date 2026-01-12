@@ -3,7 +3,7 @@ local api = global.api
 local setmetatable = global.setmetatable
 local ipairs = global.ipairs
 
-local TrackedRideDBBindings = require("forgeutils.internal.database.TrackedRides")
+local db = require("forgeutils.internal.database.TrackedRides")
 local logger = require("forgeutils.logger").Get("TrackedRideBuilder")
 local base = require("forgeutils.builders.basebuilder")
 local check = require("forgeutils.check")
@@ -14,6 +14,7 @@ local check = require("forgeutils.check")
 --- @field rideData forgeutils.builders.data.trackedride.RideData
 --- @field browserEntry forgeutils.builders.data.trackedride.BrowserEntry
 --- @field trains forgeutils.builders.data.trackedride.Train[]
+--- @field elements string[]
 local TrackedRideBuilder = {}
 TrackedRideBuilder.__index = TrackedRideBuilder
 setmetatable(TrackedRideBuilder, { __index = base })
@@ -23,6 +24,7 @@ setmetatable(TrackedRideBuilder, { __index = base })
 function TrackedRideBuilder.new()
     local self = setmetatable(base.new(), TrackedRideBuilder)
     self.trains = {}
+    self.elements = {}
     return self
 end
 
@@ -58,15 +60,22 @@ function TrackedRideBuilder:withTrain(train)
     return self
 end
 
+--- Adds a spline element for this tracked ride.
+--- @param element string
+--- @return self
+function TrackedRideBuilder:withElement(element)
+    self.elements[#self.elements + 1] = element
+    return self
+end
+
 --- Validates the builder data.
---- Not intended to be used externally but can be if desired.
---- @return boolean valid If the builder contains valid data.
-function TrackedRideBuilder:validate()
-    local issues = base.validate(self)
-    issues = issues or check.IsNil("simulationData", self.simulationData)
-    issues = issues or check.IsNil("rideData", self.rideData)
-    issues = issues or check.IsNil("browserEntry", self.browserEntry)
-    issues = issues or check.IsEmpty("trains", self.trains)
+--- @return boolean valid If the builder has errors.
+function TrackedRideBuilder:hasErrors()
+    local issues = base.hasErrors(self)
+    issues = check.IsNil("simulationData", self.simulationData) or issues
+    issues = check.IsNil("rideData", self.rideData) or issues
+    issues = check.IsNil("browserEntry", self.browserEntry) or issues
+    issues = check.IsEmpty("trains", self.trains) or issues
     return issues
 end
 
@@ -79,6 +88,14 @@ function TrackedRideBuilder:addToDB()
     local trainDb = require("forgeutils.builders.database.trackedride.trains")
     for _, train in ipairs(self.trains) do
         trainDb.addToDb(self.id, train)
+    end
+
+    -- Add both default spline and default station from rideData
+    db.ElementLists__Insert(self.id, self.rideData.splineElement)
+    db.ElementLists__Insert(self.id, self.rideData.stationElement)
+
+    for _, element in ipairs(self.elements) do
+        db.ElementLists__Insert(self.id, element)
     end
 
     require("forgeutils.builders.database.trackedride.browserentries").addToDb(self.id, self.browserEntry)
