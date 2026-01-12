@@ -9,6 +9,7 @@ local base = require("forgeutils.builders.basebuilder")
 local check = require("forgeutils.check")
 
 local rideParams = require("forgeutils.builders.database.trackedride.rideparams")
+local constants = require("forgeutils.builders.data.trackedride.constants")
 
 --- @class forgeutils.builders.sub.trackedrides.TrackedRideBuilder: forgeutils.builders.BaseBuilder
 --- @field __index table
@@ -18,6 +19,10 @@ local rideParams = require("forgeutils.builders.database.trackedride.rideparams"
 --- @field trains forgeutils.builders.data.trackedride.Train[]
 --- @field elements string[]
 --- @field params forgeutils.builders.data.trackedride.RideParam[]
+--- @field metadataTags string[]
+--- @field menuMetadataTag string
+--- @field typeMetadataTag string
+--- @field ageGroupMetadataTag string
 local TrackedRideBuilder = {}
 TrackedRideBuilder.__index = TrackedRideBuilder
 setmetatable(TrackedRideBuilder, { __index = base })
@@ -40,6 +45,10 @@ function TrackedRideBuilder.new()
         rideParamsDefault.SlopeRangeParam,
         rideParamsDefault.BankingRangeParam_Invert -- default is invert because our default is a thrill coaster.
     }
+    self.metadataTags = {}
+    self.menuMetadataTag = constants.MetadataTag_Menu_Coaster_ChainLift
+    self.typeMetadataTag = constants.MetadataTag_Type_TrackedRide_Coaster
+    self.ageGroupMetadataTag = constants.MetadataTag_Filter_AgeGroup_TeenAdult
     return self
 end
 
@@ -67,7 +76,7 @@ function TrackedRideBuilder:withBrowserEntry(browserEntry)
     return self
 end
 
---- Adds a train for this tracked ride.
+--- Adds a train to this tracked ride.
 --- @param train forgeutils.builders.data.trackedride.Train
 --- @return self
 function TrackedRideBuilder:withTrain(train)
@@ -80,6 +89,22 @@ end
 --- @return self
 function TrackedRideBuilder:withElement(element)
     self.elements[#self.elements + 1] = element
+    return self
+end
+
+--- Adds a metadata tag to this tracked ride.
+--- @param tag string
+--- @return self
+function TrackedRideBuilder:withMetadataTag(tag)
+    self.metadataTags[#self.metadataTags + 1] = tag
+    return self
+end
+
+--- Sets the menu tag of this tracked ride.
+--- @param tag string
+--- @return self
+function TrackedRideBuilder:withMenuTag(tag)
+    self.menuMetadataTag = tag
     return self
 end
 
@@ -119,6 +144,14 @@ function TrackedRideBuilder:addToDB()
     end
     for _, param in ipairs(self.params) do
         rideParams.addToDb(self.id, param)
+    end
+
+    -- Metadata tags
+    db.RideMetadataTags__Insert(self.id, self.menuMetadataTag)
+    db.RideMetadataTags__Insert(self.id, self.typeMetadataTag)
+    db.RideMetadataTags__Insert(self.id, self.ageGroupMetadataTag)
+    for _, tag in ipairs(self.metadataTags) do
+        db.RideMetadataTags__Insert(self.id, tag)
     end
 
     require("forgeutils.builders.database.trackedride.browserentries").addToDb(self.id, self.browserEntry)
