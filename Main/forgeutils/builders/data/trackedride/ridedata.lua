@@ -1,10 +1,6 @@
 local global = _G
 local setmetatable = global.setmetatable
 
-local classThrill = "Thrill"
-local classFamily = "Family"
-local classJunior = "Junior"
-
 ---@class forgeutils.builders.data.trackedride.RideData
 ---@field track string?
 ---@field name string?
@@ -39,6 +35,10 @@ local classJunior = "Junior"
 local RideData = {}
 RideData.__index = RideData
 
+RideData.classThrill = "Thrill"
+RideData.classFamily = "Family"
+RideData.classJunior = "Junior"
+
 --- Create a new RideData data object.
 --- @return self
 function RideData.new()
@@ -55,7 +55,7 @@ function RideData.new()
     -- DB defaults
     self.track = nil
     self.name = nil
-    self.class = classThrill
+    self.class = RideData.classThrill
     self.specificPowerMultiplier = nil
     self.platformHeight = nil
     self.heightAbovePlatform = nil
@@ -97,19 +97,19 @@ end
 
 --- @return self
 function RideData:asJuniorCoaster()
-    self.class = classJunior
+    self.class = RideData.classJunior
     return self
 end
 
 --- @return self
 function RideData:asFamilyCoaster()
-    self.class = classFamily
+    self.class = RideData.classFamily
     return self
 end
 
 --- @return self
 function RideData:asThrillCoaster()
-    self.class = classThrill
+    self.class = RideData.classThrill
     return self
 end
 
