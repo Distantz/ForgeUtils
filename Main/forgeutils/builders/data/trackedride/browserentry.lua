@@ -19,7 +19,7 @@ function BrowserEntry.new()
     self.description = "ForgeUtilsDefaultRideDescription"
     -- DB defaults
     self.icon = nil
-    self.releaseGroup = nil
+    self.releaseGroup = 0
     self.manufacturer = "ForgeUtilsDefaultManufacturer"
     return self
 end
