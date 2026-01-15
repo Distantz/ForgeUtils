@@ -23,6 +23,8 @@ local constants = require("forgeutils.builders.data.trackedride.constants")
 --- @field menuMetadataTag string
 --- @field typeMetadataTag string
 --- @field ageGroupMetadataTag string
+--- @field manufacturerTag string
+--- @field tooltips string[]
 local TrackedRideBuilder = {}
 TrackedRideBuilder.__index = TrackedRideBuilder
 setmetatable(TrackedRideBuilder, { __index = base })
@@ -49,6 +51,13 @@ function TrackedRideBuilder.new()
     self.menuMetadataTag = constants.MetadataTag_Menu_Coaster_ChainLift
     self.typeMetadataTag = constants.MetadataTag_Type_TrackedRide_Coaster
     self.ageGroupMetadataTag = constants.MetadataTag_Filter_AgeGroup_TeenAdult
+    self.manufacturerTag = constants.MetadataTag_Coaster_Manufacturer_BigMsRides
+
+    self.tooltips = {
+        "TrackFeature_ChainLift",
+        "TrackFeature_CanInvert",
+        "TrackFeature_ForAdultsAndTeensOnly"
+    }
     return self
 end
 
@@ -150,8 +159,13 @@ function TrackedRideBuilder:addToDB()
     db.RideMetadataTags__Insert(self.id, self.menuMetadataTag)
     db.RideMetadataTags__Insert(self.id, self.typeMetadataTag)
     db.RideMetadataTags__Insert(self.id, self.ageGroupMetadataTag)
+    db.RideMetadataTags__Insert(self.id, self.manufacturerTag)
     for _, tag in ipairs(self.metadataTags) do
         db.RideMetadataTags__Insert(self.id, tag)
+    end
+
+    for _, tooltip in ipairs(self.tooltips) do
+        db.BrowserTooltips__Insert(self.id, tooltip)
     end
 
     require("forgeutils.builders.database.trackedride.browserentries").addToDb(self.id, self.browserEntry)
