@@ -3,7 +3,6 @@ local api = global.api
 local setmetatable = global.setmetatable
 local ipairs = global.ipairs
 
-local logger = require("forgeutils.logger").Get("TrainBuilder", "INFO")
 local base = require("forgeutils.builders.basebuilder")
 local check = require("forgeutils.check")
 
@@ -38,14 +37,12 @@ end
 --- @return self
 function TrainBuilder:withCar(car)
     self.cars[#self.cars + 1] = car
-    logger:Info("Added car: " .. tostring(car.carId) .. " (total cars: " .. #self.cars .. ")")
     return self
 end
 
 --- Validates the builder data.
 --- @return boolean valid If the builder has errors.
 function TrainBuilder:hasErrors()
-    logger:Info("Validating train builder for: " .. tostring(self.id))
     local issues = base.hasErrors(self)
 
     issues = check.IsNil("trainData", self.trainData) or issues
@@ -61,22 +58,11 @@ function TrainBuilder:hasErrors()
         end
     end
 
-    if issues then
-        logger:Error("Validation FAILED for train: " .. tostring(self.id))
-    else
-        logger:Info("Validation PASSED for train: " .. tostring(self.id))
-    end
-
     return issues
 end
 
 --- Adds the train and cars to the database.
 function TrainBuilder:addToDB()
-    logger:Info("========================================")
-    logger:Info("Starting database insertion for train: " .. self.id)
-    logger:Info("Number of cars to insert: " .. #self.cars)
-    logger:Info("========================================")
-
     -- Insert train data first
     local trainsDb = require("forgeutils.builders.database.train.trains")
     trainsDb.addToDb(self.id, self.trainData)
@@ -84,13 +70,8 @@ function TrainBuilder:addToDB()
     -- Insert all cars
     local carsDb = require("forgeutils.builders.database.train.cars")
     for i, car in ipairs(self.cars) do
-        logger:Info("Inserting car " .. i .. " of " .. #self.cars)
         carsDb.addToDb(self.id, car)
     end
-
-    logger:Info("========================================")
-    logger:Info("Database insertion COMPLETE for train: " .. self.id)
-    logger:Info("========================================")
 end
 
 return TrainBuilder
