@@ -126,6 +126,7 @@ function _ForgeUtilsLuaDatabase.Init()
     )
 
     api.ui2.MapResources("ForgeUtilsUIHooks")
+    api.ui2.MapResources("ForgeUtilsMainHooks")
 end
 
 function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)

@@ -3,7 +3,7 @@ import "/js/forgeutils/printhelper.js";
 
 const moduleHooks = new Map();
 
-function onAddModuleHook(className, hookHandlerFile) {
+export function onAddModuleHook(className, hookHandlerFile) {
     import(hookHandlerFile)
         .then(module => {
             if (typeof module.OnHook !== 'function') {
@@ -14,6 +14,7 @@ function onAddModuleHook(className, hookHandlerFile) {
                 moduleHooks.set(className, []);
             }
             moduleHooks.get(className).push(module.OnHook);
+            console.log(`Added hook ${hookHandlerFile} for element ${className}`)
         })
         .catch(err => {
             console.error(`Failed to load UI hook handler "${hookHandlerFile}":`, err);
@@ -24,11 +25,11 @@ export function triggerModuleHooks(className, originalMethod, nodeName, attribut
     const handlers = moduleHooks.get(className) ?? [];
     const chain = handlers.reduceRight(
         (next, handler) => {
-            return () => handler(next, nodeName, attributes, ...children);
+            return (n, a, ...c) => handler(next, n, a, ...c);
         },
-        () => originalMethod(nodeName, attributes, ...children)
+        (n, a, ...c) => originalMethod(n, a, ...c)
     );
-    return chain();
+    return chain(nodeName, attributes, ...children);
 }
 
 export function hasHooks(className) {
@@ -36,3 +37,7 @@ export function hasHooks(className) {
 }
 
 Engine.addListener("ForgeUtils_AddModuleHook", onAddModuleHook);
+onAddModuleHook(
+    "div",
+    "/js/hooks/forgeutils/hudBottomBarHook.js"
+);
