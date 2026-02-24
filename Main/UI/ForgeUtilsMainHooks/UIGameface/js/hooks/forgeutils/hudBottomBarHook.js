@@ -1,3 +1,7 @@
+import { StatusControlButton } from '/js/project/modules/statusBar/components/StatusControlsButton.js';
+import * as preact from '/js/common/lib/preact.js';
+import { classNames } from '/js/common/lib/classnames.js';
+
 /**
  * This hook adds the Mod Bar to the bottom row of the main game UI HUD.
  * 
@@ -26,8 +30,19 @@ export function OnHook(next, nodeName, attributes, ...children) {
     console.log("Found StatusControls_root!");
     console.log(children);
 
+    let modButton = preact.h(
+        "div",
+        { className: classNames('StatusControls_content', 'optionMenu') },
+        preact.h(
+            StatusControlButton,
+            {
+                icon: '/img/icons/wrench.svg',
+            }
+        )
+    );
+
     // Injecting second child
-    let newChildren = [children[3], ...children];
+    let newChildren = [modButton, ...children];
     console.log("New children:");
     console.log(newChildren);
 
