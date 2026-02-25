@@ -39,11 +39,6 @@ export function hasHooks(className) {
 // Add 
 Engine.whenReady.then(
     async () => {
-        console.log("Adding hooks for hud bottom bar!");
         Engine.addListener("ForgeUtils_AddModuleHook", onAddModuleHook);
-        onAddModuleHook(
-            "div",
-            "/js/hooks/forgeutils/hudBottomBarHook.js"
-        );
     }
 )

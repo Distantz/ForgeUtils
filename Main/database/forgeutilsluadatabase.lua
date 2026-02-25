@@ -13,6 +13,7 @@ local pairs = global.pairs
 local loggerSetup = require("forgeutils.logger")
 local logger = loggerSetup.Get("ForgeUtilsLuaDatabase", "DEBUG_QUERY")
 local hookManager = require("forgeutils.hookmanager")
+local uiHookManager = require("forgeutils.uihookmanager")
 
 logger:Info("Loading ForgeUtils...")
 
@@ -64,69 +65,18 @@ function _ForgeUtilsLuaDatabase.Init()
         end
     )
 
-    -- Hook UI Gameface to add multiple event listeners by default for UI log events.
-    hookManager:AddHook(
-        "UI.GamefaceUIWrapper",
-        "Init",
-        function(originalMethod, slf, init)
-            slf.logger = logger.Get("UI[" .. init.sViewName .. "]", "DEBUG_QUERY")
-            logger:Info("Init")
-            return originalMethod(slf, init)
-        end
-    )
-
-    hookManager:AddHook(
-        "UI.GamefaceUIWrapper",
-        "_OnReadyCallback",
-        function(originalMethod, slf)
-            local res = originalMethod(slf)
-            slf.logger:Info("Hooking logging ForgeUtils UI callbacks")
-
-            --#region Logging callbacks
-
-            slf:AddEventListener(
-                "ForgeUtils_LogInfo",
-                1,
-                function(str)
-                    slf.logger:Info(str)
-                end,
-                nil
-            )
-            slf:AddEventListener(
-                "ForgeUtils_LogDebug",
-                1,
-                function(str)
-                    slf.logger:Debug(str)
-                end,
-                nil
-            )
-            slf:AddEventListener(
-                "ForgeUtils_LogWarn",
-                1,
-                function(str)
-                    slf.logger:Warn(str)
-                end,
-                nil
-            )
-            slf:AddEventListener(
-                "ForgeUtils_LogError",
-                1,
-                function(str)
-                    slf.logger:Error(str)
-                end,
-                nil
-            )
-
-            slf.logger:Info("Finished adding Event Listeners")
-
-            --#endregion
-
-            return res
-        end
-    )
-
     api.ui2.MapResources("ForgeUtilsUIHooks")
     api.ui2.MapResources("ForgeUtilsMainHooks")
+
+    -- Add UI hooks
+    uiHookManager:_InitUiHookManager()
+
+    -- Hook into the hud bottom bar
+    uiHookManager:AddHook(
+        "HUD",
+        "div",
+        "/js/hooks/forgeutils/hudBottomBarHook.js"
+    );
 end
 
 function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
