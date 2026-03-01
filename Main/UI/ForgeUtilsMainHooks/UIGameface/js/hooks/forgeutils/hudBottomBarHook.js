@@ -1,6 +1,17 @@
 import { StatusControlButton } from '/js/project/modules/statusBar/components/StatusControlsButton.js';
 import * as preact from '/js/common/lib/preact.js';
 import { classNames } from '/js/common/lib/classnames.js';
+import { Tooltip } from '/js/project/components/Tooltip.js';
+
+const tooltipFunc = (target) => preact.h(
+    Tooltip,
+    {
+        target: target,
+        label: '[ForgeUtilsModButton]',
+        // inputName: NewtonInput.EditorsToggleWeatherReportVisibility,
+        modifiers: 'inputIconOnRight wide'
+    }
+);
 
 /**
  * This hook adds the Mod Bar to the bottom row of the main game UI HUD.
@@ -36,7 +47,8 @@ export function OnHook(next, nodeName, attributes, ...children) {
         preact.h(
             StatusControlButton,
             {
-                icon: '/img/icons/wrench.svg',
+                icon: '/img/icons/crossedTools.svg',
+                tooltip: tooltipFunc
             }
         )
     );
