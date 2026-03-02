@@ -50,6 +50,7 @@ function RideData.new()
     self.maxTrackHeightFeet = 399
     self.splineElement = "default_spline"
     self.stationElement = "station_leftleft"
+    self.chainElement = "default_chainlift"
     self.blockSection = true
 
     -- DB defaults
@@ -62,7 +63,6 @@ function RideData.new()
     self.trackGapWidth = nil
     self.trackBlockWidth = nil
     self.platformBlockWidth = nil
-    self.chainElement = nil
     self.stationWidth = nil
     self.audioType = nil
     self.maxSlopeDeltaDegrees = nil
