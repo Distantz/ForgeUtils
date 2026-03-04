@@ -12,6 +12,10 @@ RideParams.__index = RideParams
 function RideParams.hasErrors(rideParam)
     local issues = false
     issues = check.IsNil("rideParam.param", rideParam.param) or issues
+    issues = check.IsNil("rideParam.min", rideParam.min) or issues
+    issues = check.IsNil("rideParam.max", rideParam.max) or issues
+    issues = check.IsNil("rideParam.initial", rideParam.initial) or issues
+    issues = check.IsNil("rideParam.step", rideParam.step) or issues
     return issues
 end
 

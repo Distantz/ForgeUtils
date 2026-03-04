@@ -45,6 +45,7 @@ function TrackedRideBuilder.new()
         rideParamsDefault.BankingOffsetParam,
         rideParamsDefault.CurveRangeParam,
         rideParamsDefault.SlopeRangeParam,
+        rideParamsDefault.TunnelRadiusParam,
         rideParamsDefault.BankingRangeParam_Invert -- default is invert because our default is a thrill coaster.
     }
     self.metadataTags = {}
