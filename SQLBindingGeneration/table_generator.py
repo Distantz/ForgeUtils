@@ -1,8 +1,8 @@
 import sqlite3
 from tabletypes import TableData, TableParam
-from shared_gen import get_insert_name, get_update_name
-from luagen import get_pretty_print_for_value, get_update_method, get_insert_method, generate_lua_source_file
-from pscolgen import get_root_file, get_insert_statement, get_update_statement
+from shared_gen import get_insert_name, get_update_name, get_select_name
+from luagen import get_pretty_print_for_value, get_update_method, get_insert_method, get_select_method, generate_lua_source_file
+from pscolgen import get_root_file, get_insert_statement, get_update_statement, get_select_statement
 import xml.etree.ElementTree as ET
 import sys
 
@@ -64,6 +64,15 @@ def _generate_for_table(database_name : str, table_name : str, table_data : Tabl
     primary_keys = table_data.get_primary_keys()
 
     lua = ""
+
+    # generate select
+    statements.append(get_select_statement(table_name, get_select_name(table_name), primary_keys))
+    lua += get_select_method(
+        lua_manager,
+        database_name,
+        table_name,
+        table_data
+    )
 
     # generate inserter
     statements.append(get_insert_statement(table_name, get_insert_name(table_name), insert_params))
@@ -134,6 +143,7 @@ def generate_for_database(
 
     for name, xml in pscollections.items():
         with open(pscollection_save_dir + f"\\{name}.pscollection", "w+") as file:
+            ET.indent(ET.ElementTree(xml))
             file.write(ET.tostring(xml, encoding="unicode"))
 
     conn.close()
