@@ -1,26 +1,35 @@
 local global = _G
+---@type Api
+---@diagnostic disable-next-line: undefined-field
 local api = global.api
 local setmetatable = global.setmetatable
 local ipairs = global.ipairs
 
-local base = require("forgeutils.builders.basebuilder")
+local trybuild = require("forgeutils.builders.utils.trybuild")
+local logger = require("forgeutils.logger").Get("TrainBuilder")
 local check = require("forgeutils.check")
 
---- @class forgeutils.builders.train.TrainBuilder: forgeutils.builders.BaseBuilder
+--- @class forgeutils.builders.train.TrainBuilder
 --- @field __index table
 --- @field trainData forgeutils.builders.data.train.TrainData
 --- @field cars forgeutils.builders.data.train.CarData[]
 local TrainBuilder = {}
 TrainBuilder.__index = TrainBuilder
-setmetatable(TrainBuilder, { __index = base })
 
 --- Creates a new TrainBuilder.
 --- @return self
 function TrainBuilder.new()
-    local self = setmetatable(base.new(), TrainBuilder)
-
+    local self = setmetatable({}, TrainBuilder)
+    self.id = nil
     self.cars = {}
+    return self
+end
 
+--- Sets the ID.
+--- @param id string
+--- @return self
+function TrainBuilder:withId(id)
+    self.id = id
     return self
 end
 
@@ -43,8 +52,9 @@ end
 --- Validates the builder data.
 --- @return boolean valid If the builder has errors.
 function TrainBuilder:hasErrors()
-    local issues = base.hasErrors(self)
+    local issues = false
 
+    issues = check.IsNil("id", self.id) or issues
     issues = check.IsNil("trainData", self.trainData) or issues
     issues = check.IsEmpty("cars", self.cars) or issues
 
@@ -72,6 +82,11 @@ function TrainBuilder:addToDB()
     for i, car in ipairs(self.cars) do
         carsDb.addToDb(self.id, car)
     end
+end
+
+--- Tries to build the database.
+function TrainBuilder:tryBuild()
+    return trybuild(self, logger)
 end
 
 return TrainBuilder

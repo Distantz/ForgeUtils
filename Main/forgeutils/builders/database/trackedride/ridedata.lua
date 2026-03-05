@@ -8,7 +8,7 @@ RideData.__index = RideData
 
 --- Adds simulation data to the database
 ---@param id string The ID (or name) of the tracked ride.
----@param contentPack string The content pack name, must match the DB constants.
+---@param contentPack forgeutils.builders.data.shared.ContentPack
 ---@param rideData forgeutils.builders.data.trackedride.RideData
 function RideData.addToDb(id, contentPack, rideData)
     db.RideData__Insert(
@@ -19,27 +19,27 @@ function RideData.addToDb(id, contentPack, rideData)
         rideData.splineElement,
         rideData.stationElement,
         rideData.blockSection,
-        contentPack
+        contentPack.contentPackName
     )
 
     -- Set default name if not provided by just being the ID.
     db.RideData__Update__Track(
         id,
-        contentPack,
+        contentPack.contentPackName,
         rideData.track ~= nil and rideData.track or id
     )
 
     -- Set default name if not provided by just being the ID.
     db.RideData__Update__Name(
         id,
-        contentPack,
+        contentPack.contentPackName,
         rideData.name ~= nil and rideData.name or id
     )
 
     if (rideData.class ~= nil) then
         db.RideData__Update__Class(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.class
         )
     end
@@ -47,7 +47,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.specificPowerMultiplier ~= nil) then
         db.RideData__Update__SpecificPowerMultiplier(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.specificPowerMultiplier
         )
     end
@@ -55,7 +55,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.platformHeight ~= nil) then
         db.RideData__Update__PlatformHeight(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.platformHeight
         )
     end
@@ -63,7 +63,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.heightAbovePlatform ~= nil) then
         db.RideData__Update__HeightAbovePlatform(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.heightAbovePlatform
         )
     end
@@ -71,7 +71,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.trackGapWidth ~= nil) then
         db.RideData__Update__TrackGapWidth(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.trackGapWidth
         )
     end
@@ -79,7 +79,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.trackBlockWidth ~= nil) then
         db.RideData__Update__TrackBlockWidth(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.trackBlockWidth
         )
     end
@@ -87,7 +87,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.platformBlockWidth ~= nil) then
         db.RideData__Update__PlatformBlockWidth(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.platformBlockWidth
         )
     end
@@ -95,7 +95,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.chainElement ~= nil) then
         db.RideData__Update__ChainElement(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.chainElement
         )
     end
@@ -103,7 +103,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.stationWidth ~= nil) then
         db.RideData__Update__StationWidth(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.stationWidth
         )
     end
@@ -111,7 +111,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.audioType ~= nil) then
         db.RideData__Update__AudioType(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.audioType
         )
     end
@@ -119,7 +119,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.maxSlopeDeltaDegrees ~= nil) then
         db.RideData__Update__MaxSlopeDeltaDegrees(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.maxSlopeDeltaDegrees
         )
     end
@@ -127,7 +127,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.maxBankDeltaDegrees ~= nil) then
         db.RideData__Update__MaxBankDeltaDegrees(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.maxBankDeltaDegrees
         )
     end
@@ -135,7 +135,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.buildBackwards ~= nil) then
         db.RideData__Update__BuildBackwards(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.buildBackwards
         )
     end
@@ -143,7 +143,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.heightOffsetOnWater ~= nil) then
         db.RideData__Update__HeightOffsetOnWater(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.heightOffsetOnWater
         )
     end
@@ -151,7 +151,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.trainTypeName ~= nil) then
         db.RideData__Update__TrainTypeName(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.trainTypeName
         )
     end
@@ -159,7 +159,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.groupTrainTypeName ~= nil) then
         db.RideData__Update__GroupTrainTypeName(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.groupTrainTypeName
         )
     end
@@ -167,7 +167,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.customPlatformSpatial ~= nil) then
         db.RideData__Update__CustomPlatformSpatial(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.customPlatformSpatial
         )
     end
@@ -175,7 +175,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.defaultStationRailCount ~= nil) then
         db.RideData__Update__DefaultStationRailCount(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.defaultStationRailCount
         )
     end
@@ -183,7 +183,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.maxStationCount ~= nil) then
         db.RideData__Update__MaxStationCount(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.maxStationCount
         )
     end
@@ -191,7 +191,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.lastTrackElement ~= nil) then
         db.RideData__Update__LastTrackElement(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.lastTrackElement
         )
     end
@@ -199,7 +199,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.shuttleMode ~= nil) then
         db.RideData__Update__ShuttleMode(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.shuttleMode
         )
     end
@@ -207,7 +207,7 @@ function RideData.addToDb(id, contentPack, rideData)
     if (rideData.flumePlacementOffset ~= nil) then
         db.RideData__Update__FlumePlacementOffset(
             id,
-            contentPack,
+            contentPack.contentPackName,
             rideData.flumePlacementOffset
         )
     end

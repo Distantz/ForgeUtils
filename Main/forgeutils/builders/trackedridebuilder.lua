@@ -1,24 +1,29 @@
 local global = _G
+---@type Api
+---@diagnostic disable-next-line: undefined-field
 local api = global.api
 local setmetatable = global.setmetatable
 local ipairs = global.ipairs
 
 local db = require("forgeutils.internal.database.TrackedRides")
-local logger = require("forgeutils.logger").Get("TrackedRideBuilder", "DEBUG_QUERY")
-local base = require("forgeutils.builders.basebuilder")
+local logger = require("forgeutils.logger").Get("TrackedRideBuilder")
+local trybuild = require("forgeutils.builders.utils.trybuild")
 local check = require("forgeutils.check")
 
 local rideParams = require("forgeutils.builders.database.trackedride.rideparams")
 local constants = require("forgeutils.builders.data.trackedride.constants")
+local contentPack = require("forgeutils.builders.data.shared.contentpack")
 
---- @class forgeutils.builders.sub.trackedrides.TrackedRideBuilder: forgeutils.builders.BaseBuilder
+--- @class forgeutils.builders.TrackedRideBuilder
 --- @field __index table
+--- @field id string
+--- @field contentPack forgeutils.builders.data.shared.ContentPack
 --- @field simulationData forgeutils.builders.data.trackedride.Simulation
 --- @field rideData forgeutils.builders.data.trackedride.RideData
 --- @field browserEntry forgeutils.builders.data.trackedride.BrowserEntry
 --- @field trains forgeutils.builders.data.trackedride.Train[]
 --- @field elements string[]
---- @field params forgeutils.builders.data.trackedride.RideParam[]
+--- @field rideParams forgeutils.builders.data.trackedride.RideParam[]
 --- @field metadataTags string[]
 --- @field menuMetadataTag string
 --- @field typeMetadataTag string
@@ -27,18 +32,19 @@ local constants = require("forgeutils.builders.data.trackedride.constants")
 --- @field tooltips string[]
 local TrackedRideBuilder = {}
 TrackedRideBuilder.__index = TrackedRideBuilder
-setmetatable(TrackedRideBuilder, { __index = base })
 
 --- Creates a builder.
 --- @return self
 function TrackedRideBuilder.new()
-    local self = setmetatable(base.new(), TrackedRideBuilder)
+    local self = setmetatable({}, TrackedRideBuilder)
 
+    self.id = nil
+    self.contentPack = contentPack:new()
     self.trains = {}
     self.elements = {}
 
     local rideParamsDefault = require("forgeutils.builders.data.trackedride.rideparam")
-    self.params = {
+    self.rideParams = {
         rideParamsDefault.LengthParam,
         rideParamsDefault.CatwalkParam,
         rideParamsDefault.SupportParam,
@@ -59,6 +65,22 @@ function TrackedRideBuilder.new()
         "TrackFeature_CanInvert",
         "TrackFeature_ForAdultsAndTeensOnly"
     }
+    return self
+end
+
+--- Sets the ID.
+--- @param id string
+--- @return self
+function TrackedRideBuilder:withId(id)
+    self.id = id
+    return self
+end
+
+--- Sets the content pack.
+--- @param contentPack forgeutils.builders.data.shared.ContentPack
+--- @return self
+function TrackedRideBuilder:withContentPack(contentPack)
+    self.contentPack = contentPack
     return self
 end
 
@@ -102,6 +124,14 @@ function TrackedRideBuilder:withElement(element)
     return self
 end
 
+--- Adds a spline element for this tracked ride.
+--- @param rideParam forgeutils.builders.data.trackedride.RideParam
+--- @return self
+function TrackedRideBuilder:withRideParam(rideParam)
+    self.rideParams[#self.rideParams + 1] = rideParam
+    return self
+end
+
 --- Adds a metadata tag to this tracked ride.
 --- @param tag string
 --- @return self
@@ -121,13 +151,13 @@ end
 --- Validates the builder data.
 --- @return boolean valid If the builder has errors.
 function TrackedRideBuilder:hasErrors()
-    local issues = base.hasErrors(self)
+    local issues = false
 
     issues = check.IsNil("simulationData", self.simulationData) or issues
     issues = check.IsNil("rideData", self.rideData) or issues
     issues = check.IsNil("browserEntry", self.browserEntry) or issues
     issues = check.IsEmpty("trains", self.trains) or issues
-    for _, param in ipairs(self.params) do
+    for _, param in ipairs(self.rideParams) do
         issues = rideParams.hasErrors(param) or issues
     end
 
@@ -152,7 +182,7 @@ function TrackedRideBuilder:addToDB()
     for _, element in ipairs(self.elements) do
         db.ElementLists__Insert(self.id, element)
     end
-    for _, param in ipairs(self.params) do
+    for _, param in ipairs(self.rideParams) do
         rideParams.addToDb(self.id, param)
     end
 
@@ -170,6 +200,11 @@ function TrackedRideBuilder:addToDB()
     end
 
     require("forgeutils.builders.database.trackedride.browserentries").addToDb(self.id, self.browserEntry)
+end
+
+--- Tries to build the database.
+function TrackedRideBuilder:tryBuild()
+    return trybuild(self, logger)
 end
 
 return TrackedRideBuilder
