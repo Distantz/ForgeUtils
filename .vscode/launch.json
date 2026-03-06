@@ -27,6 +27,13 @@
                 "${workspaceFolderBasename}.zip"
             ],
             "console": "integratedTerminal",
+        },
+        {
+            "name": "Run SQL rebuild",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./SQLBindingGeneration/main.py",
+            "console": "integratedTerminal",
         }
     ]
 }

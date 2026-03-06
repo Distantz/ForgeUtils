@@ -1,3 +1,6 @@
+def get_select_name(table : str) -> str:
+    return f"{table}__Select"
+
 def get_insert_name(table : str) -> str:
     return f"{table}__Insert"
 

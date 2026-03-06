@@ -1,1 +1,70 @@
-<PscollectionRoot count="6" game="Planet Coaster 2"><prepared_statements pool_type="4"><prepared_statement arg_count="7"><args pool_type="4"><arg arg_type="3" arg_index="1" /><arg arg_type="3" arg_index="2" /><arg arg_type="2" arg_index="3" /><arg arg_type="2" arg_index="4" /><arg arg_type="2" arg_index="5" /><arg arg_type="0" arg_index="6" /><arg arg_type="2" arg_index="7" /></args><statement_name>UtilityProduction__Insert</statement_name><sql_query>INSERT OR REPLACE INTO UtilityProduction (SceneryPartName, UtilityType, ProductionPerHour, CostPerUtilityPerHour, TotalBreakdownTimeMinutes, ServiceCostPerPct, EfficiencyRespite) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7);</sql_query></prepared_statement><prepared_statement arg_count="3"><args pool_type="4"><arg arg_type="3" arg_index="1" /><arg arg_type="3" arg_index="2" /><arg arg_type="2" arg_index="3" /></args><statement_name>UtilityProduction__Update__ProductionPerHour</statement_name><sql_query>UPDATE UtilityProduction SET ProductionPerHour = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query></prepared_statement><prepared_statement arg_count="3"><args pool_type="4"><arg arg_type="3" arg_index="1" /><arg arg_type="3" arg_index="2" /><arg arg_type="2" arg_index="3" /></args><statement_name>UtilityProduction__Update__CostPerUtilityPerHour</statement_name><sql_query>UPDATE UtilityProduction SET CostPerUtilityPerHour = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query></prepared_statement><prepared_statement arg_count="3"><args pool_type="4"><arg arg_type="3" arg_index="1" /><arg arg_type="3" arg_index="2" /><arg arg_type="2" arg_index="3" /></args><statement_name>UtilityProduction__Update__TotalBreakdownTimeMinutes</statement_name><sql_query>UPDATE UtilityProduction SET TotalBreakdownTimeMinutes = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query></prepared_statement><prepared_statement arg_count="3"><args pool_type="4"><arg arg_type="3" arg_index="1" /><arg arg_type="3" arg_index="2" /><arg arg_type="0" arg_index="3" /></args><statement_name>UtilityProduction__Update__ServiceCostPerPct</statement_name><sql_query>UPDATE UtilityProduction SET ServiceCostPerPct = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query></prepared_statement><prepared_statement arg_count="3"><args pool_type="4"><arg arg_type="3" arg_index="1" /><arg arg_type="3" arg_index="2" /><arg arg_type="2" arg_index="3" /></args><statement_name>UtilityProduction__Update__EfficiencyRespite</statement_name><sql_query>UPDATE UtilityProduction SET EfficiencyRespite = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query></prepared_statement></prepared_statements></PscollectionRoot>
+<PscollectionRoot count="7" game="Planet Coaster 2">
+  <prepared_statements pool_type="4">
+    <prepared_statement arg_count="2">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+      </args>
+      <statement_name>UtilityProduction__Select</statement_name>
+      <sql_query>SELECT * FROM UtilityProduction WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="7">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+        <arg arg_type="2" arg_index="3" />
+        <arg arg_type="2" arg_index="4" />
+        <arg arg_type="2" arg_index="5" />
+        <arg arg_type="0" arg_index="6" />
+        <arg arg_type="2" arg_index="7" />
+      </args>
+      <statement_name>UtilityProduction__Insert</statement_name>
+      <sql_query>INSERT OR REPLACE INTO UtilityProduction (SceneryPartName, UtilityType, ProductionPerHour, CostPerUtilityPerHour, TotalBreakdownTimeMinutes, ServiceCostPerPct, EfficiencyRespite) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7);</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="3">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+        <arg arg_type="2" arg_index="3" />
+      </args>
+      <statement_name>UtilityProduction__Update__ProductionPerHour</statement_name>
+      <sql_query>UPDATE UtilityProduction SET ProductionPerHour = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="3">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+        <arg arg_type="2" arg_index="3" />
+      </args>
+      <statement_name>UtilityProduction__Update__CostPerUtilityPerHour</statement_name>
+      <sql_query>UPDATE UtilityProduction SET CostPerUtilityPerHour = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="3">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+        <arg arg_type="2" arg_index="3" />
+      </args>
+      <statement_name>UtilityProduction__Update__TotalBreakdownTimeMinutes</statement_name>
+      <sql_query>UPDATE UtilityProduction SET TotalBreakdownTimeMinutes = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="3">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+        <arg arg_type="0" arg_index="3" />
+      </args>
+      <statement_name>UtilityProduction__Update__ServiceCostPerPct</statement_name>
+      <sql_query>UPDATE UtilityProduction SET ServiceCostPerPct = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="3">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+        <arg arg_type="2" arg_index="3" />
+      </args>
+      <statement_name>UtilityProduction__Update__EfficiencyRespite</statement_name>
+      <sql_query>UPDATE UtilityProduction SET EfficiencyRespite = ?3 WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query>
+    </prepared_statement>
+  </prepared_statements>
+</PscollectionRoot>
