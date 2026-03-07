@@ -1,0 +1,29 @@
+name: Run PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Docs
+        uses: ./.github/actions/build-docs-to-artifact
+
+  build-content-pack:
+    runs-on: windows-latest #ubuntu-latest (use when testing locally. windows latest not supported by act :( )
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Content Pack
+        uses: ./.github/actions/build-code-to-artifact

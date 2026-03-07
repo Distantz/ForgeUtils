@@ -1,0 +1,48 @@
+name: "Build Content Pack"
+description: "Builds with cobra-tools and packages the Content Pack artifact"
+
+inputs:
+  python_version:
+    description: "Python version to use for the build"
+    required: false
+    default: "3.11"
+  artifact_name:
+    description: "Name to use when uploading the build artifact. If omitted, the artifact will not be uploaded."
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python_version }}
+
+    - name: Checkout cobratools
+      uses: actions/checkout@v4
+      with:
+        repository: OpenNaja/cobra-tools
+        path: cobra-tools
+
+    - name: Install cobratools with GUI extras
+      shell: bash
+      run: |
+        cd cobra-tools
+        python -m pip install --upgrade pip
+        pip install ".[gui]"
+
+    - name: Run build script
+      shell: bash
+      run: python Build/build.py "${{ github.workspace }}/cobra-tools" "./Manifest.xml"
+
+    - name: Run package script
+      if: ${{ inputs.artifact_name != '' }}
+      shell: bash
+      run: python Build/package.py . ${{ inputs.artifact_name }}.zip
+
+    - name: Upload build artifact
+      if: ${{ inputs.artifact_name != '' }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact_name }}
+        path: ${{ inputs.artifact_name }}.zip
