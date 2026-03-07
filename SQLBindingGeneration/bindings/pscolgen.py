@@ -1,6 +1,6 @@
 
 import xml.etree.ElementTree as ET
-from tabletypes import TableParam
+from .tabletypes import TableParam
 
 # arg_type 0 indicates an integer value
 # arg_type 2 indicates a float value

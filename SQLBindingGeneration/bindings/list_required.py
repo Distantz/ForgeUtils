@@ -1,10 +1,7 @@
-
-
-
 import sqlite3
-from luagen import get_luadoc_comment
-from tabletypes import TableParam
-from table_generator import extract_table_data
+from .luagen import get_luadoc_comment
+from .tabletypes import TableParam
+from .table_generator import extract_table_data
 import tkinter as tk
 from tkinter import filedialog
 

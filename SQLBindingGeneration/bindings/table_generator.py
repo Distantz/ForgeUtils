@@ -1,8 +1,8 @@
 import sqlite3
-from tabletypes import TableData, TableParam
-from shared_gen import get_insert_name, get_update_name, get_select_name
-from luagen import get_pretty_print_for_value, get_update_method, get_insert_method, get_select_method, generate_lua_source_file
-from pscolgen import get_root_file, get_insert_statement, get_update_statement, get_select_statement
+from .tabletypes import TableData, TableParam
+from .shared_gen import get_insert_name, get_update_name, get_select_name
+from .luagen import get_pretty_print_for_value, get_update_method, get_insert_method, get_select_method, generate_lua_source_file
+from .pscolgen import get_root_file, get_insert_statement, get_update_statement, get_select_statement
 import xml.etree.ElementTree as ET
 import sys
 
