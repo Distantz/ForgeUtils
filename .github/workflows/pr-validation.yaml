@@ -10,6 +10,55 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Get both main and current
+  get-current-version:
+    runs-on: ubuntu-latest
+    outputs:
+      major: ${{ steps.get-code-version.outputs.major }}
+      minor: ${{ steps.get-code-version.outputs.minor }}
+      patch: ${{ steps.get-code-version.outputs.patch }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Get current version
+        uses: ./.github/actions/get-code-version
+        id: get-code-version
+        with:
+          file: ${{ github.workspace }}/Main/forgeutils.lua
+
+  get-main-version:
+    runs-on: ubuntu-latest
+    outputs:
+      major: ${{ steps.get-code-version.outputs.major }}
+      minor: ${{ steps.get-code-version.outputs.minor }}
+      patch: ${{ steps.get-code-version.outputs.patch }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Get main version
+        uses: ./.github/actions/get-code-version
+        id: get-code-version
+        with:
+          file: ${{ github.workspace }}/Main/forgeutils.lua
+
+  validate-version:
+    runs-on: ubuntu-latest
+    needs: [get-current-version, get-main-version]
+    steps:
+      - name: Validate version jump
+        uses: ./.github/actions/validate-version-jump
+        with:
+          base-major: ${{ needs.get-main-version.outputs.major }}
+          base-minor: ${{ needs.get-main-version.outputs.minor }}
+          base-patch: ${{ needs.get-main-version.outputs.patch }}
+          new-major: ${{ needs.get-current-version.outputs.major }}
+          new-minor: ${{ needs.get-current-version.outputs.minor }}
+          new-patch: ${{ needs.get-current-version.outputs.patch }}
+
   build-docs:
     runs-on: ubuntu-latest
     steps:
@@ -28,5 +77,5 @@ jobs:
       - name: Build Content Pack
         uses: ./.github/actions/build-code-to-artifact
         with:
-          # Fixes bug with current master.
-          cobra_tools_ref: 2c6f29d2e767841551d08e5d9cd2bbf96aad5ec9
+          # Fixes bug with current master. Using my last commit
+          cobra_tools_ref: 94ce08dd36c9558dac6f6852885fe593b7116736
