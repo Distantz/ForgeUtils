@@ -56,7 +56,7 @@ end
 function ElementParamLabelBuilder:addToDB()
     -- Insert train data first
     local db = require("forgeutils.internal.database.TrackedRides")
-    for value, label in global.ipairs(self.labels) do
+    for value, label in global.pairs(self.labels) do
         db.ElementParamValueLabels__Insert(
             self.id,
             value,

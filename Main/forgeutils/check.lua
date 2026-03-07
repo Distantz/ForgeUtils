@@ -36,7 +36,12 @@ end
 --- @param value table The value to validate.
 --- @return boolean correct Whether the check was true.
 function Check.IsEmpty(valueName, value)
-    local res = #value == 0
+    local count = 0
+    for _, _ in global.pairs(value) do
+        count = count + 1
+    end
+
+    local res = count == 0
     if res then
         logger:Error("Value \"" .. valueName .. "\" was empty.")
     end
