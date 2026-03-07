@@ -6,6 +6,10 @@ inputs:
     description: "Python version to use for the build"
     required: false
     default: "3.11"
+  cobra_tools_ref:
+    description: "Commit hash or branch to checkout for cobra-tools. Defaults to master if omitted."
+    required: false
+    default: "master"
   artifact_name:
     description: "Name to use when uploading the build artifact. If omitted, the artifact will not be uploaded."
     required: false
@@ -23,6 +27,7 @@ runs:
       with:
         repository: OpenNaja/cobra-tools
         path: cobra-tools
+        ref: ${{ inputs.cobra_tools_ref }}
 
     - name: Install cobratools with GUI extras
       shell: bash

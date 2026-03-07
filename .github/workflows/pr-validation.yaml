@@ -20,10 +20,13 @@ jobs:
         uses: ./.github/actions/build-docs-to-artifact
 
   build-content-pack:
-    runs-on: windows-latest #ubuntu-latest (use when testing locally. windows latest not supported by act :( )
+    runs-on: windows-latest #ubuntu-latest #(use when testing locally. windows latest not supported by act :( )
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Build Content Pack
         uses: ./.github/actions/build-code-to-artifact
+        with:
+          # Fixes bug with current master.
+          cobra_tools_ref: 2c6f29d2e767841551d08e5d9cd2bbf96aad5ec9
