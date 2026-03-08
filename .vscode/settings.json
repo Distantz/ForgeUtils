@@ -1,0 +1,8 @@
+{
+    "yaml.schemas": {
+        "https://www.schemastore.org/github-action.json": [
+            "file:///c%3A/Program%20Files%20%28x86%29/Steam/steamapps/common/Planet%20Coaster%202/Win64/ovldata/ForgeUtils/.github/actions/check-version-bump.yaml",
+            "file:///c%3A/Program%20Files%20%28x86%29/Steam/steamapps/common/Planet%20Coaster%202/Win64/ovldata/ForgeUtils/.github/actions/build-to-container.yaml"
+        ]
+    }
+}

@@ -101,15 +101,3 @@ jobs:
           asset_path: ForgeUtils/${{github.event.repository.name}}.zip 
           asset_name: ${{github.event.repository.name}}_v${{github.event.inputs.new_version}}.zip
           asset_content_type: application/zip
-
-    #   - name: Publish to Nexus Mods
-    #     uses: BUTR/workflows/.github/workflows/release-nexusmods.yml@master
-    #     with:
-    #       nexusmods_game_id: ${{ secrets.NEXUS_GAME_ID }}        # set in your repo secrets
-    #       nexusmods_mod_id: ${{ secrets.NEXUS_MOD_ID }}
-    #       mod_filename: your-mod-${{ github.event.inputs.new_version }}.zip
-    #       mod_version: ${{ github.event.inputs.new_version }}
-    #       mod_description: "Release ${{ github.event.inputs.new_version }}"
-    #     env:
-    #       NEXUSMODS_APIKEY: ${{ secrets.NEXUSMODS_APIKEY }}
-    #       NEXUSMODS_COOKIES: ${{ secrets.NEXUSMODS_COOKIES }}

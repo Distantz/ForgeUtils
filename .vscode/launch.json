@@ -5,19 +5,32 @@
     "version": "0.2.0",
     "configurations": [
         {
+            // This builds all ovls, including inner UI packages.
             "name": "Run Build",
             "type": "debugpy",
             "request": "launch",
             "program": "./Build/build.py",
             "args": [
                 "${env:COBRATOOLS}",
-                "./Build/",
-                "Planet Coaster 2",
-                ".ovlpaths"
+                "./Manifest.xml"
             ],
             "console": "integratedTerminal",
         },
         {
+            // This builds all ovls, including inner UI packages, then launches the game through Steam.
+            "name": "Run Build and Launch",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./Build/build.py",
+            "args": [
+                "${env:COBRATOOLS}",
+                "./Manifest.xml",
+                "-launch"
+            ],
+            "console": "integratedTerminal",
+        },
+        {
+            // This packages all NEEDED files into a zip.
             "name": "Package Build",
             "type": "debugpy",
             "request": "launch",
@@ -29,6 +42,7 @@
             "console": "integratedTerminal",
         },
         {
+            // This rebuilds the SQL bindings based on input FDBs.
             "name": "Run SQL rebuild",
             "type": "debugpy",
             "request": "launch",

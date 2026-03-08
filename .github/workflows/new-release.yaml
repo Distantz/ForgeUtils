@@ -1,0 +1,87 @@
+name: Run new release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  get-current-version:
+    runs-on: ubuntu-latest
+    outputs:
+      major: ${{ steps.get-code-version.outputs.major }}
+      minor: ${{ steps.get-code-version.outputs.minor }}
+      patch: ${{ steps.get-code-version.outputs.patch }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Get current version
+        uses: ./.github/actions/get-code-version
+        id: get-code-version
+        with:
+          file: ${{ github.workspace }}/Main/forgeutils.lua
+
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Docs
+        uses: ./.github/actions/build-docs-to-artifact
+        with:
+          upload_pages: true
+
+  deploy-docs:
+    runs-on: ubuntu-latest
+    needs: build-docs
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-pages.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy-pages
+        uses: actions/deploy-pages@v4
+
+  build-content-pack:
+    runs-on: windows-latest #ubuntu-latest #(use when testing locally. windows latest not supported by act :( )
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Content Pack
+        uses: ./.github/actions/build-code-to-artifact
+        with:
+          # Fixes bug with current master.
+          cobra_tools_ref: 2c6f29d2e767841551d08e5d9cd2bbf96aad5ec9
+          artifact_name: ForgeUtils
+
+  release-content-pack:
+    runs-on: ubuntu-latest
+    needs: [build-content-pack, get-current-version]
+    steps:
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.get-current-version.outputs.major }}.${{ needs.get-current-version.outputs.minor }}.${{ needs.get-current-version.outputs.patch }}
+          release_name: Release v${{ needs.get-current-version.outputs.major }}.${{ needs.get-current-version.outputs.minor }}.${{ needs.get-current-version.outputs.patch }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ForgeUtils.zip
+          asset_name: ForgeUtils.zip
+          asset_content_type: application/zip

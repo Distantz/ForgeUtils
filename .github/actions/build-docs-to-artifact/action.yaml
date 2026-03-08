@@ -1,0 +1,66 @@
+name: "Build Content Pack Documentation"
+description: "Builds Lua documentation into a MDBook, optionally uploading as an artifact."
+
+inputs:
+  upload_pages:
+    description: "Whether pages should be uploaded."
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup mdBook
+      uses: peaceiris/actions-mdbook@v2
+      with:
+        mdbook-version: "latest"
+
+    - name: Setup luals_docs_gen
+      shell: bash
+      run: |
+        # Make sure execution path exists
+        mkdir -p ~/.local/bin
+
+        # Get latest mdbook version
+        LUALS_VERSION=$(curl -s https://api.github.com/repos/emuell/luals-docs-gen/releases/latest | jq -r .tag_name)
+
+        # get latest binary for linux
+        curl -sSL "https://github.com/emuell/luals-docs-gen/releases/download/${LUALS_VERSION}/luals_docs_gen-linux_x86_64.zip" -o /tmp/luals_docs_gen.zip
+
+        # Unzip luals binary into folder
+        unzip /tmp/luals_docs_gen.zip -d ~/.local/bin
+        chmod +x ~/.local/bin/luals_docs_gen
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+    - name: Generate Markdown with luals-docs-gen
+      shell: bash
+      run: |
+        LUA_SOURCE_PATH="${{ github.workspace }}/Main"
+        DOCS_OUTPUT_BASE_PATH="${{ github.workspace }}/Docs/src"
+
+        find "${LUA_SOURCE_PATH}" -type d
+
+        # Run luals-docs-gen for our code
+        luals_docs_gen -o by-class -n "forgeutils" "${LUA_SOURCE_PATH}" "${DOCS_OUTPUT_BASE_PATH}"
+
+        cat "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md"
+
+    - name: Build mdbook documentation
+      shell: bash
+      run: |
+        cd "${{ github.workspace }}/Docs"
+        mdbook build
+
+    - name: Check mdbook output
+      shell: bash
+      run: |
+        echo "Contents of Docs after build:"
+        ls -l "${{ github.workspace }}/Docs"
+        echo "Contents of book dir (if exists):"
+        ls -l "${{ github.workspace }}/Docs/book" || echo "No book directory found"
+
+    - name: Upload mdBook output as artifact
+      if: ${{ inputs.upload_pages != '' }}
+      id: upload-pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ${{ github.workspace }}/Docs/book

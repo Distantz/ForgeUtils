@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,23 +18,26 @@ jobs:
         with:
           path: repo_main
 
-      - name: Checkout luals-docs-gen repository
-        uses: actions/checkout@v4
-        with:
-          repository: emuell/luals-docs-gen
-          path: luals_docs_gen_repo
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v2
         with:
           mdbook-version: 'latest'
+
+      - name: Setup luals_docs_gen
+        run: |
+          # Make sure execution path exists
+          mkdir -p ~/.local/bin
+
+          # Get latest mdbook version
+          LUALS_VERSION=$(curl -s https://api.github.com/repos/emuell/luals-docs-gen/releases/latest | jq -r .tag_name)
+
+          # get latest binary for linux
+          curl -sSL "https://github.com/emuell/luals-docs-gen/releases/download/${LUALS_VERSION}/luals_docs_gen-linux_x86_64.zip" -o /tmp/luals_docs_gen.zip
+          
+          # Unzip luals binary into folder
+          unzip /tmp/luals_docs_gen.zip -d ~/.local/bin
+          chmod +x ~/.local/bin/luals_docs_gen
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Generate Markdown with luals-docs-gen
         run: |
@@ -46,20 +50,10 @@ jobs:
 
           find "${LUA_SOURCE_PATH}" -type d
 
-          # Run luals-docs-gen using absolute paths
-          cargo run --manifest-path "${GITHUB_WORKSPACE}/luals_docs_gen_repo/Cargo.toml" -- -o by-class -n "forgeutils" "${LUA_SOURCE_PATH}" "${DOCS_OUTPUT_BASE_PATH}"
+          # Run luals-docs-gen for our code
+          luals_docs_gen -o by-class -n "forgeutils" "${LUA_SOURCE_PATH}" "${DOCS_OUTPUT_BASE_PATH}"
 
           cat "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md"
-
-      # - name: Set up Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: '3.x'
-
-      # - name: Generate mdbook SUMMARY.md
-      #   run: |
-      #     cd "${GITHUB_WORKSPACE}/repo_main/Docs"
-      #     python generate_summary.py
 
       - name: Build mdbook documentation
         run: |
@@ -73,7 +67,9 @@ jobs:
           echo "Contents of book dir (if exists):"
           ls -l "${GITHUB_WORKSPACE}/repo_main/Docs/book" || echo "No book directory found"
 
+      # Only upload 
       - name: Upload mdBook output as artifact
+        if: github.event_name != 'pull_request'
         id: upload-pages
         uses: actions/upload-pages-artifact@v3
         with:

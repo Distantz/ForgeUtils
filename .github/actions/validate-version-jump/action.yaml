@@ -1,0 +1,55 @@
+name: "Validate Version Increment"
+description: "Ensures a version has been correctly incremented from a base version following semver rules"
+inputs:
+  base-major:
+    description: "Base major version"
+    required: true
+  base-minor:
+    description: "Base minor version"
+    required: true
+  base-patch:
+    description: "Base patch version"
+    required: true
+  new-major:
+    description: "New major version"
+    required: true
+  new-minor:
+    description: "New minor version"
+    required: true
+  new-patch:
+    description: "New patch version"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Validate semver change
+      id: validate
+      shell: bash
+      env:
+        BASE_MAJOR: ${{ inputs.base-major }}
+        BASE_MINOR: ${{ inputs.base-minor }}
+        BASE_PATCH: ${{ inputs.base-patch }}
+        NEW_MAJOR: ${{ inputs.new-major }}
+        NEW_MINOR: ${{ inputs.new-minor }}
+        NEW_PATCH: ${{ inputs.new-patch }}
+      run: |
+        BASE="$BASE_MAJOR.$BASE_MINOR.$BASE_PATCH"
+        NEW="$NEW_MAJOR.$NEW_MINOR.$NEW_PATCH"
+        echo "Version increment: $BASE to $NEW"
+
+        if [ "$NEW_MAJOR" -eq $(( BASE_MAJOR + 1 )) ]; then
+          if [ "$NEW_MINOR" -ne 0 ] || [ "$NEW_PATCH" -ne 0 ]; then
+            echo "::error::Major bump requires minor and patch to reset to 0 (got $NEW)"
+            exit 1
+          fi
+        elif [ "$NEW_MAJOR" -eq "$BASE_MAJOR" ] && [ "$NEW_MINOR" -eq $(( BASE_MINOR + 1 )) ]; then
+          if [ "$NEW_PATCH" -ne 0 ]; then
+            echo "::error::Minor bump requires patch to reset to 0 (got $NEW)"
+            exit 1
+          fi
+        elif [ "$NEW_MAJOR" -eq "$BASE_MAJOR" ] && [ "$NEW_MINOR" -eq "$BASE_MINOR" ] && [ "$NEW_PATCH" -eq $(( BASE_PATCH + 1 )) ]; then
+          : # valid patch bump
+        else
+          echo "::error::Invalid version increment."
+          exit 1
+        fi
