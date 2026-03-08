@@ -55,7 +55,6 @@ function DatabaseUtils.ExecuteQuery(databaseName, queryName, args, numArgs)
         database.Step(cPSInstance)
 
         local tRows = database.GetAllResults(cPSInstance, false)
-        trainutils.PrintPrefab(tRows, 2)
         logger:DebugQuery("[" .. queryName .. "] SQL Query finished with result: " .. tostring(table))
         result = tRows or nil
     else
