@@ -1,0 +1,31 @@
+name: "Get Version"
+description: "Reads the version from a Lua version file"
+inputs:
+  file:
+    description: "Path to the Lua version file"
+    required: true
+outputs:
+  major:
+    description: "Major version number"
+    value: ${{ steps.read.outputs.major }}
+  minor:
+    description: "Minor version number"
+    value: ${{ steps.read.outputs.minor }}
+  patch:
+    description: "Patch version number"
+    value: ${{ steps.read.outputs.patch }}
+runs:
+  using: "composite"
+  steps:
+    - name: Read version fields
+      id: read
+      shell: bash
+      env:
+        LUA_FILE: ${{ inputs.file }}
+      run: |
+        major=$(grep -E '^\s+major = ' "$LUA_FILE" | grep -oE '[0-9]+')
+        minor=$(grep -E '^\s+minor = ' "$LUA_FILE" | grep -oE '[0-9]+')
+        patch=$(grep -E '^\s+patch = ' "$LUA_FILE" | grep -oE '[0-9]+')
+        echo "major=$major" >> $GITHUB_OUTPUT
+        echo "minor=$minor" >> $GITHUB_OUTPUT
+        echo "patch=$patch" >> $GITHUB_OUTPUT

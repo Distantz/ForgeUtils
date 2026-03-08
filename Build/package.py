@@ -2,6 +2,14 @@ import os
 import zipfile
 import sys
 import xml.etree.ElementTree as ET
+from pathlib import Path
+
+INCLUDE_EXTENSIONS = [
+    ".ovl",
+    ".ovs",
+    ".aux",
+    ".ini",
+]
 
 def get_manifest_name(manifest_path):
     tree = ET.parse(manifest_path)
@@ -31,7 +39,7 @@ def build_archive(archive_dir, output_file):
 
     for base, _, files in os.walk(archive_dir):
         for f in files:
-            if f.endswith(".ovl") or f.endswith(".ini"):
+            if Path(f).suffix in INCLUDE_EXTENSIONS:
                 files_to_zip.append(os.path.join(base, f))
 
     with zipfile.ZipFile(output_file, "w", zipfile.ZIP_DEFLATED) as zf:
