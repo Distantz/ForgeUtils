@@ -14,8 +14,8 @@ local ForgeUtils = {}
 -- This is modified and read by pipelines.
 -- Modify data in place.
 ForgeUtils.version = {
-    major = 2,
-    minor = 0,
+    major = 1,
+    minor = 6,
     patch = 0,
 }
 
