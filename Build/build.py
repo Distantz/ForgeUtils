@@ -58,7 +58,7 @@ def process_uipackages(manifest_dir : Path, ovl_path_line):
             print(f"     UI Package: {uipackage_folder} does not exist. Skipping...")
             continue
 
-        uipackage_output = uipackage_folder.parent / f"{uipackage_folder.name}.ppuipkg"
+        uipackage_output = ovl_dir / f"{uipackage_folder.name}.ppuipkg"
         basic_path = Path.relative_to(ovl_dir, ovldata_folder)
         
         with pkg.PPUIPkgFile(str(basic_path).replace("\\", "/"), str(uipackage_output)) as pkgfile:
