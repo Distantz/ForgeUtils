@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - Main/**
+      - Init/**
+      - Docs/**
   workflow_dispatch:
 
 jobs:
