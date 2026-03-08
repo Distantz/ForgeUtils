@@ -58,7 +58,7 @@ jobs:
         uses: ./.github/actions/build-code-to-artifact
         with:
           # Fixes bug with current master.
-          cobra_tools_ref: 2c6f29d2e767841551d08e5d9cd2bbf96aad5ec9
+          cobra_tools_ref: 94ce08dd36c9558dac6f6852885fe593b7116736
           artifact_name: ForgeUtils
 
   release-content-pack:
