@@ -42,7 +42,7 @@ runs:
       run: |
         if [ -f "${{ github.workspace }}/Build/config.json" ]; then
           cp "${{ github.workspace }}/Build/config.json" "${{ github.workspace }}/cobra-tools/config.json"
-        else
+        fi
 
     - name: Run build script
       shell: bash
