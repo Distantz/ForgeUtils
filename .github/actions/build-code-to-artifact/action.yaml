@@ -26,19 +26,23 @@ runs:
       uses: actions/checkout@v4
       with:
         repository: OpenNaja/cobra-tools
-        path: ${{ runner.temp }}/cobra-tools
+        path: cobra-tools
         ref: ${{ inputs.cobra_tools_ref }}
 
     - name: Install cobratools with GUI extras
       shell: bash
       run: |
-        cd ${{ runner.temp }}/cobra-tools
+        cd cobra-tools
         python -m pip install --upgrade pip
         pip install ".[gui]"
 
     - name: Run build script
       shell: bash
-      run: python Build/build.py "${{ runner.temp }}/cobra-tools" "./Manifest.xml"
+      run: python Build/build.py "${{ github.workspace }}/cobra-tools" "./Manifest.xml"
+
+    - name: Remove cobra tools
+      shell: bash
+      run: rm -rf cobra-tools
 
     - name: Run package script
       if: ${{ inputs.artifact_name != '' }}
