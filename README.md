@@ -1,5 +1,6 @@
 # ForgeUtils
-![Build and Release](https://github.com/Distantz/ForgeUtils/actions/workflows/new-release.yml/badge.svg)
+[![Build and Release](https://github.com/Distantz/ForgeUtils/actions/workflows/new-release.yaml/badge.svg)](https://github.com/Distantz/ForgeUtils/actions/workflows/new-release.yaml)
+![GitHub deployments](https://img.shields.io/github/deployments/Distantz/ForgeUtils/github-pages?label=docs%20deployment)
 
 *Making Planet Coaster 2 modding approachable and easy.*
 
