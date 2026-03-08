@@ -36,6 +36,14 @@ runs:
         python -m pip install --upgrade pip
         pip install ".[gui]"
 
+    # Needed as specific mods might need specific packing settings.
+    - name: Move config if exists into Cobra Tools
+      shell: bash
+      run: |
+        if [ -f "${{ github.workspace }}/Build/config.json" ]; then
+          cp "${{ github.workspace }}/Build/config.json" "${{ github.workspace }}/cobra-tools/config.json"
+        else
+
     - name: Run build script
       shell: bash
       run: python Build/build.py "${{ github.workspace }}/cobra-tools" "./Manifest.xml"
