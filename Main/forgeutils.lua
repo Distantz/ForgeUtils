@@ -3,7 +3,7 @@
 local version = require("forgeutils.modversion")
 
 ---@class forgeutils
----@field version forgeutils.ModVersion The version of ForgeUtils.
+---@field version forgeutils.Version The version of ForgeUtils.
 local ForgeUtils = {}
 
 -- Note: Do not change the indentation.

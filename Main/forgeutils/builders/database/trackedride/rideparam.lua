@@ -3,13 +3,13 @@ local setmetatable = global.setmetatable
 local db = require("forgeutils.internal.database.TrackedRides")
 local check = require("forgeutils.check")
 
---- @class forgeutils.builders.database.trackedride.RideParams
-local RideParams = {}
-RideParams.__index = RideParams
+--- @class forgeutils.builders.database.trackedride.RideParam
+local RideParam = {}
+RideParam.__index = RideParam
 
 --- Checks whether the data has errors or not
 ---@param rideParam forgeutils.builders.data.trackedride.RideParam
-function RideParams.hasErrors(rideParam)
+function RideParam.hasErrors(rideParam)
     local issues = false
     issues = check.IsNil("rideParam.param", rideParam.param) or issues
     issues = check.IsNil("rideParam.min", rideParam.min) or issues
@@ -19,10 +19,10 @@ function RideParams.hasErrors(rideParam)
     return issues
 end
 
---- Adds simulation data to the database
+--- Adds ride param data to the database
 ---@param id string The ID (or name) of the tracked ride.
 ---@param rideParam forgeutils.builders.data.trackedride.RideParam
-function RideParams.addToDb(id, rideParam)
+function RideParam.addToDb(id, rideParam)
     db.RideParams__Insert(
         id,
         rideParam.param,
@@ -73,4 +73,4 @@ function RideParams.addToDb(id, rideParam)
     end
 end
 
-return RideParams
+return RideParam
