@@ -1,6 +1,9 @@
 -- Remove weird table issue
 ---@diagnostic disable: param-type-mismatch
 local global = _G
+
+---@type Api
+local api = global.api
 local table = global.table
 local require = global.require
 local tostring = global.tostring
@@ -8,8 +11,9 @@ local pairs = global.pairs
 
 -- Setup logger
 local loggerSetup = require("forgeutils.logger")
-local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
+local logger = loggerSetup.Get("ForgeUtilsLuaDatabase", "DEBUG_QUERY")
 local hookManager = require("forgeutils.hookmanager")
+local uiHookManager = require("forgeutils.uihookmanager")
 
 logger:Info("Loading ForgeUtils...")
 
@@ -60,6 +64,19 @@ function _ForgeUtilsLuaDatabase.Init()
             hookManager:ValidateAllHooks()
         end
     )
+
+    api.ui2.MapResources("ForgeUtilsUIHooks")
+    api.ui2.MapResources("ForgeUtilsMainHooks")
+
+    -- Add UI hooks
+    uiHookManager:_InitUiHookManager()
+
+    -- Hook into the hud bottom bar
+    uiHookManager:AddHook(
+        "HUD",
+        "div",
+        "/js/hooks/forgeutils/hudBottomBarHook.js"
+    );
 end
 
 function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
