@@ -10,9 +10,10 @@ local logger = require("forgeutils.logger").Get("TrackedRideBuilder")
 local trybuild = require("forgeutils.builders.utils.trybuild")
 local check = require("forgeutils.check")
 
-local rideParams = require("forgeutils.builders.database.trackedride.rideparams")
-local constants = require("forgeutils.builders.data.trackedride.constants")
 local contentPack = require("forgeutils.builders.data.shared.contentpack")
+local rideParam = require("forgeutils.builders.database.trackedride.rideparam")
+local flexicolour = require("forgeutils.builders.database.trackedride.flexicolour")
+local constants = require("forgeutils.internal.database.constants.TrackedRides")
 
 --- @class forgeutils.builders.TrackedRideBuilder
 --- @field __index table
@@ -24,6 +25,7 @@ local contentPack = require("forgeutils.builders.data.shared.contentpack")
 --- @field trains forgeutils.builders.data.trackedride.Train[]
 --- @field elements string[]
 --- @field rideParams forgeutils.builders.data.trackedride.RideParam[]
+--- @field flexicolours forgeutils.builders.data.trackedride.Flexicolour[]
 --- @field metadataTags string[]
 --- @field menuMetadataTag string
 --- @field typeMetadataTag string
@@ -42,23 +44,24 @@ function TrackedRideBuilder.new()
     self.contentPack = contentPack:new()
     self.trains = {}
     self.elements = {}
+    self.flexicolours = {}
 
-    local rideParamsDefault = require("forgeutils.builders.data.trackedride.rideparam")
+    local rideParamDefault = require("forgeutils.builders.data.trackedride.rideparam")
     self.rideParams = {
-        rideParamsDefault.LengthParam,
-        rideParamsDefault.CatwalkParam,
-        rideParamsDefault.SupportParam,
-        rideParamsDefault.BankingOffsetParam,
-        rideParamsDefault.CurveRangeParam,
-        rideParamsDefault.SlopeRangeParam,
-        rideParamsDefault.TunnelRadiusParam,
-        rideParamsDefault.BankingRangeParam_Invert -- default is invert because our default is a thrill coaster.
+        rideParamDefault.LengthParam,
+        rideParamDefault.CatwalkParam,
+        rideParamDefault.SupportParam,
+        rideParamDefault.BankingOffsetParam,
+        rideParamDefault.CurveRangeParam,
+        rideParamDefault.SlopeRangeParam,
+        rideParamDefault.TunnelRadiusParam,
+        rideParamDefault.BankingRangeParam_Invert -- default is invert because our default is a thrill coaster.
     }
     self.metadataTags = {}
-    self.menuMetadataTag = constants.MetadataTag_Menu_Coaster_ChainLift
-    self.typeMetadataTag = constants.MetadataTag_Type_TrackedRide_Coaster
-    self.ageGroupMetadataTag = constants.MetadataTag_Filter_AgeGroup_TeenAdult
-    self.manufacturerTag = constants.MetadataTag_Coaster_Manufacturer_BigMsRides
+    self.menuMetadataTag = constants.MetadataTags_Menu_Coaster_ChainLift
+    self.typeMetadataTag = constants.MetadataTags_Type_TrackedRide_Coaster
+    self.ageGroupMetadataTag = constants.MetadataTags_Filter_AgeGroup_TeenAdult
+    self.manufacturerTag = constants.MetadataTags_Coaster_Manufacturer_BigMsRides
 
     self.tooltips = {
         "TrackFeature_ChainLift",
@@ -124,6 +127,24 @@ function TrackedRideBuilder:withElement(element)
     return self
 end
 
+--- Adds a flexicolour to this tracked ride.
+--- @param flexicolour forgeutils.builders.data.trackedride.Flexicolour
+--- @return self
+function TrackedRideBuilder:withFlexicolour(flexicolour)
+    self.flexicolours[#self.flexicolours + 1] = flexicolour
+    return self
+end
+
+--- Adds flexicolours to this tracked ride.
+--- @param flexicolours forgeutils.builders.data.trackedride.Flexicolour[]
+--- @return self
+function TrackedRideBuilder:withFlexicolours(flexicolours)
+    for _, flexicolour in ipairs(flexicolours) do
+        self:withFlexicolour(flexicolour)
+    end
+    return self
+end
+
 --- Adds a spline element for this tracked ride.
 --- @param rideParam forgeutils.builders.data.trackedride.RideParam
 --- @return self
@@ -158,7 +179,10 @@ function TrackedRideBuilder:hasErrors()
     issues = check.IsNil("browserEntry", self.browserEntry) or issues
     issues = check.IsEmpty("trains", self.trains) or issues
     for _, param in ipairs(self.rideParams) do
-        issues = rideParams.hasErrors(param) or issues
+        issues = rideParam.hasErrors(param) or issues
+    end
+    for _, fc in ipairs(self.flexicolours) do
+        issues = flexicolour.hasErrors(fc) or issues
     end
 
     return issues
@@ -183,7 +207,12 @@ function TrackedRideBuilder:addToDB()
         db.ElementLists__Insert(self.id, element)
     end
     for _, param in ipairs(self.rideParams) do
-        rideParams.addToDb(self.id, param)
+        rideParam.addToDb(self.id, param)
+    end
+
+    -- Flexicolours
+    for _, fc in ipairs(self.flexicolours) do
+        flexicolour.addToDb(self.id, fc)
     end
 
     -- Metadata tags

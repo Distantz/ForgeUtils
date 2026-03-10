@@ -1,8 +1,9 @@
 local global = _G
 local setmetatable = global.setmetatable
+local constants = require("forgeutils.internal.database.constants.TrackedRides")
 
 --- @class forgeutils.builders.data.element.ElementData
---- @field type forgeutils.builders.data.element.ElementType
+--- @field type string
 --- @field label string?
 --- @field icon string?
 --- @field cost integer
@@ -19,28 +20,14 @@ local setmetatable = global.setmetatable
 local ElementData = {}
 ElementData.__index = ElementData
 
----@enum (key) forgeutils.builders.data.element.ElementType
-ElementData.Types = {
-    Loops = 1,
-    Rolls = 2,
-    NonInverted = 3,
-    Utilities = 4,
-    Station = 5,
-    SharedFlumePlatform = 6,
-    Flumes = 7,
-    Start = 8,
-    End = 9,
-    Specials = 10,
-}
-
 --- Create a new ElementData data object.
 --- @return self
 function ElementData.new()
     local self = setmetatable({}, ElementData)
     -- Sane defaults
-    self.type = "Utilities"
+    self.type = constants.ElementTypes_Utilities
     self.cost = 1200 -- matches default_spline
-    self.disabledText = "TrackElementDisabled_CannotPlace"
+    self.disabledText = constants.ElementDisabledTexts_TrackElementDisabled_CannotPlace
     self.ordering = 1000
     -- DB defaults
     self.label = "NormalTrack"           -- matches default_spline

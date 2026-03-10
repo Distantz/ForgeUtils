@@ -109,33 +109,11 @@ end
 
 -- Constants
 
---- The track length parameter name.
-RideParam.LengthParamName = "LengthRangeMetres"
-
---- The support parameter name.
-RideParam.SupportParamName = "DropSupports"
-
---- The catwalk parameter name.
-RideParam.CatwalkParamName = "OptionalCatwalk"
-
---- The banking offset parameter name.
-RideParam.BankingOffsetParamName = "BankPivotRange"
-
---- The tunnel radius parameter name.
-RideParam.TunnelRadiusParamName = "TunnelRadius"
-
---- The curve range parameter name.
-RideParam.CurveRangeParamName = "CurveRangeDegrees"
-
---- The bank range parameter name.
-RideParam.SlopeRangeParamName = "SlopeRangeDegrees"
-
---- The bank range parameter name.
-RideParam.BankingRangeParamName = "BankingRangeDegrees"
+local constants = require("forgeutils.internal.database.constants.TrackedRides")
 
 --- The track length parameter. 4m to 20m.
 RideParam.LengthParam = RideParam.new()
-    :withParam(RideParam.LengthParamName)
+    :withParam(constants.ElementParams_LengthRangeMetres)
     :withMin(4)
     :withMax(20)
     :withInitial(12)
@@ -145,7 +123,7 @@ RideParam.LengthParam = RideParam.new()
 
 --- The support parameter. Allows enabling and disabling of supports.
 RideParam.SupportParam = RideParam.new()
-    :withParam(RideParam.SupportParamName)
+    :withParam(constants.ElementParams_DropSupports)
     :withMin(0)
     :withMax(1)
     :withInitial(0)
@@ -153,7 +131,7 @@ RideParam.SupportParam = RideParam.new()
 
 --- The catwalk parameter. Allows enabling and disabling of catwalks.
 RideParam.CatwalkParam = RideParam.new()
-    :withParam(RideParam.CatwalkParamName)
+    :withParam(constants.ElementParams_OptionalCatwalk)
     :withMin(0)
     :withMax(1)
     :withInitial(0)
@@ -161,7 +139,7 @@ RideParam.CatwalkParam = RideParam.new()
 
 --- The banking offset parameter. -2m to 2m, with 0.1 step.
 RideParam.BankingOffsetParam = RideParam.new()
-    :withParam(RideParam.BankingOffsetParamName)
+    :withParam(constants.ElementParams_BankPivotRange)
     :withMin(-2)
     :withMax(2)
     :withInitial(0)
@@ -169,7 +147,7 @@ RideParam.BankingOffsetParam = RideParam.new()
 
 --- The tunnel radius parameter. 4m to 7m.
 RideParam.TunnelRadiusParam = RideParam.new()
-    :withParam(RideParam.TunnelRadiusParamName)
+    :withParam(constants.ElementParams_TunnelRadius)
     :withMin(4)
     :withMax(7)
     :withInitial(5)
@@ -177,7 +155,7 @@ RideParam.TunnelRadiusParam = RideParam.new()
 
 --- The curve range parameter. -90 to 90.
 RideParam.CurveRangeParam = RideParam.new()
-    :withParam(RideParam.CurveRangeParamName)
+    :withParam(constants.ElementParams_CurveRangeDegrees)
     :withMin(-90)
     :withMax(90)
     :withInitial(0)
@@ -185,7 +163,7 @@ RideParam.CurveRangeParam = RideParam.new()
 
 --- The slope range parameter. -90 to 90.
 RideParam.SlopeRangeParam = RideParam.new()
-    :withParam(RideParam.SlopeRangeParamName)
+    :withParam(constants.ElementParams_SlopeRangeDegrees)
     :withMin(-90)
     :withMax(90)
     :withInitial(0)
@@ -193,7 +171,7 @@ RideParam.SlopeRangeParam = RideParam.new()
 
 --- The bank range parameter for non-inverting rides. -90 to 90.
 RideParam.BankingRangeParam_NoInvert = RideParam.new()
-    :withParam(RideParam.BankingRangeParamName)
+    :withParam(constants.ElementParams_BankingRangeDegrees)
     :withMin(-90)
     :withMax(90)
     :withInitial(0)
@@ -203,7 +181,7 @@ RideParam.BankingRangeParam_NoInvert = RideParam.new()
 
 --- The bank range parameter for inverting rides. Default is -50000 to 50000.
 RideParam.BankingRangeParam_Invert = RideParam.new()
-    :withParam(RideParam.BankingRangeParamName)
+    :withParam(constants.ElementParams_BankingRangeDegrees)
     :withMin(-50000)
     :withMax(50000)
     :withInitial(0)
