@@ -1,12 +1,9 @@
 local global = _G
----@type Api
----@diagnostic disable-next-line: undefined-field
 local api = global.api
 local setmetatable = global.setmetatable
 local pairs = global.pairs
 
 local SceneryDBBindings = require("forgeutils.internal.database.ModularScenery")
-local trybuild = require("forgeutils.builders.utils.trybuild")
 local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
 
 --- SceneryPartBuilder is a fluent builder for database values in ForgeUtils.
@@ -46,10 +43,12 @@ local SceneryPartBuilder = {}
 SceneryPartBuilder.__index = SceneryPartBuilder
 
 ---Creates a SceneryPartBuilder, to define database information.
----@return self
+---@return forgeutils.builders.SceneryPartBuilder
 function SceneryPartBuilder.new()
     local instance = setmetatable({}, SceneryPartBuilder)
     -- Defaults
+    instance.contentPack = "BaseGame"
+    instance.contentPackID = 0
     instance.dataPrefab = "SurfaceScaling"
     instance.sizeX = 1.0
     instance.sizeY = 1.0
@@ -223,11 +222,6 @@ function SceneryPartBuilder:addToDB()
     end
 
     logger:Info("Finished adding new Scenery Part with ID: " .. self.partID)
-end
-
---- Tries to build the database.
-function SceneryPartBuilder:tryBuild()
-    return trybuild(self, logger)
 end
 
 return SceneryPartBuilder
