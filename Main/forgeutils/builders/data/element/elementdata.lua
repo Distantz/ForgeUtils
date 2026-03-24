@@ -11,7 +11,7 @@ local constants = require("forgeutils.internal.database.constants.TrackedRides")
 --- @field leadsInto string?
 --- @field trackWearMultiplier number?
 --- @field disabledText string
---- @field ordering number
+--- @field ordering number?
 --- @field leadsOutOf string?
 --- @field canGoUnderwater boolean?
 --- @field descriptionText string?
@@ -28,7 +28,7 @@ function ElementData.new()
     self.type = constants.ElementTypes_Utilities
     self.cost = 1200 -- matches default_spline
     self.disabledText = constants.ElementDisabledTexts_TrackElementDisabled_CannotPlace
-    self.ordering = 1000
+    self.ordering = nil
     -- DB defaults
     self.label = "NormalTrack"           -- matches default_spline
     self.icon = "CoasterEditorIconTrack" -- matches default_spline

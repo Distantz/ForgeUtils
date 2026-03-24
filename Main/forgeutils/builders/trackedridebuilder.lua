@@ -28,9 +28,6 @@ local constants = require("forgeutils.internal.database.constants.TrackedRides")
 --- @field flexicolours forgeutils.builders.data.trackedride.Flexicolour[]
 --- @field metadataTags string[]
 --- @field menuMetadataTag string
---- @field typeMetadataTag string
---- @field ageGroupMetadataTag string
---- @field manufacturerTag string
 --- @field tooltips string[]
 local TrackedRideBuilder = {}
 TrackedRideBuilder.__index = TrackedRideBuilder
@@ -59,9 +56,6 @@ function TrackedRideBuilder.new()
     }
     self.metadataTags = {}
     self.menuMetadataTag = constants.MetadataTags_Menu_Coaster_ChainLift
-    self.typeMetadataTag = constants.MetadataTags_Type_TrackedRide_Coaster
-    self.ageGroupMetadataTag = constants.MetadataTags_Filter_AgeGroup_TeenAdult
-    self.manufacturerTag = constants.MetadataTags_Coaster_Manufacturer_BigMsRides
 
     self.tooltips = {
         "TrackFeature_ChainLift",
@@ -217,9 +211,6 @@ function TrackedRideBuilder:addToDB()
 
     -- Metadata tags
     db.RideMetadataTags__Insert(self.id, self.menuMetadataTag)
-    db.RideMetadataTags__Insert(self.id, self.typeMetadataTag)
-    db.RideMetadataTags__Insert(self.id, self.ageGroupMetadataTag)
-    db.RideMetadataTags__Insert(self.id, self.manufacturerTag)
     for _, tag in ipairs(self.metadataTags) do
         db.RideMetadataTags__Insert(self.id, tag)
     end
