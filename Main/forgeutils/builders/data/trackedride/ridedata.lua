@@ -1,5 +1,6 @@
 local global = _G
 local setmetatable = global.setmetatable
+local constants = require("forgeutils.internal.database.constants.TrackedRides")
 
 ---@class forgeutils.builders.data.trackedride.RideData
 ---@field track string?
@@ -35,10 +36,6 @@ local setmetatable = global.setmetatable
 local RideData = {}
 RideData.__index = RideData
 
-RideData.classThrill = "Thrill"
-RideData.classFamily = "Family"
-RideData.classJunior = "Junior"
-
 --- Create a new RideData data object.
 --- @return self
 function RideData.new()
@@ -56,7 +53,7 @@ function RideData.new()
     -- DB defaults
     self.track = nil
     self.name = nil
-    self.class = RideData.classThrill
+    self.class = constants.Classes_Thrill
     self.specificPowerMultiplier = nil
     self.platformHeight = nil
     self.heightAbovePlatform = nil
@@ -97,19 +94,19 @@ end
 
 --- @return self
 function RideData:asJuniorCoaster()
-    self.class = RideData.classJunior
+    self.class = constants.Classes_Junior
     return self
 end
 
 --- @return self
 function RideData:asFamilyCoaster()
-    self.class = RideData.classFamily
+    self.class = constants.Classes_Family
     return self
 end
 
 --- @return self
 function RideData:asThrillCoaster()
-    self.class = RideData.classThrill
+    self.class = constants.Classes_Thrill
     return self
 end
 

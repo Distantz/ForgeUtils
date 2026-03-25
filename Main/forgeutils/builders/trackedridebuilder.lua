@@ -12,6 +12,7 @@ local check = require("forgeutils.check")
 
 local contentPack = require("forgeutils.builders.data.shared.contentpack")
 local rideParam = require("forgeutils.builders.database.trackedride.rideparam")
+local rideParamData = require("forgeutils.builders.data.trackedride.rideparam")
 local flexicolour = require("forgeutils.builders.database.trackedride.flexicolour")
 local constants = require("forgeutils.internal.database.constants.TrackedRides")
 
@@ -26,11 +27,85 @@ local constants = require("forgeutils.internal.database.constants.TrackedRides")
 --- @field elements string[]
 --- @field rideParams forgeutils.builders.data.trackedride.RideParam[]
 --- @field flexicolours forgeutils.builders.data.trackedride.Flexicolour[]
---- @field metadataTags string[]
---- @field menuMetadataTag string
---- @field tooltips string[]
+--- @field trackedRideMenu string
+--- @field extraMetadataTags string[]
+--- @field propulsionMethod string
+--- @field canInvert string
+--- @field ageGroup string
+--- @field extraTooltips string[]
 local TrackedRideBuilder = {}
 TrackedRideBuilder.__index = TrackedRideBuilder
+
+---@enum (key) forgeutils.builders.TrackedRideBuilder.TrackedRideMenu
+TrackedRideBuilder.TrackedRideMenu = {
+    Coaster_AlternateLift = constants.MetadataTags_Menu_Coaster_AlternateLift,
+    Coaster_ChainLift = constants.MetadataTags_Menu_Coaster_ChainLift,
+    Coaster_Launched = constants.MetadataTags_Menu_Coaster_Launched,
+    Coaster_Special = constants.MetadataTags_Menu_Coaster_Special,
+    Coaster_Suspended = constants.MetadataTags_Menu_Coaster_Suspended,
+    Coaster_Water = constants.MetadataTags_Menu_Coaster_Water,
+    Coaster_Wing = constants.MetadataTags_Menu_Coaster_Wing,
+    Coaster_Wooden = constants.MetadataTags_Menu_Coaster_Wooden,
+    Flume_FlumePlatform = constants.MetadataTags_Menu_Flume_FlumePlatform,
+    Flume_FlumeShared = constants.MetadataTags_Menu_Flume_FlumeShared,
+    Flume_FlumeSingle = constants.MetadataTags_Menu_Flume_FlumeSingle,
+    Flume_WaterSlide = constants.MetadataTags_Menu_Flume_WaterSlide,
+    TrackedRide_Powered = constants.MetadataTags_Menu_TrackedRide_Powered,
+    TrackedRide_Special = constants.MetadataTags_Menu_TrackedRide_Special,
+    TrackedRide_Water = constants.MetadataTags_Menu_TrackedRide_Water,
+}
+
+---@enum (key) forgeutils.builders.TrackedRideBuilder.PropulsionMethod
+TrackedRideBuilder.PropulsionMethod = {
+    CableAndChainLift =
+        constants.BrowserTooltips_TrackFeature_CableAndChainLift,
+    CableDriven =
+        constants.BrowserTooltips_TrackFeature_CableDriven,
+    CableLift =
+        constants.BrowserTooltips_TrackFeature_CableLift,
+    ChainLift =
+        constants.BrowserTooltips_TrackFeature_ChainLift,
+    ChainLiftAndLinearInductionMotor =
+        constants.BrowserTooltips_TrackFeature_ChainLiftAndLinearInductionMotor,
+    ChainandDriveTyreLift =
+        constants.BrowserTooltips_TrackFeature_ChainandDriveTyreLift,
+    ConveyorBeltLift =
+        constants.BrowserTooltips_TrackFeature_ConveyerBeltLift,
+    FrictionWheelLift =
+        constants.BrowserTooltips_TrackFeature_FrictionWheelLift,
+    HydraulicLaunch =
+        constants.BrowserTooltips_TrackFeature_HydraulicLaunch,
+    LinearInductionMotor =
+        constants.BrowserTooltips_TrackFeature_LinearInductionMotor,
+    LinearSynchronousMotor =
+        constants.BrowserTooltips_TrackFeature_LinearSyncronousMotor,
+    PoweredCar =
+        constants.BrowserTooltips_TrackFeature_PoweredCar,
+    PoweredTrain =
+        constants.BrowserTooltips_TrackFeature_PoweredTrain,
+    PoweredVehicle =
+        constants.BrowserTooltips_TrackFeature_PoweredVehicle,
+    VerticalChainLiftAndLinearSynchronousMotor =
+        constants.BrowserTooltips_TrackFeature_VerticalChainLiftAndLinearSyncronousMotor,
+}
+
+---@enum (key) forgeutils.builders.TrackedRideBuilder.CanInvert
+TrackedRideBuilder.CanInvert = {
+    CanInvert =
+        constants.BrowserTooltips_TrackFeature_CanInvert,
+    CanPartiallyInvert =
+        constants.BrowserTooltips_TrackFeature_CanPartiallyInvert,
+    CannotInvert =
+        constants.BrowserTooltips_TrackFeature_CannotInvert,
+}
+
+---@enum (key) forgeutils.builders.TrackedRideBuilder.AgeGroup
+TrackedRideBuilder.AgeGroup = {
+    ForEveryone =
+        constants.BrowserTooltips_TrackFeature_ForEveryone,
+    ForAdultsAndTeensOnly =
+        constants.BrowserTooltips_TrackFeature_ForAdultsAndTeensOnly,
+}
 
 --- Creates a builder.
 --- @return self
@@ -43,25 +118,28 @@ function TrackedRideBuilder.new()
     self.elements = {}
     self.flexicolours = {}
 
-    local rideParamDefault = require("forgeutils.builders.data.trackedride.rideparam")
     self.rideParams = {
-        rideParamDefault.LengthParam,
-        rideParamDefault.CatwalkParam,
-        rideParamDefault.SupportParam,
-        rideParamDefault.BankingOffsetParam,
-        rideParamDefault.CurveRangeParam,
-        rideParamDefault.SlopeRangeParam,
-        rideParamDefault.TunnelRadiusParam,
-        rideParamDefault.BankingRangeParam_Invert -- default is invert because our default is a thrill coaster.
-    }
-    self.metadataTags = {}
-    self.menuMetadataTag = constants.MetadataTags_Menu_Coaster_ChainLift
+        -- Needed defaults. Game will soft lock without.
+        rideParamData.SupportParam,
+        rideParamData.TunnelRadiusParam,
+        -- Needed default. Game won't let you build a piece.
+        rideParamData.LengthParam,
 
-    self.tooltips = {
-        "TrackFeature_ChainLift",
-        "TrackFeature_CanInvert",
-        "TrackFeature_ForAdultsAndTeensOnly"
+        -- Helper defaults
+        rideParamData.CurveRangeParam,
+        rideParamData.SlopeRangeParam,
+        rideParamData.BankingOffsetParam,
+        rideParamData.BankingRangeParam_Invert
     }
+
+    self.trackedRideMenu = TrackedRideBuilder.TrackedRideMenu.Coaster_Special
+    self.extraMetadataTags = {}
+
+    self.propulsionMethod = TrackedRideBuilder.PropulsionMethod.ChainLift
+    self.canInvert = TrackedRideBuilder.CanInvert.CanInvert
+    self.ageGroup = TrackedRideBuilder.AgeGroup.ForEveryone
+    self.extraTooltips = {}
+
     return self
 end
 
@@ -113,11 +191,31 @@ function TrackedRideBuilder:withTrain(train)
     return self
 end
 
---- Adds a spline element for this tracked ride.
+--- Adds trains to this tracked ride.
+--- @param trains forgeutils.builders.data.trackedride.Train[]
+--- @return self
+function TrackedRideBuilder:withTrains(trains)
+    for _, train in ipairs(trains) do
+        self:withTrain(train)
+    end
+    return self
+end
+
+--- Adds a spline element to this tracked ride.
 --- @param element string
 --- @return self
 function TrackedRideBuilder:withElement(element)
     self.elements[#self.elements + 1] = element
+    return self
+end
+
+--- Adds spline elements to this tracked ride.
+--- @param elements string[]
+--- @return self
+function TrackedRideBuilder:withElements(elements)
+    for _, element in ipairs(elements) do
+        self:withElement(element)
+    end
     return self
 end
 
@@ -139,7 +237,7 @@ function TrackedRideBuilder:withFlexicolours(flexicolours)
     return self
 end
 
---- Adds a spline element for this tracked ride.
+--- Adds a ride parameter to this tracked ride.
 --- @param rideParam forgeutils.builders.data.trackedride.RideParam
 --- @return self
 function TrackedRideBuilder:withRideParam(rideParam)
@@ -147,19 +245,111 @@ function TrackedRideBuilder:withRideParam(rideParam)
     return self
 end
 
---- Adds a metadata tag to this tracked ride.
---- @param tag string
---- @return self
-function TrackedRideBuilder:withMetadataTag(tag)
-    self.metadataTags[#self.metadataTags + 1] = tag
+--- Adds ride parameters to this tracked ride.
+--- @param rideParams forgeutils.builders.data.trackedride.RideParam[]
+function TrackedRideBuilder:withRideParams(rideParams)
+    for _, rideParam in ipairs(rideParams) do
+        self:withRideParam(rideParam)
+    end
     return self
 end
 
---- Sets the menu tag of this tracked ride.
---- @param tag string
+--- Adds a metadata tag to this tracked ride.
+--- @param metadataTag string
 --- @return self
-function TrackedRideBuilder:withMenuTag(tag)
-    self.menuMetadataTag = tag
+function TrackedRideBuilder:withMetadataTag(metadataTag)
+    self.extraMetadataTags[#self.extraMetadataTags + 1] = metadataTag
+    return self
+end
+
+--- Adds metadata tags to this tracked ride.
+--- @param metadataTags string[]
+function TrackedRideBuilder:withMetadataTags(metadataTags)
+    for _, metadataTag in ipairs(metadataTags) do
+        self:withMetadataTag(metadataTag)
+    end
+    return self
+end
+
+--- Adds a tooltip to this tracked ride.
+--- @param tooltip string
+--- @return self
+function TrackedRideBuilder:withTooltip(tooltip)
+    self.extraTooltips[#self.extraTooltips + 1] = tooltip
+    return self
+end
+
+--- Adds tooltips to this tracked ride.
+--- @param tooltips string[]
+--- @return self
+function TrackedRideBuilder:withTooltips(tooltips)
+    for _, tooltip in ipairs(tooltips) do
+        self:withTooltip(tooltip)
+    end
+    return self
+end
+
+--- Sets the propulsion method of this tracked ride using an enum key.
+--- @param propulsionMethod forgeutils.builders.TrackedRideBuilder.PropulsionMethod
+--- @return self
+function TrackedRideBuilder:withPropulsionMethod(propulsionMethod)
+    self.propulsionMethod = TrackedRideBuilder.PropulsionMethod[propulsionMethod]
+    return self
+end
+
+--- Sets the propulsion method of this tracked ride using a raw constant.
+--- @param propulsionMethod string
+--- @return self
+function TrackedRideBuilder:withRawPropulsionMethod(propulsionMethod)
+    self.propulsionMethod = propulsionMethod
+    return self
+end
+
+--- Sets whether this tracked ride can invert using an enum key.
+--- @param canInvert forgeutils.builders.TrackedRideBuilder.CanInvert
+--- @return self
+function TrackedRideBuilder:withCanInvert(canInvert)
+    self.canInvert = TrackedRideBuilder.CanInvert[canInvert]
+    return self
+end
+
+--- Sets whether this tracked ride can invert using a raw constant.
+--- @param canInvert string
+--- @return self
+function TrackedRideBuilder:withRawCanInvert(canInvert)
+    self.canInvert = canInvert
+    return self
+end
+
+--- Sets the age group of this tracked ride using an enum key.
+--- @param ageGroup forgeutils.builders.TrackedRideBuilder.AgeGroup
+--- @return self
+function TrackedRideBuilder:withAgeGroup(ageGroup)
+    self.ageGroup = TrackedRideBuilder.AgeGroup[ageGroup]
+    return self
+end
+
+--- Sets the age group of this tracked ride using a raw constant.
+--- @param ageGroup string
+--- @return self
+function TrackedRideBuilder:withRawAgeGroup(ageGroup)
+    self.ageGroup = ageGroup
+    return self
+end
+
+--- Sets the menu of this tracked ride using an enum key.
+--- @param menu forgeutils.builders.TrackedRideBuilder.TrackedRideMenu
+--- @return self
+function TrackedRideBuilder:withTrackedRideMenu(menu)
+    self.trackedRideMenu = TrackedRideBuilder.TrackedRideMenu[menu]
+    return self
+end
+
+--- Sets the menu of this tracked ride using a raw constant.
+--- @param menu string
+--- @return self
+function TrackedRideBuilder:withRawTrackedRideMenu(menu)
+    self.trackedRideMenu = menu
     return self
 end
 
@@ -210,12 +400,19 @@ function TrackedRideBuilder:addToDB()
     end
 
     -- Metadata tags
-    db.RideMetadataTags__Insert(self.id, self.menuMetadataTag)
-    for _, tag in ipairs(self.metadataTags) do
+
+    db.RideMetadataTags__Insert(self.id, self.trackedRideMenu)
+    for _, tag in ipairs(self.extraMetadataTags) do
         db.RideMetadataTags__Insert(self.id, tag)
     end
 
-    for _, tooltip in ipairs(self.tooltips) do
+    -- Tooltips
+
+    db.BrowserTooltips__Insert(self.id, self.propulsionMethod)
+    db.BrowserTooltips__Insert(self.id, self.canInvert)
+    db.BrowserTooltips__Insert(self.id, self.ageGroup)
+
+    for _, tooltip in ipairs(self.extraTooltips) do
         db.BrowserTooltips__Insert(self.id, tooltip)
     end
 
