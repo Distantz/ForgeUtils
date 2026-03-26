@@ -66,7 +66,6 @@ function _ForgeUtilsLuaDatabase.Init()
     )
 
     api.ui2.MapResources("ForgeUtilsUIHooks")
-    api.ui2.MapResources("ForgeUtilsMainHooks")
 
     -- Add UI hooks
     uiHookManager:_InitUiHookManager()
@@ -114,16 +113,9 @@ function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
 end
 
 function _ForgeUtilsLuaDatabase.AddLuaPrefabs(_fnAdd)
-    -- these are the name of the Lua files with the prefab data
-    local tPrefabs = {
-        "CC_Mod_Wheel_Base",
-    }
+    local PrefabUtility = require("forgeutils.prefabutility")
 
-    for _, sPrefab in global.ipairs(tPrefabs) do
-        local root = require(sPrefab).GetRoot()
-        logger:Info("Adding: " .. sPrefab)
-        _fnAdd(sPrefab, root)
-    end
+    PrefabUtility.AddAugmentedPrefab("CC_Mod_Wheel_Base", _fnAdd)
 end
 
 return _ForgeUtilsLuaDatabase
