@@ -70,13 +70,6 @@ function _ForgeUtilsLuaDatabase.Init()
 
     -- Add UI hooks
     uiHookManager:_InitUiHookManager()
-
-    -- Hook into the hud bottom bar
-    uiHookManager:AddHook(
-        "HUD",
-        "div",
-        "/js/hooks/forgeutils/hudBottomBarHook.js"
-    );
 end
 
 function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)

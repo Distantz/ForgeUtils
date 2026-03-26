@@ -1,6 +1,6 @@
 local global = _G
 local require = global.require
-local logger = require("forgeutils.logger").Get("UiHookManager", "INFO")
+local logger = require("forgeutils.logger").Get("UiHookManager")
 local hookManager = require("forgeutils.hookmanager")
 
 --#region Definitions
@@ -50,8 +50,7 @@ end
 --- @private
 function UiHookManager:_OnInitCallback(gamefaceUiInstance, initSettings)
     ---@diagnostic disable-next-line: inject-field
-    gamefaceUiInstance.logger = logger.Get("UI[" .. initSettings.sViewName .. "]", "DEBUG_QUERY")
-    logger:Info("Init")
+    gamefaceUiInstance.logger = logger.Get("UI[" .. initSettings.sViewName .. "]")
 end
 
 --- A callback on the UI hook manager ready.
