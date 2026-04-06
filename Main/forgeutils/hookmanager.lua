@@ -7,7 +7,7 @@ local package = global.package
 local require = global.require
 local string = global.string
 local pairs = global.pairs
-local logger = require("forgeutils.logger").Get("HookManager", "INFO")
+local logger = require("forgeutils.logger").Get("HookManager")
 
 --- A hook type.
 ---@alias HookFunction fun(originalMethod : function, ...): any

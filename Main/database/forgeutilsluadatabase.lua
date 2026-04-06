@@ -12,7 +12,7 @@ local pairs = global.pairs
 
 -- Setup logger
 local loggerSetup = require("forgeutils.logger")
-local logger = loggerSetup.Get("ForgeUtilsLuaDatabase", "DEBUG_QUERY")
+local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
 local hookManager = require("forgeutils.hookmanager")
 local uiHookManager = require("forgeutils.uihookmanager")
 
