@@ -27,19 +27,22 @@ function ModDB.RegisterMod(
     minimumPatchVersion
 )
     -- backwards compat. make required major version the floor of a float version (previously used)
-    if minimumMajorVersion ~= nil and global.type(minimumMajorVersion) == "number" then
-        logger:Warn("Float version numbers have been deprecated. Please use the latest function to register mods.")
-        minimumMajorVersion = global.math.floor(minimumMajorVersion)
+    if minimumMajorVersion ~= nil then
+        local majorFloor = global.math.floor(minimumMajorVersion)
+        if majorFloor ~= minimumMajorVersion then
+            logger:Warn("Float version numbers have been deprecated. Please use the latest function to register mods.")
+            minimumMajorVersion = majorFloor
+        end
     end
 
-    logger:Info("Registered new mod with ForgeUtils: " .. global.tostring(modName))
     ModDB.registeredMods[modName] = {
         major = minimumMajorVersion,
         minor = minimumMinorVersion,
         patch = minimumPatchVersion
     }
 
-    logger:Info("Checking version compatibility...")
+    logger:Info("Registered new mod with ForgeUtils: " .. global.tostring(modName))
+    ModDB.CheckVersionForMod(modName)
 end
 
 local function performSemanticCheck(modValue, forgeValue, shouldBeEqual)
@@ -65,7 +68,7 @@ local function logSemanticErrorStr(modName, semanticType, modValue, forgeValue)
         global.tostring(modValue) ..
         ", current ForgeUtils is " ..
         global.tostring(forgeValue) ..
-        ". You should update your ForgeUtils!"
+        ". You should update these mods if you encounter any issues!"
     )
 end
 
