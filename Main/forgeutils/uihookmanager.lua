@@ -39,9 +39,18 @@ function UiHookManager:_InitUiHookManager()
             return res
         end
     )
+
+    hookManager:AddHook(
+        "UI.GamefaceUIWrapper",
+        "Shutdown",
+        function(originalMethod, slf)
+            self:_ShutdownCallback(slf)
+            return originalMethod(slf)
+        end
+    )
 end
 
---- A callback on the UI hook manager init.
+--- A callback on the UI gameface init.
 --- This performs setup for logging.
 --- Note: this function should only be used internally.
 --- Note: This registers event listeners. It should thus only be called on ready gameface ui instances.
@@ -53,7 +62,7 @@ function UiHookManager:_OnInitCallback(gamefaceUiInstance, initSettings)
     gamefaceUiInstance.logger = logger.Get("UI[" .. initSettings.sViewName .. "]")
 end
 
---- A callback on the UI hook manager ready.
+--- A callback on the UI gameface ready.
 --- This performs setup for logging and also calls hook events.
 --- Note: this function should only be used internally.
 --- Note: This registers event listeners. It should thus only be called on ready gameface ui instances.
@@ -66,18 +75,26 @@ function UiHookManager:_OnReadyCallback(gamefaceUiInstance)
     -- Trigger ForgeUtils hooks
     local viewName = global.tostring(gamefaceUiInstance.tInitSettings.sViewName)
     self.wrappers[gamefaceUiInstance] = viewName
-
     if self.hooks[viewName] == nil then
         logger:Debug("No hooks registered for view: " .. viewName)
         return
     end
 
     local count = #self.hooks[viewName]
-
     logger:Info("Found " .. global.tostring(count) .. " hooks for view: " .. viewName)
-
     for _, hook in global.ipairs(self.hooks[viewName]) do
         self:_AddHookToInstance(gamefaceUiInstance, hook)
+    end
+end
+
+--- A callback on the UI gameface shutdown.
+--- This cleans up internal references when wrappers are destroyed.
+--- Note: this function should only be used internally.
+--- @param gamefaceUiInstance GamefaceUIWrapper The gameface instance.
+--- @private
+function UiHookManager:_ShutdownCallback(gamefaceUiInstance)
+    if self.wrappers[gamefaceUiInstance] then
+        self.wrappers[gamefaceUiInstance] = nil
     end
 end
 
