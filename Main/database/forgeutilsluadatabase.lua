@@ -3,6 +3,7 @@
 local global = _G
 
 ---@type Api
+---@diagnostic disable-next-line: undefined-field
 local api = global.api
 local table = global.table
 local require = global.require
@@ -51,18 +52,6 @@ function _ForgeUtilsLuaDatabase.Init()
         "StartScreen.Shared.StartScreenPopupHelper",
         "_RunCheckLocalModification",
         _ForgeUtilsLuaDatabase.RunCheckLocalModification
-    )
-
-    -- This one makes the basegame always rehook when it enters a new world.
-    hookManager:AddHook(
-        "World.World",
-        "Load",
-        function(originalMethod, slf, loader)
-            -- Hook us
-            originalMethod(slf, loader)
-            logger:Info("PreloadWorld, revalidating hooks")
-            hookManager:ValidateAllHooks()
-        end
     )
 
     api.ui2.MapResources("ForgeUtilsUIHooks")
