@@ -136,10 +136,10 @@ function TrainLibrary.GetRenderMaterialEffects(numberLevelsUp)
     }
 end
 
----Returns a transfom component with these values
----@param position any A Vector3 noting the position
----@param rotation any A Vector3 noting the rotation in euler angles, radians unit
----@param scale number A float representing the scale.
+---Returns a transform component with these values
+---@param position any? A Vector3 noting the position
+---@param rotation any? A Vector3 noting the rotation in euler angles, radians unit
+---@param scale number? A float representing the scale.
 function TrainLibrary.GetTransformComponent(position, rotation, scale)
     return {
         Position = position,
