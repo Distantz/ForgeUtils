@@ -44,3 +44,8 @@ luac.out
 # Archives
 *.ovl
 *.zip
+
+# UI Packages
+*.ppuipkg
+
+**/jsconfig.json

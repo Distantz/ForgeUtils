@@ -1,471 +1,427 @@
 local global = _G
+---@type Api
 ---@diagnostic disable-next-line: undefined-field
 local api = global.api
 local setmetatable = global.setmetatable
-local pairs = global.pairs
 local ipairs = global.ipairs
 
+local db = require("forgeutils.internal.database.TrackedRides")
 local logger = require("forgeutils.logger").Get("TrackedRideBuilder")
+local trybuild = require("forgeutils.builders.utils.trybuild")
+local check = require("forgeutils.check")
 
---- TrackedRideBuilder is a fluent builder for database values in ForgeUtils.
---- Example usage, TODO:
---- ```lua
----
---- ```
---- Note the use of the `addToDB()` call at the end. This is actually what adds the defined values
---- into the DB.
----
+local contentPack = require("forgeutils.builders.data.shared.contentpack")
+local rideParam = require("forgeutils.builders.database.trackedride.rideparam")
+local rideParamData = require("forgeutils.builders.data.trackedride.rideparam")
+local flexicolour = require("forgeutils.builders.database.trackedride.flexicolour")
+local constants = require("forgeutils.internal.database.constants.TrackedRides")
+
 --- @class forgeutils.builders.TrackedRideBuilder
 --- @field __index table
---- @field ride string
---- @field contentPack string
---- @field name string
---- @field class string
---- @field track string
---- @field labelFile string
---- @field iconFile string? Default is nil.
---- @field descriptionFile string
---- @field releaseGroup integer? Default is 1.
---- @field manufacturerFile string? Default is nil.
---- @field trackCost number Default is 1.0.
---- @field specificPowerMultiplier number? Default is 1.0.
---- @field wear number Default is 1.0.
---- @field maxTrackHeightFeet number Default is 999.0.
---- @field maxSlopeDeltaDegrees number? Default is 90.
---- @field maxBankDeltaDegrees number? Default is 90.
---- @field platformHeight number? Default is 2.
---- @field heightAbovePlatform number? Default is 0.
---- @field trackGapWidth number? Default is 2.
---- @field trackBlockWidth number? Default is 4.
---- @field platformBlockWidth number? Default is 4.
---- @field stationWidth number? Default is 8.
---- @field splineElement string Default is default_spline.
---- @field stationElement string Default is station_leftleft.
---- @field chainElement string Default is empty.
---- @field lastTrackElement string?
---- @field trainTypeName string? Default is Car.
---- @field groupTrainTypeName string? Default is Train.
---- @field defaultStationRailCount integer? Default is 1.
---- @field maxStationCount integer? Default is 0.
---- @field buildBackwards boolean Default is false.
---- @field shuttleMode boolean Default is false.
---- @field blockSection boolean Default is true.
---- @field audioType string? Default is Metal.
---- @field heightOffsetOnWater number? Default is 0.
---- @field customPlatformSpatial number? Default is 0.
---- @field flumePlacementOffset number? Default is 0.
---- @field excitementRating number Default is 5.0.
---- @field intensityRating number Default is 5.0.
---- @field nauseaRating number Default is 2.0.
---- @field prestige integer Default is 100.
---- @field ticketCost integer Default is 1000.
---- @field supportsChildGuests boolean Default is true.
---- @field maximumGroupSize integer?
---- @field isTransport boolean Default is false.
---- @field isChildOnly boolean Default is false.
---- @field researchPack integer?
---- @field serviceInterval number? Default is 1800.
---- @field isBoomerang boolean Default is false.
---- @field isLoopedAsDefault boolean Default is false.
---- @field requiresEndLoops boolean Default is false.
---- @field isNonStop boolean Default is false.
---- @field allowsFreeEnds boolean Default is false.
---- @field isWaterSlide boolean Default is false.
---- @field metadataTags { [string]: boolean } Default is empty. You will need to add at least one though.
---- @field elements { [string]: boolean } Default is empty. You will need to add at least one though.
---- @field flexicolours string[] Default is empty.
+--- @field id string
+--- @field contentPack forgeutils.builders.data.shared.ContentPack
+--- @field simulationData forgeutils.builders.data.trackedride.Simulation
+--- @field rideData forgeutils.builders.data.trackedride.RideData
+--- @field browserEntry forgeutils.builders.data.trackedride.BrowserEntry
+--- @field trains forgeutils.builders.data.trackedride.Train[]
+--- @field elements string[]
+--- @field rideParams forgeutils.builders.data.trackedride.RideParam[]
+--- @field flexicolours forgeutils.builders.data.trackedride.Flexicolour[]
+--- @field trackedRideMenu string
+--- @field extraMetadataTags string[]
+--- @field propulsionMethod string
+--- @field canInvert string
+--- @field ageGroup string
+--- @field extraTooltips string[]
 local TrackedRideBuilder = {}
 TrackedRideBuilder.__index = TrackedRideBuilder
 
----Creates a SceneryPartBuilder, to define database information.
----@return forgeutils.builders.TrackedRideBuilder
+---@enum (key) forgeutils.builders.TrackedRideBuilder.TrackedRideMenu
+TrackedRideBuilder.TrackedRideMenu = {
+    Coaster_AlternateLift = constants.MetadataTags_Menu_Coaster_AlternateLift,
+    Coaster_ChainLift = constants.MetadataTags_Menu_Coaster_ChainLift,
+    Coaster_Launched = constants.MetadataTags_Menu_Coaster_Launched,
+    Coaster_Special = constants.MetadataTags_Menu_Coaster_Special,
+    Coaster_Suspended = constants.MetadataTags_Menu_Coaster_Suspended,
+    Coaster_Water = constants.MetadataTags_Menu_Coaster_Water,
+    Coaster_Wing = constants.MetadataTags_Menu_Coaster_Wing,
+    Coaster_Wooden = constants.MetadataTags_Menu_Coaster_Wooden,
+    Flume_FlumePlatform = constants.MetadataTags_Menu_Flume_FlumePlatform,
+    Flume_FlumeShared = constants.MetadataTags_Menu_Flume_FlumeShared,
+    Flume_FlumeSingle = constants.MetadataTags_Menu_Flume_FlumeSingle,
+    Flume_WaterSlide = constants.MetadataTags_Menu_Flume_WaterSlide,
+    TrackedRide_Powered = constants.MetadataTags_Menu_TrackedRide_Powered,
+    TrackedRide_Special = constants.MetadataTags_Menu_TrackedRide_Special,
+    TrackedRide_Water = constants.MetadataTags_Menu_TrackedRide_Water,
+}
+
+---@enum (key) forgeutils.builders.TrackedRideBuilder.PropulsionMethod
+TrackedRideBuilder.PropulsionMethod = {
+    CableAndChainLift =
+        constants.BrowserTooltips_TrackFeature_CableAndChainLift,
+    CableDriven =
+        constants.BrowserTooltips_TrackFeature_CableDriven,
+    CableLift =
+        constants.BrowserTooltips_TrackFeature_CableLift,
+    ChainLift =
+        constants.BrowserTooltips_TrackFeature_ChainLift,
+    ChainLiftAndLinearInductionMotor =
+        constants.BrowserTooltips_TrackFeature_ChainLiftAndLinearInductionMotor,
+    ChainandDriveTyreLift =
+        constants.BrowserTooltips_TrackFeature_ChainandDriveTyreLift,
+    ConveyorBeltLift =
+        constants.BrowserTooltips_TrackFeature_ConveyerBeltLift,
+    FrictionWheelLift =
+        constants.BrowserTooltips_TrackFeature_FrictionWheelLift,
+    HydraulicLaunch =
+        constants.BrowserTooltips_TrackFeature_HydraulicLaunch,
+    LinearInductionMotor =
+        constants.BrowserTooltips_TrackFeature_LinearInductionMotor,
+    LinearSynchronousMotor =
+        constants.BrowserTooltips_TrackFeature_LinearSyncronousMotor,
+    PoweredCar =
+        constants.BrowserTooltips_TrackFeature_PoweredCar,
+    PoweredTrain =
+        constants.BrowserTooltips_TrackFeature_PoweredTrain,
+    PoweredVehicle =
+        constants.BrowserTooltips_TrackFeature_PoweredVehicle,
+    VerticalChainLiftAndLinearSynchronousMotor =
+        constants.BrowserTooltips_TrackFeature_VerticalChainLiftAndLinearSyncronousMotor,
+}
+
+---@enum (key) forgeutils.builders.TrackedRideBuilder.CanInvert
+TrackedRideBuilder.CanInvert = {
+    CanInvert =
+        constants.BrowserTooltips_TrackFeature_CanInvert,
+    CanPartiallyInvert =
+        constants.BrowserTooltips_TrackFeature_CanPartiallyInvert,
+    CannotInvert =
+        constants.BrowserTooltips_TrackFeature_CannotInvert,
+}
+
+---@enum (key) forgeutils.builders.TrackedRideBuilder.AgeGroup
+TrackedRideBuilder.AgeGroup = {
+    ForEveryone =
+        constants.BrowserTooltips_TrackFeature_ForEveryone,
+    ForAdultsAndTeensOnly =
+        constants.BrowserTooltips_TrackFeature_ForAdultsAndTeensOnly,
+}
+
+--- Creates a builder.
+--- @return self
 function TrackedRideBuilder.new()
-    local instance = setmetatable({}, TrackedRideBuilder)
+    local self = setmetatable({}, TrackedRideBuilder)
 
-    -- #region Shared
-    instance.ride = ""
-    -- #endregion
+    self.id = nil
+    self.contentPack = contentPack:new()
+    self.trains = {}
+    self.elements = {}
+    self.flexicolours = {}
 
-    -- #region RideData
+    self.rideParams = {
+        -- Needed defaults. Game will soft lock without.
+        rideParamData.SupportParam,
+        rideParamData.TunnelRadiusParam,
+        -- Needed default. Game won't let you build a piece.
+        rideParamData.LengthParam,
 
-    instance.name = ""
-    instance.class = ""
-    instance.track = ""
+        -- Helper defaults
+        rideParamData.CurveRangeParam,
+        rideParamData.SlopeRangeParam,
+        rideParamData.BankingOffsetParam,
+        rideParamData.BankingRangeParam_Invert
+    }
 
-    -- #region costs and power
-    instance.trackCost = 1.0
-    instance.specificPowerMultiplier = nil -- default = 1.0
+    self.trackedRideMenu = TrackedRideBuilder.TrackedRideMenu.Coaster_Special
+    self.extraMetadataTags = {}
 
-    -- #endregion
+    self.propulsionMethod = TrackedRideBuilder.PropulsionMethod.ChainLift
+    self.canInvert = TrackedRideBuilder.CanInvert.CanInvert
+    self.ageGroup = TrackedRideBuilder.AgeGroup.ForEveryone
+    self.extraTooltips = {}
 
-    -- #region wear and track dimensions
-    instance.wear = 1.0
-    instance.maxTrackHeightFeet = 999.0
-    instance.maxSlopeDeltaDegrees = nil -- default = 90
-    instance.maxBankDeltaDegrees = nil  -- default = 90
-    -- #endregion
-
-    -- #region station data
-    instance.platformHeight = nil          -- default = 2
-    instance.heightAbovePlatform = nil     -- default = 0
-    instance.trackGapWidth = nil           -- default = 2
-    instance.trackBlockWidth = nil         -- default = 4
-    instance.platformBlockWidth = nil      -- default = 4
-    instance.stationWidth = nil            -- default = 8
-    instance.defaultStationRailCount = nil -- default = 1
-    instance.maxStationCount = nil         -- default = 0
-    -- #endregion
-
-    -- #region elements
-    instance.splineElement = "default_spline"
-    instance.stationElement = "station_leftleft"
-    instance.chainElement = ""
-    instance.lastTrackElement = ""
-    -- #endregion
-
-    -- #region train configuration
-    instance.trainTypeName = nil      -- default = Car
-    instance.groupTrainTypeName = nil -- default = Train
-    -- #endregion
-
-    -- #region behavior and logic
-    instance.blockSection = true
-    instance.buildBackwards = false
-    instance.shuttleMode = false
-    -- #endregion
-
-    -- #region audio
-    instance.audioType = nil -- default = Metal
-    -- #endregion
-
-    -- #region content and placement
-    instance.contentPack = ""
-    instance.heightOffsetOnWater = nil   -- default = 0
-    instance.customPlatformSpatial = nil -- default = 0
-    instance.flumePlacementOffset = nil  -- default = 0
-    -- #endregion
-
-    -- #endregion
-
-    -- #region Simulation
-    instance.researchPack = nil
-
-    -- #region ratings
-    instance.excitementRating = 5.0
-    instance.intensityRating = 5.0
-    instance.nauseaRating = 2.0
-    instance.prestige = 100
-    instance.ticketCost = 1000
-    -- #endregion
-
-    -- #region guest rules
-    instance.supportsChildGuests = true -- default = true
-    instance.maximumGroupSize = nil
-    instance.isTransport = false        -- default = false
-    instance.isChildOnly = false        -- default = false
-    -- #endregion
-
-    -- #region ride behavior
-    instance.serviceInterval = nil     -- default = 1800
-    instance.isBoomerang = false       -- default = false
-    instance.isLoopedAsDefault = false -- default = false
-    instance.requiresEndLoops = false  -- default = false
-    instance.isNonStop = false         -- default = false
-    instance.allowsFreeEnds = false    -- default = false
-    instance.isWaterSlide = false      -- default = false
-    -- #endregion
-
-    -- #endregion
-
-    -- #region Browser entry
-    instance.labelFile = nil
-    instance.iconFile = nil
-    instance.descriptionFile = nil
-    instance.releaseGroup = nil -- default = 1
-    instance.manufacturerFile = nil
-    -- #endregion
-
-    -- #region Sets
-    instance.metadataTags = {}
-    instance.elements = {}
-    instance.flexicolours = {}
-    -- #endregion
-
-    return instance
-end
-
---- Sets the ID of the tracked ride.
---- Important: The track prefab used for this tracked ride has
---- the prefix `track_*RIDE_ID*`. The name will be set to this ID as well.
---- @param rideID string The ID to use for this tracked ride.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withID(rideID)
-    self.ride = rideID
-    self.track = "track_" .. rideID
-    self.name = rideID
     return self
 end
 
---- Sets the content pack of the tracked ride.
---- @param contentPack string The content pack.
---- @return forgeutils.builders.TrackedRideBuilder
+--- Sets the ID.
+--- @param id string
+--- @return self
+function TrackedRideBuilder:withId(id)
+    self.id = id
+    return self
+end
+
+--- Sets the content pack.
+--- @param contentPack forgeutils.builders.data.shared.ContentPack
+--- @return self
 function TrackedRideBuilder:withContentPack(contentPack)
     self.contentPack = contentPack
     return self
 end
 
---#region Class setters
-
---- Sets the class of the tracked ride to be a junior ride.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:asJuniorRide()
-    self.class = "Junior"
+--- Adds simulation data for this tracked ride.
+--- @param simulationData forgeutils.builders.data.trackedride.Simulation
+--- @return self
+function TrackedRideBuilder:withSimulationData(simulationData)
+    self.simulationData = simulationData
     return self
 end
 
---- Sets the class of the tracked ride to be a family ride.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:asFamilyRide()
-    self.class = "Family"
+--- Adds ride data for this tracked ride.
+--- @param rideData forgeutils.builders.data.trackedride.RideData
+--- @return self
+function TrackedRideBuilder:withRideData(rideData)
+    self.rideData = rideData
     return self
 end
 
---- Sets the class of the tracked ride to be a thrill ride.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:asThrillRide()
-    self.class = "Thrill"
+--- Adds a browser entry for this tracked ride.
+--- @param browserEntry forgeutils.builders.data.trackedride.BrowserEntry
+--- @return self
+function TrackedRideBuilder:withBrowserEntry(browserEntry)
+    self.browserEntry = browserEntry
     return self
 end
 
---#endregion
-
---#region Element setters
-
---- Sets the standard spline element of the tracked ride.
---- Default is "default_spline". Generally you shouldn't need to change this.
---- @param splineElement string The ID to use for this tracked ride
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withSplineElement(splineElement)
-    self.splineElement = splineElement
+--- Adds a train to this tracked ride.
+--- @param train forgeutils.builders.data.trackedride.Train
+--- @return self
+function TrackedRideBuilder:withTrain(train)
+    self.trains[#self.trains + 1] = train
     return self
 end
 
---- Sets the standard station element of the tracked ride.
---- Default is "station_leftleft". Generally you shouldn't need to change this. This
---- is the default station type used when placing down the coaster for the first time.
---- @param stationElement string The ID to use for this tracked ride
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withStationElement(stationElement)
-    self.stationElement = stationElement
+--- Adds trains to this tracked ride.
+--- @param trains forgeutils.builders.data.trackedride.Train[]
+--- @return self
+function TrackedRideBuilder:withTrains(trains)
+    for _, train in ipairs(trains) do
+        self:withTrain(train)
+    end
     return self
 end
 
---- Sets the standard chain element of the tracked ride.
---- Default is "". This can be any element. This element is the default element
---- selected after the ride station is built.
---- @param chainElement string The ID to use for this tracked ride
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withChainElement(chainElement)
-    self.chainElement = chainElement
-    return self
-end
-
---#endregion
-
---#region Station setters
-
---- Sets the height of the track above the station platform.
---- Upwards is positive, and downwards is negative.
---- @param height number The vertical offset from the platform.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withTrackHeightAboveStation(height)
-    self.heightAbovePlatform = height
-    return self
-end
-
---- Sets the width of the gap that the track occupies in the station.
---- @param width number The width of the gap that the track occupies in the station. Default is 2.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withStationTrackGapWidth(width)
-    self.trackGapWidth = width
-    return self
-end
-
---- Undocumented.
---- @param width number Default is 4.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withTrackBlockWidth(width)
-    self.trackBlockWidth = width
-    return self
-end
-
---- Undocumented, but seems to affect the station width.
---- @see forgeutils.builders.TrackedRideBuilder.withStationWidth
---- @param width number The width of one platform block. Default is 4.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withPlatformBlockWidth(width)
-    self.platformBlockWidth = width
-    return self
-end
-
---- Sets the station width. Weirdly seems to be tied to platform block width
---- @see forgeutils.builders.TrackedRideBuilder.withPlatformBlockWidth
---- @param width number The width of the station area. Default is 8.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withStationWidth(width)
-    self.stationWidth = width
-    return self
-end
-
---- Sets the default number of rails in the station.
---- @param count integer The number of rails. Default is 1.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withDefaultStationRailCount(count)
-    self.defaultStationRailCount = count
-    return self
-end
-
---- Undocumented effects.
---- @param count integer Default is 0.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withMaxStationCount(count)
-    self.maxStationCount = count
-    return self
-end
-
---#endregion
-
---- Sets the excitement, intensity and nausea stats for this ride. Default is 5, 5, 2.
----@param excitement number
----@param intensity number
----@param nausea number
----@return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withRatings(excitement, intensity, nausea)
-    self.excitementRating = excitement
-    self.intensityRating = intensity
-    self.nauseaRating = nausea
-    return self
-end
-
---#region UI Data
-
---- Sets the ride ID for the browser entry.
---- @param rideID string The ride ID to associate with this entry.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withRide(rideID)
-    self.ride = rideID
-    return self
-end
-
---- Sets the label for the browser entry.
---- @param labelFile string The label to display.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withLabel(labelFile)
-    self.labelFile = labelFile
-    return self
-end
-
---- Sets the icon path for the browser entry.
---- @param iconFile string The path or identifier for the icon.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withIcon(iconFile)
-    self.iconFile = iconFile
-    return self
-end
-
---- Sets the description for the browser entry.
---- @param descriptionFile string The description text.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withDescription(descriptionFile)
-    self.descriptionFile = descriptionFile
-    return self
-end
-
---- Sets the release group for the browser entry.
---- @param group integer The release group number. Default is 1.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withReleaseGroup(group)
-    self.releaseGroup = group
-    return self
-end
-
---- Sets the manufacturer for the browser entry.
---- @param manufacturerFile string The manufacturer name.
---- @return forgeutils.builders.TrackedRideBuilder
-function TrackedRideBuilder:withManufacturer(manufacturerFile)
-    self.manufacturerFile = manufacturerFile
-    return self
-end
-
---#endregion
-
---#region Elements
---- Adds an element to this tracked ride.
---- Note: the default spline, default station and default chain will be added as well.
----@param element string
----@return forgeutils.builders.TrackedRideBuilder
+--- Adds a spline element to this tracked ride.
+--- @param element string
+--- @return self
 function TrackedRideBuilder:withElement(element)
-    self.elements[element] = true
+    self.elements[#self.elements + 1] = element
     return self
 end
 
---- Adds a list of elements to this tracked ride.
---- Note: the default spline, default station and default chain will be added as well.
----@param elements string[]
----@return forgeutils.builders.TrackedRideBuilder
+--- Adds spline elements to this tracked ride.
+--- @param elements string[]
+--- @return self
 function TrackedRideBuilder:withElements(elements)
-    for i, element in ipairs(elements) do
-        self.elements[element] = true
+    for _, element in ipairs(elements) do
+        self:withElement(element)
     end
     return self
 end
 
---- Sets the flexicolours for the coaster type.
---- Note, if you leave any of these as nil,
---- all colours after it will not be added to the DB.
----@param colour1 string? Hexcode for first flexicolour.
----@param colour2 string? Hexcode for second flexicolour.
----@param colour3 string? Hexcode for third flexicolour.
----@param colour4 string? Hexcode for fourth flexicolour.
-function TrackedRideBuilder:withFlexicolours(colour1, colour2, colour3, colour4)
-    self.flexicolours[1] = colour1
-    self.flexicolours[2] = colour2
-    self.flexicolours[3] = colour3
-    self.flexicolours[4] = colour4
+--- Adds a flexicolour to this tracked ride.
+--- @param flexicolour forgeutils.builders.data.trackedride.Flexicolour
+--- @return self
+function TrackedRideBuilder:withFlexicolour(flexicolour)
+    self.flexicolours[#self.flexicolours + 1] = flexicolour
+    return self
 end
 
---- Adds the built part within the builder to the DB.
---- This object can be reused afterwards to reuse parameters if desired.
----@return nil
-function TrackedRideBuilder:addToDB()
-    logger:Info("Creating new Tracked Ride with ID: " .. self.ride)
+--- Adds flexicolours to this tracked ride.
+--- @param flexicolours forgeutils.builders.data.trackedride.Flexicolour[]
+--- @return self
+function TrackedRideBuilder:withFlexicolours(flexicolours)
+    for _, flexicolour in ipairs(flexicolours) do
+        self:withFlexicolour(flexicolour)
+    end
+    return self
+end
 
-    if (logger:IsNil(self.ride, "Tracked Ride ID")) then
-        return
+--- Adds a ride parameter to this tracked ride.
+--- @param rideParam forgeutils.builders.data.trackedride.RideParam
+--- @return self
+function TrackedRideBuilder:withRideParam(rideParam)
+    self.rideParams[#self.rideParams + 1] = rideParam
+    return self
+end
+
+--- Adds ride parameters to this tracked ride.
+--- @param rideParams forgeutils.builders.data.trackedride.RideParam[]
+function TrackedRideBuilder:withRideParams(rideParams)
+    for _, rideParam in ipairs(rideParams) do
+        self:withRideParam(rideParam)
+    end
+    return self
+end
+
+--- Adds a metadata tag to this tracked ride.
+--- @param metadataTag string
+--- @return self
+function TrackedRideBuilder:withMetadataTag(metadataTag)
+    self.extraMetadataTags[#self.extraMetadataTags + 1] = metadataTag
+    return self
+end
+
+--- Adds metadata tags to this tracked ride.
+--- @param metadataTags string[]
+function TrackedRideBuilder:withMetadataTags(metadataTags)
+    for _, metadataTag in ipairs(metadataTags) do
+        self:withMetadataTag(metadataTag)
+    end
+    return self
+end
+
+--- Adds a tooltip to this tracked ride.
+--- @param tooltip string
+--- @return self
+function TrackedRideBuilder:withTooltip(tooltip)
+    self.extraTooltips[#self.extraTooltips + 1] = tooltip
+    return self
+end
+
+--- Adds tooltips to this tracked ride.
+--- @param tooltips string[]
+--- @return self
+function TrackedRideBuilder:withTooltips(tooltips)
+    for _, tooltip in ipairs(tooltips) do
+        self:withTooltip(tooltip)
+    end
+    return self
+end
+
+--- Sets the propulsion method of this tracked ride using an enum key.
+--- @param propulsionMethod forgeutils.builders.TrackedRideBuilder.PropulsionMethod
+--- @return self
+function TrackedRideBuilder:withPropulsionMethod(propulsionMethod)
+    self.propulsionMethod = TrackedRideBuilder.PropulsionMethod[propulsionMethod]
+    return self
+end
+
+--- Sets the propulsion method of this tracked ride using a raw constant.
+--- @param propulsionMethod string
+--- @return self
+function TrackedRideBuilder:withRawPropulsionMethod(propulsionMethod)
+    self.propulsionMethod = propulsionMethod
+    return self
+end
+
+--- Sets whether this tracked ride can invert using an enum key.
+--- @param canInvert forgeutils.builders.TrackedRideBuilder.CanInvert
+--- @return self
+function TrackedRideBuilder:withCanInvert(canInvert)
+    self.canInvert = TrackedRideBuilder.CanInvert[canInvert]
+    return self
+end
+
+--- Sets whether this tracked ride can invert using a raw constant.
+--- @param canInvert string
+--- @return self
+function TrackedRideBuilder:withRawCanInvert(canInvert)
+    self.canInvert = canInvert
+    return self
+end
+
+--- Sets the age group of this tracked ride using an enum key.
+--- @param ageGroup forgeutils.builders.TrackedRideBuilder.AgeGroup
+--- @return self
+function TrackedRideBuilder:withAgeGroup(ageGroup)
+    self.ageGroup = TrackedRideBuilder.AgeGroup[ageGroup]
+    return self
+end
+
+--- Sets the age group of this tracked ride using a raw constant.
+--- @param ageGroup string
+--- @return self
+function TrackedRideBuilder:withRawAgeGroup(ageGroup)
+    self.ageGroup = ageGroup
+    return self
+end
+
+--- Sets the menu of this tracked ride using an enum key.
+--- @param menu forgeutils.builders.TrackedRideBuilder.TrackedRideMenu
+--- @return self
+function TrackedRideBuilder:withTrackedRideMenu(menu)
+    self.trackedRideMenu = TrackedRideBuilder.TrackedRideMenu[menu]
+    return self
+end
+
+--- Sets the menu of this tracked ride using a raw constant.
+--- @param menu string
+--- @return self
+function TrackedRideBuilder:withRawTrackedRideMenu(menu)
+    self.trackedRideMenu = menu
+    return self
+end
+
+--- Validates the builder data.
+--- @return boolean valid If the builder has errors.
+function TrackedRideBuilder:hasErrors()
+    local issues = false
+
+    issues = check.IsNil("simulationData", self.simulationData) or issues
+    issues = check.IsNil("rideData", self.rideData) or issues
+    issues = check.IsNil("browserEntry", self.browserEntry) or issues
+    issues = check.IsEmpty("trains", self.trains) or issues
+    for _, param in ipairs(self.rideParams) do
+        issues = rideParam.hasErrors(param) or issues
+    end
+    for _, fc in ipairs(self.flexicolours) do
+        issues = flexicolour.hasErrors(fc) or issues
     end
 
-    -- SceneryDB.Forge_AddModularSceneryPart(
-    --     self.partID,
-    --     self.visualsPrefab,
-    --     self.dataPrefab,
-    --     self.contentPack,
-    --     nil,
-    --     -- for some reason in the DB, size is defined in MM. so we convert from M.
-    --     self.sizeX * 100.0,
-    --     self.sizeY * 100.0,
-    --     self.sizeZ * 100.0
-    -- )
+    return issues
+end
 
+--- Adds the functionality to the DB.
+function TrackedRideBuilder:addToDB()
+    -- Ride data needs to be inserted first.
+    require("forgeutils.builders.database.trackedride.ridedata").addToDb(self.id, self.contentPack, self.rideData)
+    require("forgeutils.builders.database.trackedride.simulation").addToDb(self.id, self.simulationData)
 
-    -- for k, v in pairs(self.tags) do
-    --     SceneryDB.Forge_AddSceneryTag(
-    --         self.partID,
-    --         k
-    --     )
-    -- end
+    local trainDb = require("forgeutils.builders.database.trackedride.trains")
+    for _, train in ipairs(self.trains) do
+        trainDb.addToDb(self.id, train)
+    end
 
+    -- Add both default spline and default station from rideData
+    db.ElementLists__Insert(self.id, self.rideData.splineElement)
+    db.ElementLists__Insert(self.id, self.rideData.stationElement)
 
-    logger:Info("Finished adding Tracked Ride with ID: " .. self.ride)
+    for _, element in ipairs(self.elements) do
+        db.ElementLists__Insert(self.id, element)
+    end
+    for _, param in ipairs(self.rideParams) do
+        rideParam.addToDb(self.id, param)
+    end
+
+    -- Flexicolours
+    for _, fc in ipairs(self.flexicolours) do
+        flexicolour.addToDb(self.id, fc)
+    end
+
+    -- Metadata tags
+
+    db.RideMetadataTags__Insert(self.id, self.trackedRideMenu)
+    for _, tag in ipairs(self.extraMetadataTags) do
+        db.RideMetadataTags__Insert(self.id, tag)
+    end
+
+    -- Tooltips
+
+    db.BrowserTooltips__Insert(self.id, self.propulsionMethod)
+    db.BrowserTooltips__Insert(self.id, self.canInvert)
+    db.BrowserTooltips__Insert(self.id, self.ageGroup)
+
+    for _, tooltip in ipairs(self.extraTooltips) do
+        db.BrowserTooltips__Insert(self.id, tooltip)
+    end
+
+    require("forgeutils.builders.database.trackedride.browserentries").addToDb(self.id, self.browserEntry)
+end
+
+--- Tries to build the database.
+function TrackedRideBuilder:tryBuild()
+    return trybuild(self, logger)
 end
 
 return TrackedRideBuilder

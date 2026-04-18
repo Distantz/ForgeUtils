@@ -1,6 +1,10 @@
 -- Remove weird table issue
 ---@diagnostic disable: param-type-mismatch
 local global = _G
+
+---@type Api
+---@diagnostic disable-next-line: undefined-field
+local api = global.api
 local table = global.table
 local require = global.require
 local tostring = global.tostring
@@ -10,6 +14,7 @@ local pairs = global.pairs
 local loggerSetup = require("forgeutils.logger")
 local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
 local hookManager = require("forgeutils.hookmanager")
+local uiHookManager = require("forgeutils.uihookmanager")
 
 logger:Info("Loading ForgeUtils...")
 
@@ -49,17 +54,10 @@ function _ForgeUtilsLuaDatabase.Init()
         _ForgeUtilsLuaDatabase.RunCheckLocalModification
     )
 
-    -- This one makes the basegame always rehook when it enters a new world.
-    hookManager:AddHook(
-        "World.World",
-        "Load",
-        function(originalMethod, slf, loader)
-            -- Hook us
-            originalMethod(slf, loader)
-            logger:Info("PreloadWorld, revalidating hooks")
-            hookManager:ValidateAllHooks()
-        end
-    )
+    api.ui2.MapResources("ForgeUtilsUIHooks")
+
+    -- Add UI hooks
+    uiHookManager:_InitUiHookManager()
 end
 
 function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
@@ -73,12 +71,13 @@ function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
     local outOfDate = moddb.GetModsOutOfDate()
     local foundOutOfDate = false
     local lines = {
-        "Some installed mods require a newer version of ForgeUtils. Consider updating if things don't work.\n",
-        "ForgeUtils: " .. tostring(require("forgeutils").version)
+        "Warning! Some mods target a different version of ForgeUtils. Beware of crashing!",
+        "Installed version is " .. require("forgeutils").version:toString()
     }
 
     for mod, ver in pairs(outOfDate) do
-        local line = tostring(mod) .. ": " .. tostring(ver)
+        local version = ver:toString()
+        local line = tostring(mod) .. " targets " .. version
         table.insert(lines, line)
         foundOutOfDate = true
     end
@@ -91,7 +90,7 @@ function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
         return
     end
 
-    logger:Warn("Some mods are out of date.")
+    logger:Warn("Some mods have issues.")
 
     local popup = require("Helpers.PopUpDialogUtils")
     popup.RunOKDialog(
@@ -104,16 +103,9 @@ function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
 end
 
 function _ForgeUtilsLuaDatabase.AddLuaPrefabs(_fnAdd)
-    -- these are the name of the Lua files with the prefab data
-    local tPrefabs = {
-        "CC_Mod_Wheel_Base",
-    }
+    local PrefabUtility = require("forgeutils.prefabutility")
 
-    for _, sPrefab in global.ipairs(tPrefabs) do
-        local root = require(sPrefab).GetRoot()
-        logger:Info("Adding: " .. sPrefab)
-        _fnAdd(sPrefab, root)
-    end
+    PrefabUtility.AddAugmentedPrefab("CC_Mod_Wheel_Base", _fnAdd)
 end
 
 return _ForgeUtilsLuaDatabase

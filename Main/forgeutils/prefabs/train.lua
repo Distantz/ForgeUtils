@@ -136,10 +136,10 @@ function TrainLibrary.GetRenderMaterialEffects(numberLevelsUp)
     }
 end
 
----Returns a transfom component with these values
----@param position any A Vector3 noting the position
----@param rotation any A Vector3 noting the rotation in euler angles, radians unit
----@param scale number A float representing the scale.
+---Returns a transform component with these values
+---@param position any? A Vector3 noting the position
+---@param rotation any? A Vector3 noting the rotation in euler angles, radians unit
+---@param scale number? A float representing the scale.
 function TrainLibrary.GetTransformComponent(position, rotation, scale)
     return {
         Position = position,
@@ -155,20 +155,26 @@ end
 --- Returns a wheel bogie prefab with wheel flexicolours set to reference the parent.
 ---@param wheelAssemblyPrefabName string The name of the Wheel Assembly prefab to spawn.
 ---@param numberOfWheels integer The number of wheels present on this prefab.
+---@param levels integer|nil The number of levels to move up in the prefab chain.
 ---@return table
-function TrainLibrary.GetSimpleWheelAssemblyPrefab(wheelAssemblyPrefabName, numberOfWheels)
+function TrainLibrary.GetSimpleWheelAssemblyPrefab(wheelAssemblyPrefabName, numberOfWheels, levels)
+    local nesting = 3
+    if levels then
+        nesting = levels
+    end
+
     local children = {}
     for i = 1, numberOfWheels do
         local wheelName = "Wheel" .. i
         children[wheelName] = {
             Components = {
-                RenderMaterialEffects = TrainLibrary.GetRenderMaterialEffects(3)
+                RenderMaterialEffects = TrainLibrary.GetRenderMaterialEffects(nesting)
             }
         }
     end
     return {
         Components = {
-            RenderMaterialEffects = TrainLibrary.GetRenderMaterialEffects(2),
+            RenderMaterialEffects = TrainLibrary.GetRenderMaterialEffects(nesting - 1),
             Transform = {}
         },
         Children = children,

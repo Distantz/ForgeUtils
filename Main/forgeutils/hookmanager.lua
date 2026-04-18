@@ -1,142 +1,25 @@
 local global = _G
+
+---@type Api
+---@diagnostic disable-next-line: undefined-field
+local api = global.api
+local package = global.package
 local require = global.require
 local string = global.string
+local pairs = global.pairs
 local logger = require("forgeutils.logger").Get("HookManager")
-
---#region Definitions
-
----@alias hookId string A hook ID, in the string format of "{moduleName}:{functionName}".
 
 --- A hook type.
 ---@alias HookFunction fun(originalMethod : function, ...): any
 
 ---@class HookContainer
----@field moduleName string The module name.
----@field functionName string The function name.
 ---@field originalFunction function? The original function on the module.
 ---@field hooks HookFunction[] The hooks registered to this function.
 
 ---@class forgeutils.HookManager
----@field private tHooks table<hookId, HookContainer>
+---@field private tHooks table<string, table<string, HookContainer>>
 local HookManager = {}
 HookManager.tHooks = {}
-
---#endregion
-
---#region Functions
-
---- Returns an ID for a module name and function name.
---- Should be used internally.
----@param moduleName string The module name.
----@param functionName string The function name.
----@return hookId? id The hook ID.
-function HookManager:GetHookId(moduleName, functionName)
-    if (global.type(moduleName) ~= "string") then
-        logger:Error("Failed to get hook ID. Module name was not a string.")
-        return nil
-    end
-    if (global.type(functionName) ~= "string") then
-        logger:Error("Failed to get hook ID. Function name was not a string.")
-    end
-    return string.lower(moduleName) .. ":" .. functionName
-end
-
---- Ensures the nessessary hook container exists.
----@param moduleName string The module name.
----@param functionName string The function name.
----@return HookContainer? container The hook container, or nil on error.
-function HookManager:EnsureHookContainer(moduleName, functionName)
-    local id = self:GetHookId(moduleName, functionName)
-    if id == nil then
-        logger:Error("Failed to validate hook. ID was nil, look above for causes.")
-        return nil
-    end
-
-    if self.tHooks[id] == nil then
-        -- create new hook container
-        self.tHooks[id] = {
-            moduleName = moduleName,
-            functionName = functionName,
-            hooks = {}
-        }
-    end
-
-    return self.tHooks[id]
-end
-
---- Validates and sets up a module for hook management.
---- Should be used internally.
----@param moduleName string The module name.
----@param functionName string The function name.
----@return boolean success Whether the validation succeeded.
-function HookManager:ValidateHook(moduleName, functionName)
-    local id = self:GetHookId(moduleName, functionName)
-    if id == nil then
-        logger:Error("Failed to validate hook. ID was nil, look above for causes.")
-        return false
-    end
-
-    local hookContainer = self:EnsureHookContainer(moduleName, functionName)
-    if hookContainer == nil then
-        logger:Error("Failed to validate hook. Hook container was nil, look above for causes.")
-        return false
-    end
-
-    local moduleTable = require(moduleName)
-    if moduleTable == nil then
-        logger:Error("Failed to validate hook. Provided module \"" .. global.tostring(moduleName) .. "\" does not exist.")
-        return false
-    end
-
-    local moduleFunc = moduleTable[functionName]
-    if moduleFunc == nil or global.type(moduleFunc) ~= "function" then
-        logger:Error(
-            "Failed to validate hook. Provided module \"" ..
-            global.tostring(moduleName) ..
-            "\" does not contain an accessible function called \"" ..
-            global.tostring(functionName) ..
-            "\"."
-        )
-        return false
-    end
-
-    -- Rehook if original function is not set
-    if hookContainer.originalFunction == nil then
-        hookContainer.originalFunction = moduleFunc
-    end
-
-    local tHookCallbacks = {}
-    local callback = hookContainer.originalFunction
-
-
-    for i = #hookContainer.hooks, 1, -1 do
-        local nextCallback = callback
-        local hookFn = hookContainer.hooks[i]
-
-        callback = function(...)
-            ---@diagnostic disable-next-line: param-type-mismatch
-            return hookFn(nextCallback, ...)
-        end
-    end
-
-    moduleTable[functionName] = callback
-
-    return true
-end
-
---- Validates all present hooks in the hook manager.
---- Should be used internally only.
-function HookManager:ValidateAllHooks()
-    for id, container in global.pairs(self.tHooks) do
-        if not self:ValidateHook(container.moduleName, container.functionName) then
-            logger:Warn("Hook \"" .. id .. "\" failed to validate. This function will reset to the original value.")
-            if container.originalFunction ~= nil then
-                require(container.moduleName)[container.functionName] = container.originalFunction
-                container.originalFunction = nil
-            end
-        end
-    end
-end
 
 --- Registers a prefix hook for a method on a module.
 --- This hook will override the original method on the module.
@@ -147,34 +30,153 @@ end
 ---@param hookMethod HookFunction The hook function, to call in place of the original method.
 ---@return boolean success Whether the hook was registered successfully.
 function HookManager:AddHook(moduleName, functionName, hookMethod)
-    if global.type(hookMethod) ~= "function" then
-        logger:Error("Could not add hook. Hook method was nil.")
-        return false
+    local moduleName = string.lower(moduleName)
+    local packageLoaded = package.loaded[moduleName]
+
+    -- Add to hook table
+    if not self.tHooks[moduleName] then
+        self.tHooks[moduleName] = {}
     end
 
-    local id = self:GetHookId(moduleName, functionName)
-    if id == nil then
-        logger:Error("Could not add hook. Could not get ID.")
-        return false
+    local moduleHooks = self.tHooks[moduleName]
+
+    -- Add to function hook table
+    if not moduleHooks[functionName] then
+        moduleHooks[functionName] = {
+            hooks = {}
+        }
     end
 
-    -- Perform lookup
-    local hookContainer = HookManager:EnsureHookContainer(moduleName, functionName)
-    if hookContainer == nil then
-        logger:Error("Could not add hook. Hook container was nil.")
-        return false
-    end
+    local hooks = moduleHooks[functionName]
+    hooks.hooks[#hooks.hooks + 1] = hookMethod
 
-    hookContainer.hooks[#hookContainer.hooks + 1] = hookMethod
-
-    if not self:ValidateHook(moduleName, functionName) then
-        logger:Error("Could not add hook. Hook validation failed.")
-        return false
+    -- if loaded, revalidate the hooks
+    if packageLoaded then
+        return self:SetupHookingForFunction(moduleName, functionName)
     end
 
     return true
 end
 
---#endregion
+---Chains the hooks in a HookContainer.
+---The last hook in the list is called first
+---The original function is called last.
+---@private
+---@param originalFunction function
+---@param hooks HookFunction[]
+---@return function chainFunction
+local function buildHookChainMethod(originalFunction, hooks)
+    local chain = originalFunction
+    for i = 1, #hooks do
+        local next = chain
+        local hook = hooks[i]
+        chain = function(...)
+            return hook(next, ...)
+        end
+    end
+
+    return chain
+end
+
+--- Sets up hooking for a tables function
+--- @private
+---@param moduleName string The module name in lowercase.
+---@param functionName string The function name.
+---@return boolean
+function HookManager:SetupHookingForFunction(moduleName, functionName)
+    -- Try find in tHooks
+    local moduleHooks = self.tHooks[moduleName]
+    if not moduleHooks then
+        logger:Error(
+            "No hooks registered for module: " ..
+            moduleName
+        )
+        return false
+    end
+
+    local hooks = moduleHooks[functionName]
+    if not hooks then
+        logger:Error(
+            "No hooks registered for: " ..
+            moduleName ..
+            "." ..
+            functionName ..
+            "()"
+        )
+        return false
+    end
+
+    -- Try find in loaded
+    local value = package.loaded[moduleName]
+    if not value then
+        logger:Error(
+            "Hooking non-existent function: " ..
+            moduleName ..
+            "." ..
+            functionName ..
+            "()"
+        )
+        return false
+    end
+
+    local funcType = global.type(value[functionName])
+    if funcType ~= "function" then
+        logger:Error(
+            "Hooking non-existent function: " ..
+            moduleName ..
+            "." ..
+            functionName ..
+            "(), found value was: " ..
+            funcType
+        )
+        return false
+    end
+
+    -- And cache the original function if it isn't already!
+    if not hooks.originalFunction then
+        hooks.originalFunction = value[functionName]
+    end
+
+    -- If found in loaded, and has hooks, generate chain
+    value[functionName] = buildHookChainMethod(hooks.originalFunction, hooks.hooks)
+    return true
+end
+
+function HookManager:OnRequiredCallbackListener(moduleName, requireReturned)
+    -- Do we have hooks registered for this package?
+    if not self.tHooks[moduleName] then
+        return
+    end
+
+    for functionName, container in pairs(self.tHooks[moduleName]) do
+        -- Check if the function exists
+        local funcValue = requireReturned[functionName]
+        local funcType = global.type(funcValue)
+        if funcType ~= "function" then
+            logger:Error(
+                "Hooking non-existent function: " ..
+                moduleName ..
+                "." ..
+                functionName ..
+                "(), found value was: " ..
+                funcType
+            )
+            goto continue
+        end
+
+        -- Always refresh the original function on a new require.
+        -- This should fix the hooks vanishing when loading a new world.
+        container.originalFunction = funcValue
+        self:SetupHookingForFunction(moduleName, functionName)
+
+        ::continue::
+    end
+end
+
+-- Hook into the forgeutils require hook
+---@diagnostic disable-next-line: undefined-field
+api.forgeutils.OnRequiredCallback = function(moduleName, requireReturned)
+    HookManager:OnRequiredCallbackListener(moduleName, requireReturned)
+end
 
 return HookManager
