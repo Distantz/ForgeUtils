@@ -71,12 +71,13 @@ function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
     local outOfDate = moddb.GetModsOutOfDate()
     local foundOutOfDate = false
     local lines = {
-        "Some installed mods require a different major version of ForgeUtils. Consider updating if things don't work.\n",
-        "ForgeUtils: " .. tostring(require("forgeutils").version:toString())
+        "Warning! Some mods target a different version of ForgeUtils. Beware of crashing!",
+        "Installed version is " .. require("forgeutils").version:toString()
     }
 
     for mod, ver in pairs(outOfDate) do
-        local line = tostring(mod) .. ": " .. tostring(ver:toString())
+        local version = ver:toString()
+        local line = tostring(mod) .. " targets " .. version
         table.insert(lines, line)
         foundOutOfDate = true
     end

@@ -1,3 +1,5 @@
+local global = _G
+
 ---@class forgeutils.Version Semantic versioning type.
 ---@field major integer? The major (breaking change) number.
 ---@field minor integer? The minor (new non-breaking addition) number.
@@ -13,8 +15,17 @@ function Version.new(args)
     return self
 end
 
+local function getToStringOrX(val)
+    return val and global.tostring(val) or "x"
+end
+
 function Version:toString()
-    return self.major .. "." .. self.minor .. "." .. self.patch
+    return
+        getToStringOrX(self.major) ..
+        "." ..
+        getToStringOrX(self.minor) ..
+        "." ..
+        getToStringOrX(self.patch)
 end
 
 function Version:isCompatible(v)
