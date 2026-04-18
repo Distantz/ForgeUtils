@@ -5,17 +5,23 @@ local hookManager = require("forgeutils.hookmanager")
 
 --#region Definitions
 
----@class forgeutils.UiHook A type representing a UI hook.
----@field element string The element to apply the hook to. This is the token name of the type in JS. `"div"` is an example, `"Button"` is another.
+---@enum (key) forgeutils.UiHookManager.UiHook.Type
+local hookTypes = {
+    Element = 1,
+    Import = 2
+}
+
+---@class forgeutils.UiHookManager.UiHook A type representing a UI hook.
+---@field type forgeutils.UiHookManager.UiHook.Type
+---@field element string? The element to apply the hook to. This is the token name of the type in JS. `"div"` is an example, `"Button"` is another. Only required for certain hook types.
 ---@field file string The file that contains the JavaScript UI hook. An example is `"/js/hooks/forgeutils/hudBottomBarHook.js"`.
 
 ---@class forgeutils.UiHookManager
----@field private hooks table<string, forgeutils.UiHook[]> Keys are view names and value is list of hooks to apply to wrappers on ready.
+---@field private hooks table<string, forgeutils.UiHookManager.UiHook[]> Keys are view names and value is list of hooks to apply to wrappers on ready.
 ---@field private wrappers table<GamefaceUIWrapper, string> Keys are gameface UI wrappers and values are view names.
 local UiHookManager = {}
 UiHookManager.hooks = {}
 UiHookManager.wrappers = {}
-UiHookManager.FORGEUTILS_HOOK_EVENT = "ForgeUtils_AddModuleHook"
 
 --- Initializes the UI hook manager by adding necessary lua injections.
 --- Note: this function should only be used internally.
@@ -102,20 +108,28 @@ end
 --- Note: this function should only be used internally.
 --- Note: This registers event listeners. It should thus only be called on ready gameface ui instances.
 ---@param gamefaceUiInstance GamefaceUIWrapper The gameface instance.
----@param uiHook forgeutils.UiHook The hook.
+---@param uiHook forgeutils.UiHookManager.UiHook The hook.
 ---@private
 function UiHookManager:_AddHookToInstance(gamefaceUiInstance, uiHook)
     logger:Info(
-        "Applying hook for element \"" ..
-        uiHook.element ..
-        "\": " ..
+        "Applying hook: " ..
         uiHook.file
     )
-    gamefaceUiInstance:TriggerEventAtNextAdvance(
-        UiHookManager.FORGEUTILS_HOOK_EVENT,
-        uiHook.element,
-        uiHook.file
-    )
+
+    if uiHook.type == "Element" then
+        gamefaceUiInstance:TriggerEventAtNextAdvance(
+            "ForgeUtils_AddElementHook",
+            uiHook.element,
+            uiHook.file
+        )
+    elseif uiHook.type == "Import" then
+        gamefaceUiInstance:TriggerEventAtNextAdvance(
+            "ForgeUtils_AddImportHook",
+            uiHook.file
+        )
+    else
+        logger:Error("Unknown type! Hook was not added.")
+    end
 end
 
 --- Adds lua hooks related to logging events to the GamefaceUIWrapper.
@@ -170,26 +184,20 @@ function UiHookManager:_RegisterLoggingEventsFor(gamefaceUiInstance)
     gamefaceUiInstance.logger:Info("Finished adding Event Listeners")
 end
 
---- Adds a UI hook to any gameface view matching a name.
---- This method should only be called once in the games
---- lifetime for each hook.
----@param viewName string The view name. Examples include `"FrontEnd"` and `"HUD"`.
----@param element string The javascript element to target for the hook. Examples include "div".
----@param jsHookFile string The javascript module with the hook. An example is `"/js/example/hudhook.js"`.
-function UiHookManager:AddHook(viewName, element, jsHookFile)
+--- Adds a UI hook to a gameface view matching a name.
+--- Handles common logic common to all hook types.
+--- Note: this function should only be used internally.
+--- @private
+--- @param viewName string
+--- @param hook forgeutils.UiHookManager.UiHook
+--- @private
+function UiHookManager:_AddHookCommon(viewName, hook)
     if self.hooks[viewName] == nil then
         self.hooks[viewName] = {}
     end
 
     local viewHooks = self.hooks[viewName]
-
-    local hook = {
-        element = element,
-        file = jsHookFile
-    }
-
     viewHooks[#viewHooks + 1] = hook
-
     for gamefaceUiWrapper, wrapperViewName in global.pairs(self.wrappers) do
         -- Early exit
         if (wrapperViewName ~= viewName) then
@@ -200,6 +208,38 @@ function UiHookManager:AddHook(viewName, element, jsHookFile)
 
         ::continue::
     end
+end
+
+--- Adds a UI hook to any gameface view matching a name.
+--- This method should only be called once in the games
+--- lifetime for each hook.
+---@param viewName string The view name. Examples include `"FrontEnd"` and `"HUD"`.
+---@param element string The javascript element to target for the hook. Examples include "div".
+---@param jsHookFile string The javascript module with the hook. An example is `"/js/example/hudhook.js"`.
+function UiHookManager:AddElementHook(viewName, element, jsHookFile)
+    self:_AddHookCommon(
+        viewName,
+        {
+            type = "Element",
+            element = element,
+            file = jsHookFile
+        }
+    )
+end
+
+--- Adds a UI import hook to any gameface view matching a name.
+--- This method should only be called once in the games
+--- lifetime for each hook.
+---@param viewName string The view name. Examples include `"FrontEnd"` and `"HUD"`.
+---@param jsImportFile string The javascript module to import. An example is `"/js/example/import.js"`.
+function UiHookManager:AddImportHook(viewName, jsImportFile)
+    self:_AddHookCommon(
+        viewName,
+        {
+            type = "Import",
+            file = jsImportFile
+        }
+    )
 end
 
 return UiHookManager

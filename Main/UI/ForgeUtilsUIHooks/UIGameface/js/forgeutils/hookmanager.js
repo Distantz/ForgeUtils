@@ -3,7 +3,16 @@ import "/js/forgeutils/printhelper.js";
 
 const moduleHooks = new Map();
 
-export function onAddModuleHook(className, hookHandlerFile) {
+export function onAddImportHook(importedFile) {
+    import(importedFile)
+        .catch(
+            err => {
+                console.error(`Failed to load hooked import "${importedFile}":`, err);
+            }
+        );
+}
+
+export function onAddElementHook(className, hookHandlerFile) {
     import(hookHandlerFile)
         .then(module => {
             if (typeof module.OnHook !== 'function') {
@@ -39,6 +48,7 @@ export function hasHooks(className) {
 // Add 
 Engine.whenReady.then(
     async () => {
-        Engine.addListener("ForgeUtils_AddModuleHook", onAddModuleHook);
+        Engine.addListener("ForgeUtils_AddElementHook", onAddElementHook);
+        Engine.addListener("ForgeUtils_AddImportHook", onAddImportHook);
     }
 )
