@@ -39,6 +39,7 @@ end
 ---@param minimumMajorVersion integer? The minimum major version required. If nil, not checked.
 ---@param minimumMinorVersion integer? The minimum minor version required. If nil, not checked.
 ---@param minimumPatchVersion integer? The minimum patch version required. If nil, not checked.
+---@return boolean succeeded Returns true if there are no issues with registration.
 function ModDB.RegisterMod(
     modName,
     minimumMajorVersion,
@@ -62,7 +63,7 @@ function ModDB.RegisterMod(
     api.forgeutils.registeredMods[modName] = modVer
 
     logger:Info("Registered new mod with ForgeUtils: " .. global.tostring(modName) .. " " .. modVer:toString())
-    ModDB.CheckVersionForMod(modName)
+    return ModDB.CheckVersionForMod(modName)
 end
 
 local function versionErrorStr(modName, semanticType, modValue, forgeValue)
@@ -81,7 +82,7 @@ end
 
 --- Checks the mod version against the current install.
 ---@param modName string The name to display to the user.
----@return boolean inDate Whether the mod was in date.
+---@return boolean success Whether the mod was in date.
 function ModDB.CheckVersionForMod(modName)
     local mod = api.forgeutils.registeredMods[modName]
     local forge = ForgeUtils.version
