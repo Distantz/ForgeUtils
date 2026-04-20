@@ -10,17 +10,28 @@ local version = require("forgeutils.modversion")
 
 -- Setup logger
 local loggerSetup = require("forgeutils.logger")
-local logger = loggerSetup.Get("ForgeUtilsModDB", "INFO")
+local logger = loggerSetup.Get("ForgeUtilsModDB")
+
+--#region Global Definitions
+
+---@class (Partial) global.api.forgeutils
+---@field modDbState forgeutils.HookManager.ModDbState
+
+---@class (Partial) forgeutils.HookManager.ModDbState
+---@field registeredMods {[string]: forgeutils.Version } A dictionary of registered mods with ForgeUtils
+
+-- Init global API state if not already.
+if not api.forgeutils.modDbState then
+    api.forgeutils.modDbState = {
+        registeredMods = {}
+    }
+end
+local modDbState = api.forgeutils.modDbState
+
+--#endregion
 
 ---@class forgeutils.ModDB
 local ModDB = {}
-
----@diagnostic disable-next-line: inject-field
-api.forgeutils = api.forgeutils or {}
-
----@type {[string]: forgeutils.Version }
----@diagnostic disable-next-line: undefined-field
-api.forgeutils.registeredMods = api.forgeutils.registeredMods or {}
 
 local function getMajorMinorFromFloat(s)
     -- Evil regex.
@@ -60,7 +71,7 @@ function ModDB.RegisterMod(
         patch = minimumPatchVersion
     })
 
-    api.forgeutils.registeredMods[modName] = modVer
+    modDbState.registeredMods[modName] = modVer
 
     logger:Info("Registered new mod with ForgeUtils: " .. global.tostring(modName) .. " " .. modVer:toString())
     return ModDB.CheckVersionForMod(modName)
@@ -84,7 +95,7 @@ end
 ---@param modName string The name to display to the user.
 ---@return boolean success Whether the mod was in date.
 function ModDB.CheckVersionForMod(modName)
-    local mod = api.forgeutils.registeredMods[modName]
+    local mod = modDbState.registeredMods[modName]
     local forge = ForgeUtils.version
 
     local checkMajor = mod.major ~= nil
@@ -126,7 +137,7 @@ end
 ---@return {[string]: forgeutils.Version } mods Out of date mods, key being name and value being version.
 function ModDB.GetModsOutOfDate()
     local results = {}
-    for mod, ver in pairs(api.forgeutils.registeredMods) do
+    for mod, ver in pairs(modDbState.registeredMods) do
         if not ModDB.CheckVersionForMod(mod) then
             results[mod] = ver
         end

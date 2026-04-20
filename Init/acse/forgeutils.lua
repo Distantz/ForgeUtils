@@ -47,14 +47,15 @@ end
 ---@alias ForgeUtilsRequireCallback fun(moduleName : string, requireReturned : any): nil
 
 ForgeUtils.OnInit      = function()
-    ---@diagnostic disable-next-line: inject-field
+    ---@class global.api.forgeutils
     api.forgeutils = {
 
         ---@type ForgeUtilsRequireCallback
-        OnRequiredCallback = function(moduleName, moduleValue)
+        onRequiredCallback = function(moduleName, moduleValue)
         end,
 
-        OldRequire = global.require
+        ---@type fun(modName: string): any
+        oldRequire = global.require
     }
 
     --- Patch and load our required callback.
@@ -63,10 +64,10 @@ ForgeUtils.OnInit      = function()
         local moduleName = string.lower(modName)
         local newLoad = not package.loaded[moduleName]
 
-        local requiredValue = api.forgeutils.OldRequire(modName)
+        local requiredValue = api.forgeutils.oldRequire(modName)
 
         if newLoad then
-            api.forgeutils.OnRequiredCallback(moduleName, requiredValue)
+            api.forgeutils.onRequiredCallback(moduleName, requiredValue)
         end
 
         return requiredValue
