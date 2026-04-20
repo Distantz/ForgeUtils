@@ -8,7 +8,7 @@ ForgeUtils is a utility mod for Planet Coaster 2, for abstracting many utility f
 
 ## Powered by ForgeUtils
 - **ProTrack**: https://github.com/Distantz/mod_protrack.
-- **Alpine Coaster**: https://www.nexusmods.com/planetcoaster2/mods/30
+- **Alpine Coaster**: https://www.nexusmods.com/planetcoaster2/mods/30.
 
 ## Main Features
 - LuaCATs and LuaLS support, for autocomplete, intellisense and other features when using a compatible IDE (VSCode, neovim).
