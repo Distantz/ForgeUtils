@@ -5,6 +5,11 @@ const moduleHooks = new Map();
 
 export function onAddImportHook(importedFile) {
     import(importedFile)
+        .then(
+            module => {
+                console.log(`Added hook ${importedFile}!`)
+            }
+        )
         .catch(
             err => {
                 console.error(`Failed to load hooked import "${importedFile}":`, err);

@@ -9,6 +9,26 @@ local string = global.string
 local pairs = global.pairs
 local logger = require("forgeutils.logger").Get("HookManager")
 
+--#region Global Definitions
+
+---@class (Partial) global.api.forgeutils
+---@field hookManagerState forgeutils.HookManager.HookManagerState
+
+---@class (Partial) forgeutils.HookManager.HookManagerState
+---@field hooks table<string, table<string, HookContainer>> A table of hooks
+
+-- Init global API state if not already.
+if not api.forgeutils.hookManagerState then
+    api.forgeutils.hookManagerState = {
+        hooks = {},
+    }
+end
+local hookManagerState = api.forgeutils.hookManagerState
+
+--#endregion
+
+--#region Definitions
+
 --- A hook type.
 ---@alias HookFunction fun(originalMethod : function, ...): any
 
@@ -16,10 +36,10 @@ local logger = require("forgeutils.logger").Get("HookManager")
 ---@field originalFunction function? The original function on the module.
 ---@field hooks HookFunction[] The hooks registered to this function.
 
+--#endregion
+
 ---@class forgeutils.HookManager
----@field private tHooks table<string, table<string, HookContainer>>
 local HookManager = {}
-HookManager.tHooks = {}
 
 --- Registers a prefix hook for a method on a module.
 --- This hook will override the original method on the module.
@@ -34,11 +54,11 @@ function HookManager:AddHook(moduleName, functionName, hookMethod)
     local packageLoaded = package.loaded[moduleName]
 
     -- Add to hook table
-    if not self.tHooks[moduleName] then
-        self.tHooks[moduleName] = {}
+    if not hookManagerState.hooks[moduleName] then
+        hookManagerState.hooks[moduleName] = {}
     end
 
-    local moduleHooks = self.tHooks[moduleName]
+    local moduleHooks = hookManagerState.hooks[moduleName]
 
     -- Add to function hook table
     if not moduleHooks[functionName] then
@@ -85,7 +105,7 @@ end
 ---@return boolean
 function HookManager:SetupHookingForFunction(moduleName, functionName)
     -- Try find in tHooks
-    local moduleHooks = self.tHooks[moduleName]
+    local moduleHooks = hookManagerState.hooks[moduleName]
     if not moduleHooks then
         logger:Error(
             "No hooks registered for module: " ..
@@ -144,11 +164,11 @@ end
 
 function HookManager:OnRequiredCallbackListener(moduleName, requireReturned)
     -- Do we have hooks registered for this package?
-    if not self.tHooks[moduleName] then
+    if not hookManagerState.hooks[moduleName] then
         return
     end
 
-    for functionName, container in pairs(self.tHooks[moduleName]) do
+    for functionName, container in pairs(hookManagerState.hooks[moduleName]) do
         -- Check if the function exists
         local funcValue = requireReturned[functionName]
         local funcType = global.type(funcValue)
@@ -175,7 +195,7 @@ end
 
 -- Hook into the forgeutils require hook
 ---@diagnostic disable-next-line: undefined-field
-api.forgeutils.OnRequiredCallback = function(moduleName, requireReturned)
+api.forgeutils.onRequiredCallback = function(moduleName, requireReturned)
     HookManager:OnRequiredCallbackListener(moduleName, requireReturned)
 end
 

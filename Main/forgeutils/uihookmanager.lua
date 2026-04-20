@@ -1,7 +1,30 @@
 local global = _G
+---@class Api
+---@diagnostic disable-next-line: undefined-field
+local api = global.api
 local require = global.require
 local logger = require("forgeutils.logger").Get("UiHookManager")
 local hookManager = require("forgeutils.hookmanager")
+
+--#region Global Definitions
+
+---@class (Partial) global.api.forgeutils
+---@field uiHookManagerState forgeutils.UiHookManager.UiHookManagerState
+
+---@class (Partial) forgeutils.UiHookManager.UiHookManagerState
+---@field hooks table<string, forgeutils.UiHookManager.UiHook[]> Keys are view names and value is list of hooks to apply to wrappers on ready.
+---@field wrappers table<GamefaceUIWrapper, string> Keys are gameface UI wrappers and values are view names.
+
+-- Init global API state if not already.
+if not api.forgeutils.uiHookManagerState then
+    api.forgeutils.uiHookManagerState = {
+        hooks = {},
+        wrappers = {}
+    }
+end
+local UiHookManagerState = api.forgeutils.uiHookManagerState
+
+--#endregion
 
 --#region Definitions
 
@@ -17,11 +40,7 @@ local hookTypes = {
 ---@field file string The file that contains the JavaScript UI hook. An example is `"/js/hooks/forgeutils/hudBottomBarHook.js"`.
 
 ---@class forgeutils.UiHookManager
----@field private hooks table<string, forgeutils.UiHookManager.UiHook[]> Keys are view names and value is list of hooks to apply to wrappers on ready.
----@field private wrappers table<GamefaceUIWrapper, string> Keys are gameface UI wrappers and values are view names.
 local UiHookManager = {}
-UiHookManager.hooks = {}
-UiHookManager.wrappers = {}
 
 --- Initializes the UI hook manager by adding necessary lua injections.
 --- Note: this function should only be used internally.
@@ -65,7 +84,7 @@ end
 --- @private
 function UiHookManager:_OnInitCallback(gamefaceUiInstance, initSettings)
     ---@diagnostic disable-next-line: inject-field
-    gamefaceUiInstance.logger = logger.Get("UI[" .. initSettings.sViewName .. "]")
+    gamefaceUiInstance.logger = logger.Get("UI[" .. initSettings.sViewName .. "]", "INFO")
 end
 
 --- A callback on the UI gameface ready.
@@ -80,15 +99,15 @@ function UiHookManager:_OnReadyCallback(gamefaceUiInstance)
 
     -- Trigger ForgeUtils hooks
     local viewName = global.tostring(gamefaceUiInstance.tInitSettings.sViewName)
-    self.wrappers[gamefaceUiInstance] = viewName
-    if self.hooks[viewName] == nil then
+    UiHookManagerState.wrappers[gamefaceUiInstance] = viewName
+    if UiHookManagerState.hooks[viewName] == nil then
         logger:Debug("No hooks registered for view: " .. viewName)
         return
     end
 
-    local count = #self.hooks[viewName]
+    local count = #UiHookManagerState.hooks[viewName]
     logger:Info("Found " .. global.tostring(count) .. " hooks for view: " .. viewName)
-    for _, hook in global.ipairs(self.hooks[viewName]) do
+    for _, hook in global.ipairs(UiHookManagerState.hooks[viewName]) do
         self:_AddHookToInstance(gamefaceUiInstance, hook)
     end
 end
@@ -99,8 +118,8 @@ end
 --- @param gamefaceUiInstance GamefaceUIWrapper The gameface instance.
 --- @private
 function UiHookManager:_ShutdownCallback(gamefaceUiInstance)
-    if self.wrappers[gamefaceUiInstance] then
-        self.wrappers[gamefaceUiInstance] = nil
+    if UiHookManagerState.wrappers[gamefaceUiInstance] then
+        UiHookManagerState.wrappers[gamefaceUiInstance] = nil
     end
 end
 
@@ -192,13 +211,13 @@ end
 --- @param hook forgeutils.UiHookManager.UiHook
 --- @private
 function UiHookManager:_AddHookCommon(viewName, hook)
-    if self.hooks[viewName] == nil then
-        self.hooks[viewName] = {}
+    if UiHookManagerState.hooks[viewName] == nil then
+        UiHookManagerState.hooks[viewName] = {}
     end
 
-    local viewHooks = self.hooks[viewName]
+    local viewHooks = UiHookManagerState.hooks[viewName]
     viewHooks[#viewHooks + 1] = hook
-    for gamefaceUiWrapper, wrapperViewName in global.pairs(self.wrappers) do
+    for gamefaceUiWrapper, wrapperViewName in global.pairs(UiHookManagerState.wrappers) do
         -- Early exit
         if (wrapperViewName ~= viewName) then
             goto continue
