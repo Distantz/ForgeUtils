@@ -24,7 +24,7 @@ local ForgeUtils = {}
 ForgeUtils.version = version.new({
     major = 2,
     minor = 0,
-    patch = 0
+    patch = 1
 })
 
 return ForgeUtils
