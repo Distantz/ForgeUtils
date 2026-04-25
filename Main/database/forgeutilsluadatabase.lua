@@ -13,10 +13,10 @@ local pairs = global.pairs
 -- Setup logger
 local loggerSetup = require("forgeutils.logger")
 local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
+logger:Info("Loading ForgeUtils...")
+
 local hookManager = require("forgeutils.hookmanager")
 local uiHookManager = require("forgeutils.uihookmanager")
-
-logger:Info("Loading ForgeUtils...")
 
 local _ForgeUtilsLuaDatabase = {}
 _ForgeUtilsLuaDatabase.hasShownPopup = false
@@ -55,9 +55,6 @@ function _ForgeUtilsLuaDatabase.Init()
     )
 
     api.ui2.MapResources("ForgeUtilsUIHooks")
-
-    -- Add UI hooks
-    uiHookManager:_InitUiHookManager()
 end
 
 function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)

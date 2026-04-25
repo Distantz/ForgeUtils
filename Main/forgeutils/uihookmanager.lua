@@ -14,12 +14,14 @@ local hookManager = require("forgeutils.hookmanager")
 ---@class (Partial) forgeutils.UiHookManager.UiHookManagerState
 ---@field hooks table<string, forgeutils.UiHookManager.UiHook[]> Keys are view names and value is list of hooks to apply to wrappers on ready.
 ---@field wrappers table<GamefaceUIWrapper, string> Keys are gameface UI wrappers and values are view names.
+---@field initialized boolean Whether gameface UI hooks have been created.
 
 -- Init global API state if not already.
 if not api.forgeutils.uiHookManagerState then
     api.forgeutils.uiHookManagerState = {
         hooks = {},
-        wrappers = {}
+        wrappers = {},
+        initialized = false
     }
 end
 local UiHookManagerState = api.forgeutils.uiHookManagerState
@@ -45,6 +47,11 @@ local UiHookManager = {}
 --- Initializes the UI hook manager by adding necessary lua injections.
 --- Note: this function should only be used internally.
 function UiHookManager:_InitUiHookManager()
+    if UiHookManagerState.initialized then
+        return
+    end
+
+    UiHookManagerState.initialized = true
     logger:Info("Starting UI hook manager")
     hookManager:AddHook(
         "UI.GamefaceUIWrapper",
@@ -259,6 +266,11 @@ function UiHookManager:AddImportHook(viewName, jsImportFile)
             file = jsImportFile
         }
     )
+end
+
+-- Based on state, init if needed.
+if not UiHookManagerState.initialized then
+    UiHookManager:_InitUiHookManager()
 end
 
 return UiHookManager
