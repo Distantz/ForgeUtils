@@ -5,7 +5,6 @@ local api = global.api
 -- Inject references here to allow for Lua intellisense
 ---@class (Partial) Api
 ---@field forgeutils global.api.forgeutils? The forgeutils API field. Used to store singleton data.
----@diagnostic disable-next-line: undefined-field
 
 --- The forgeutils API field. Used to store singleton data.
 ---@class global.api.forgeutils
@@ -24,7 +23,7 @@ local ForgeUtils = {}
 ForgeUtils.version = version.new({
     major = 2,
     minor = 0,
-    patch = 1
+    patch = 2
 })
 
 return ForgeUtils
