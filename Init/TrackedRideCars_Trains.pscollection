@@ -1,4 +1,4 @@
-<PscollectionRoot count="43" game="Planet Coaster 2">
+<PscollectionRoot count="44" game="Planet Coaster 2">
   <prepared_statements pool_type="4">
     <prepared_statement arg_count="1">
       <args pool_type="4">
@@ -342,6 +342,14 @@
       </args>
       <statement_name>Trains__Update__IsWaterSlideTrain</statement_name>
       <sql_query>UPDATE Trains SET IsWaterSlideTrain = ?2 WHERE TrainID = ?1;</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="2">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="0" arg_index="2" />
+      </args>
+      <statement_name>Trains__Update__UseDefaultAudibilityRange</statement_name>
+      <sql_query>UPDATE Trains SET UseDefaultAudibilityRange = ?2 WHERE TrainID = ?1;</sql_query>
     </prepared_statement>
   </prepared_statements>
 </PscollectionRoot>

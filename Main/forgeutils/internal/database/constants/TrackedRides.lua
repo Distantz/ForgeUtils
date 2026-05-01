@@ -158,6 +158,7 @@ TrackedRides.ElementParams_StationFrontlLocationOverride = "StationFrontlLocatio
 TrackedRides.ElementParams_StationHasNoAirgates = "StationHasNoAirgates"
 TrackedRides.ElementParams_StationPitch = "StationPitch"
 TrackedRides.ElementParams_StationStopLocation = "StationStopLocation"
+TrackedRides.ElementParams_StationWallInset = "StationWallInset"
 TrackedRides.ElementParams_StopAndHoldWaitTime = "StopAndHoldWaitTime"
 TrackedRides.ElementParams_SwapToDefaultWhenSlopedDown = "SwapToDefaultWhenSlopedDown"
 TrackedRides.ElementParams_TrackMeshIndex = "TrackMeshIndex"
