@@ -37,6 +37,8 @@ TrainLibrary.CarR_Platform           = "CarR"
 TrainLibrary.BaseCarPrefab           = "CoasterCarBase"
 TrainLibrary.BaseWheelAssemblyPrefab = "CoasterCarAnimatedWheelBase"
 
+TrainLibrary.MusicPositionChild      = "MusicPosition"
+
 --#endregion
 
 --#region Simple utils
@@ -179,6 +181,23 @@ function TrainLibrary.GetSimpleWheelAssemblyPrefab(wheelAssemblyPrefabName, numb
         },
         Children = children,
         Prefab = wheelAssemblyPrefabName
+    }
+end
+
+--- Returns a music position child.
+---@param audioDopplerType integer? The doppler type. 0 is default if nil provided.
+---@return forgeutils.prefabs.TrainLibrary
+function TrainLibrary.GetMusicPositionChildPrefab(audioDopplerType)
+    if audioDopplerType == nil then
+        audioDopplerType = 0
+    end
+
+    return {
+        Components = {
+            AudioDoppler = {
+                AudioDopplerType = audioDopplerType
+            }
+        }
     }
 end
 

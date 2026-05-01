@@ -1,4 +1,6 @@
 local global = _G
+---@type Api
+---@diagnostic disable-next-line: undefined-field
 local api = global.api
 local setmetatable = global.setmetatable
 local pairs = global.pairs
@@ -201,7 +203,11 @@ function SceneryPartBuilder:addToDB()
 
     SceneryDBBindings.UIData__Insert(
         self.partID,
-        self.nameFile,
+        self.nameFile
+    )
+
+    SceneryDBBindings.UIData__Update__DescriptionTextSymbol(
+        self.partID,
         self.descFile
     )
 
