@@ -188,15 +188,15 @@ function SceneryPartBuilder:addToDB()
     SceneryDBBindings.PartControlPoints__Insert(
         self.partID
     )
-    SceneryDBBindings.PartControlPoints__Update__controlPointX(
+    SceneryDBBindings.PartControlPoints__Update__ControlPointX(
         self.partID,
         self.controlPointX
     )
-    SceneryDBBindings.PartControlPoints__Update__controlPointY(
+    SceneryDBBindings.PartControlPoints__Update__ControlPointY(
         self.partID,
         self.controlPointY
     )
-    SceneryDBBindings.PartControlPoints__Update__controlPointZ(
+    SceneryDBBindings.PartControlPoints__Update__ControlPointZ(
         self.partID,
         self.controlPointZ
     )
