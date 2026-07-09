@@ -37,6 +37,9 @@ local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
 --- @field sizeX number Default is 1m.
 --- @field sizeY number Default is 1m.
 --- @field sizeZ number Default is 1m.
+--- @field controlPointX number Default is 0.0m
+--- @field controlPointY number Default is 0.0m
+--- @field controlPointZ number Default is 0.0m
 --- @field buildCost integer Default is 0.
 --- @field hourlyRunningCost integer Default is 0.
 --- @field researchPack integer Default is nil.
@@ -55,7 +58,9 @@ function SceneryPartBuilder.new()
     instance.sizeX = 1.0
     instance.sizeY = 1.0
     instance.sizeZ = 1.0
-
+    instance.controlPointX = 0.0
+    instance.controlPointY = 0.0
+    instance.controlPointZ = 0.0
     instance.buildCost = 0
     instance.hourlyRunningCost = 0
     instance.researchPack = nil
@@ -178,6 +183,22 @@ function SceneryPartBuilder:addToDB()
         self.dataPrefab,
         self.contentPack,
         self.sizeZ * 100.0
+    )
+    
+    SceneryDBBindings.PartControlPoints__Insert(
+        self.partID
+    )
+    SceneryDBBindings.PartControlPoints__Update__ControlPointX(
+        self.partID,
+        self.controlPointX
+    )
+    SceneryDBBindings.PartControlPoints__Update__ControlPointY(
+        self.partID,
+        self.controlPointY
+    )
+    SceneryDBBindings.PartControlPoints__Update__ControlPointZ(
+        self.partID,
+        self.controlPointZ
     )
 
     SceneryDBBindings.Simulation__Insert(
