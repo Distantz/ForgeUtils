@@ -55,6 +55,9 @@ function SceneryPartBuilder.new()
     instance.sizeX = 1.0
     instance.sizeY = 1.0
     instance.sizeZ = 1.0
+    instance.ControlPointX = 1.0
+    instance.ControlPointY = 1.0
+    instance.ControlPointZ = 1.0
 
     instance.buildCost = 0
     instance.hourlyRunningCost = 0
@@ -178,6 +181,22 @@ function SceneryPartBuilder:addToDB()
         self.dataPrefab,
         self.contentPack,
         self.sizeZ * 100.0
+    )
+    
+    SceneryDBBindings.PartControlPoints__Insert(
+        self.partID
+    )
+    SceneryDBBindings.PartControlPoints__Update__ControlPointX(
+        self.partID,
+        self.ControlPointX
+    )
+    SceneryDBBindings.PartControlPoints__Update__ControlPointY(
+        self.partID,
+        self.ControlPointY
+    )
+    SceneryDBBindings.PartControlPoints__Update__ControlPointZ(
+        self.partID,
+        self.ControlPointZ
     )
 
     SceneryDBBindings.Simulation__Insert(
