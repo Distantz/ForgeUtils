@@ -19,13 +19,14 @@ TEMPLATE = """
 """
 
 def find_linked_md(folder: Path) -> Path | None:
-    sibling = folder.parent / f"{folder.name}.md"
-    if sibling.is_file():
-        return sibling
+    target_name = f"{folder.name}.md".lower()
+    for candidate in folder.parent.iterdir():
+        if candidate.is_file() and candidate.name.lower() == target_name:
+            return candidate
     # respect readme as a shorthand for folder.
-    readme = folder / "README.md"
-    if readme.is_file():
-        return readme
+    for candidate in folder.iterdir():
+        if candidate.is_file() and candidate.name.lower() == "readme.md":
+            return candidate
     return None
 
 def capitalize_name(name: str) -> str:
@@ -85,7 +86,12 @@ def build_toc(
                 rel_path = md_file.relative_to(base).as_posix()
                 lines.append(f"{prefix}- [{title}]({rel_path})")
             else:
-                lines.append(f"{prefix}- {capitalize_name(item.name)}")
+                title = capitalize_name(item.name)
+                md_file = item.parent / f"{item.name}.md"
+                md_file.write_text(f"# {title}\n", encoding="utf-8")
+                rel_path = md_file.relative_to(base).as_posix()
+                lines.append(f"{prefix}- [{title}]({rel_path})")
+                
             lines.extend(build_toc(item, base, depth + 1, exclude_dirs, exclude_files))
         else:
             title = get_title(item, fallback_name=item.stem)
