@@ -11,287 +11,287 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ## Table Schemas
 
 ### Audio
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| PlacementSound | `string\|nil` | No | `Default_Placement_Sound` |
-| DeletionSound | `string\|nil` | No | `Default_Deletion_Sound` |
-| MoveSound | `string\|nil` | No | `Default_Move_Sound` |
-| GlassComposition | `number\|nil` | No | `0` |
-| MetalComposition | `number\|nil` | No | `0` |
-| PlasticComposition | `number\|nil` | No | `0` |
-| StoneComposition | `number\|nil` | No | `0` |
-| WoodComposition | `number\|nil` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| PlacementSound | `string\|nil` |  |  |  | `Default_Placement_Sound` |
+| DeletionSound | `string\|nil` |  |  |  | `Default_Deletion_Sound` |
+| MoveSound | `string\|nil` |  |  |  | `Default_Move_Sound` |
+| GlassComposition | `number\|nil` |  |  |  | `0` |
+| MetalComposition | `number\|nil` |  |  |  | `0` |
+| PlasticComposition | `number\|nil` |  |  |  | `0` |
+| StoneComposition | `number\|nil` |  |  |  | `0` |
+| WoodComposition | `number\|nil` |  |  |  | `0` |
 
 ### Blueprint_Tags
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPart | `string` | No |  |
-| Tag | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPart | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| Tag | `string` |  |  | :white_check_mark: |  |
 
 ### BrowserCategories
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| CategoryID | `integer\|nil` | Yes |  |
-| CategoryTag | `string\|nil` | No |  |
-| Label | `string` | No |  |
-| Icon | `string\|nil` | No |  |
-| ParentID | `integer\|nil` | No |  |
-| Ordering | `integer` | No | `1` |
-| AudioOpenSound | `string\|nil` | No |  |
-| UGCWorkshopTag | `string\|nil` | No |  |
-| Category | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| CategoryID | `integer\|nil` | :white_check_mark: |  |  |  |
+| CategoryTag | `string\|nil` |  | :white_check_mark: |  |  |
+| Label | `string` |  |  |  |  |
+| Icon | `string\|nil` |  |  |  |  |
+| ParentID | `integer\|nil` |  |  |  |  |
+| Ordering | `integer` |  |  |  | `1` |
+| AudioOpenSound | `string\|nil` |  |  |  |  |
+| UGCWorkshopTag | `string\|nil` |  |  |  |  |
+| Category | `string\|nil` |  |  |  |  |
 
 ### BrowserFilters
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| FilterName | `string` | No |  |
-| Includes | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| FilterName | `string` |  |  |  |  |
+| Includes | `string` |  |  |  |  |
 
 ### ComplexTypes
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| EnumValue | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| EnumValue | `integer` |  |  | :white_check_mark: |  |
 
 ### ContentPacks
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| EnumValue | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| EnumValue | `integer` |  |  | :white_check_mark: |  |
 
 ### DevTransitionList
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string\|nil` |  |  |  |  |
 
 ### FacilityProps
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| ShopInventoryName | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| ShopInventoryName | `string\|nil` |  |  |  |  |
 
 ### FireworkEffects
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| Radius | `integer` | No |  |
-| Magnitude | `integer` | No |  |
-| Duration | `number` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| Radius | `integer` |  |  |  |  |
+| Magnitude | `integer` |  |  |  |  |
+| Duration | `number` |  |  |  |  |
 
 ### GridProps
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| CellXSize | `number` | No |  |
-| CellYSize | `number` | No |  |
-| CellZSize | `number` | No |  |
-| BoxXSize | `number` | No |  |
-| BoxYSize | `number` | No |  |
-| BoxZSize | `number` | No |  |
-| AlignmentStyle | `string` | No | `Middle` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| CellXSize | `number` |  |  |  |  |
+| CellYSize | `number` |  |  |  |  |
+| CellZSize | `number` |  |  |  |  |
+| BoxXSize | `number` |  |  |  |  |
+| BoxYSize | `number` |  |  |  |  |
+| BoxZSize | `number` |  |  |  |  |
+| AlignmentStyle | `string` |  | :white_check_mark: |  | `Middle` |
 
 ### LocalGridAlignmentStyle
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| EnumValue | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| EnumValue | `integer` |  |  | :white_check_mark: |  |
 
 ### Metadata_Tags
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPart | `string` | No |  |
-| Tag | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPart | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| Tag | `string` |  | :white_check_mark: | :white_check_mark: |  |
 
 ### ModularSceneryParts
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | Yes |  |
-| PrefabName | `string\|nil` | No |  |
-| DataPrefabName | `string` | No |  |
-| ContentPack | `string` | No |  |
-| UGCID | `string\|nil` | No | `NULL` |
-| BoxXSize | `number\|nil` | No |  |
-| BoxYSize | `number\|nil` | No |  |
-| BoxZSize | `number\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| PrefabName | `string\|nil` |  |  |  |  |
+| DataPrefabName | `string` |  | :white_check_mark: |  |  |
+| ContentPack | `string` |  | :white_check_mark: |  |  |
+| UGCID | `string\|nil` |  |  |  | `NULL` |
+| BoxXSize | `number\|nil` |  |  |  |  |
+| BoxYSize | `number\|nil` |  |  |  |  |
+| BoxZSize | `number\|nil` |  |  |  |  |
 
 ### PartComplexMembers
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | Yes |  |
-| MustBelongToComplexOfType | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| MustBelongToComplexOfType | `string\|nil` |  | :white_check_mark: |  |  |
 
 ### PartControlPoints
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| ControlPointX | `number` | No | `0` |
-| ControlPointY | `number` | No | `0` |
-| ControlPointZ | `number` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| ControlPointX | `number` |  |  |  | `0` |
+| ControlPointY | `number` |  |  |  | `0` |
+| ControlPointZ | `number` |  |  |  | `0` |
 
 ### PartCustomFilterIDs
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| CustomFilterID | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: |  |  |
+| CustomFilterID | `string` |  |  |  |  |
 
 ### PartDataPrefabs
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| PrefabName | `string` | Yes |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| PrefabName | `string` | :white_check_mark: |  | :white_check_mark: |  |
 
 ### PathExtraProps
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| BoxXSize | `number` | No |  |
-| BoxYSize | `number` | No |  |
-| BoxZSize | `number` | No |  |
-| SnapType | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| BoxXSize | `number` |  |  |  |  |
+| BoxYSize | `number` |  |  |  |  |
+| BoxZSize | `number` |  |  |  |  |
+| SnapType | `string` |  | :white_check_mark: |  |  |
 
 ### PathExtraSnapType
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SnapTypeName | `string` | Yes |  |
-| SnapTypeValue | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SnapTypeName | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| SnapTypeValue | `integer` |  |  |  |  |
 
 ### PathProps
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| JoinPartResourceName | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| JoinPartResourceName | `string` |  |  |  |  |
 
 ### SceneryScaling
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| MinSize | `number` | No |  |
-| MaxSize | `number` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| MinSize | `number` |  |  |  |  |
+| MaxSize | `number` |  |  |  |  |
 
 ### Simulation
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | Yes |  |
-| BuildCost | `integer` | No |  |
-| HourlyRunningCost | `integer\|nil` | No |  |
-| ResearchPack | `integer\|nil` | No |  |
-| RequiresUnlockInSandbox | `boolean\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| BuildCost | `integer` |  |  |  |  |
+| HourlyRunningCost | `integer\|nil` |  |  |  |  |
+| ResearchPack | `integer\|nil` |  |  |  |  |
+| RequiresUnlockInSandbox | `boolean\|nil` |  |  |  |  |
 
 ### SnapEdgePartData
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | Yes |  |
-| Size | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Size | `integer` |  |  |  |  |
 
 ### TagGroups
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| TagGroup | `string` | No |  |
-| Tag | `string` | No |  |
-| Ordering | `integer` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| TagGroup | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| Tag | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| Ordering | `integer` |  |  |  | `0` |
 
 ### TagGroupsDefinition
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| TextSymbol | `string` | No |  |
-| Ordering | `integer` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| TextSymbol | `string` |  |  |  |  |
+| Ordering | `integer` |  |  |  | `0` |
 
 ### TagGroupsToBrowserTabs
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| TabGroup | `string` | No |  |
-| BrowserTab | `string` | No |  |
-| Ordering | `integer` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| TabGroup | `string` |  | :white_check_mark: |  |  |
+| BrowserTab | `string` |  |  |  |  |
+| Ordering | `integer` |  |  |  | `0` |
 
 ### TagSet
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Tag | `string` | Yes |  |
-| TextSymbol | `string` | No |  |
-| IconPath | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Tag | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| TextSymbol | `string` |  |  |  |  |
+| IconPath | `string\|nil` |  |  |  |  |
 
 ### ThemeNames
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| ThemeName | `string` | Yes |  |
-| Tag | `string` | No |  |
-| LocTag | `string` | No |  |
-| ContentPack | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| ThemeName | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Tag | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| LocTag | `string` |  |  |  |  |
+| ContentPack | `string\|nil` |  | :white_check_mark: |  |  |
 
 ### Theming
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| Weight | `integer` | No | `0` |
-| Radius | `integer` | No | `0` |
-| FalloffRadius | `integer` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| Weight | `integer` |  |  |  | `0` |
+| Radius | `integer` |  |  |  | `0` |
+| FalloffRadius | `integer` |  |  |  | `0` |
 
 ### TriggerTargetProps
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | No |  |
-| CostPerTrigger | `integer` | No |  |
-| TriggerRunTime | `number` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| CostPerTrigger | `integer` |  |  |  |  |
+| TriggerRunTime | `number` |  |  |  |  |
 
 ### UIData
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | Yes |  |
-| LabelTextSymbol | `string` | No |  |
-| DescriptionTextSymbol | `string\|nil` | No |  |
-| Icon | `string\|nil` | No |  |
-| ReleaseGroup | `integer` | No | `1` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| LabelTextSymbol | `string` |  |  |  |  |
+| DescriptionTextSymbol | `string\|nil` |  |  |  |  |
+| Icon | `string\|nil` |  |  |  |  |
+| ReleaseGroup | `integer` |  |  |  | `1` |
 
 ### UIPartOrdering
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| DataPrefabName | `string` | Yes |  |
-| OrderingValue | `integer` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| DataPrefabName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| OrderingValue | `integer` |  |  |  | `0` |
 
 ### UtilityConnection
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | Yes |  |
-| UtilityType | `string` | No |  |
-| CostPerMeter | `number` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| UtilityType | `string` |  | :white_check_mark: |  |  |
+| CostPerMeter | `number` |  |  |  |  |
 
 ### UtilityConsumer
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | Yes |  |
-| UtilityType | `string` | Yes |  |
-| RequiredUtilityQuantity | `number` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| UtilityType | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| RequiredUtilityQuantity | `number` |  |  |  |  |
 
 ### UtilityDistribution
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | Yes |  |
-| UtilityType | `string` | No |  |
-| RateOfTransfer | `number` | No |  |
-| RadiusOfEffect | `number` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| UtilityType | `string` |  | :white_check_mark: |  |  |
+| RateOfTransfer | `number` |  |  |  |  |
+| RadiusOfEffect | `number` |  |  |  |  |
 
 ### UtilityProduction
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| SceneryPartName | `string` | Yes |  |
-| UtilityType | `string` | Yes |  |
-| ProductionPerHour | `number` | No |  |
-| CostPerUtilityPerHour | `number` | No |  |
-| TotalBreakdownTimeMinutes | `number` | No |  |
-| ServiceCostPerPct | `integer` | No |  |
-| EfficiencyRespite | `number` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| UtilityType | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| ProductionPerHour | `number` |  |  |  |  |
+| CostPerUtilityPerHour | `number` |  |  |  |  |
+| TotalBreakdownTimeMinutes | `number` |  |  |  |  |
+| ServiceCostPerPct | `integer` |  |  |  |  |
+| EfficiencyRespite | `number` |  |  |  |  |
 
 ### UtilityTypes
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| UtilityType | `string` | Yes |  |
-| EnumValue | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| UtilityType | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| EnumValue | `integer` |  |  | :white_check_mark: |  |
 
 ### WaterCleanliness
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| WaterConsumerType | `string` | Yes |  |
-| WaterConsumerEnum | `integer` | No |  |
-| CleanlinessScalar | `number` | No |  |
-| VolumeMultiplier | `number` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| WaterConsumerType | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| WaterConsumerEnum | `integer` |  |  | :white_check_mark: |  |
+| CleanlinessScalar | `number` |  |  |  |  |
+| VolumeMultiplier | `number` |  |  |  |  |

@@ -11,7 +11,7 @@ import sys
 def extract_table_data(table_name, cursor) -> TableData:
     cursor.execute(f"PRAGMA table_info({table_name});")
     columns = cursor.fetchall()
-    params : dict[str, TableParam] = {
+    params: dict[str, TableParam] = {
         col[1]: TableParam(
             col[2],
             bool(col[3]),
@@ -20,26 +20,25 @@ def extract_table_data(table_name, cursor) -> TableData:
         )
         for col in columns
     }
-    
+
     cursor.execute(f"PRAGMA foreign_key_list({table_name});")
     foreign_keys = cursor.fetchall()
     foreign_key_columns = {fk[3] for fk in foreign_keys}
 
     cursor.execute(f"PRAGMA index_list({table_name});")
     indexes = cursor.fetchall()
-    unique_columns = []
+    unique_columns = set()
     for _, index_name, unique, *_ in indexes:
         if unique:
             cursor.execute(f"PRAGMA index_info({index_name});")
             index_cols = cursor.fetchall()
             for col in index_cols:
-                unique_columns.append(col[2])
-    
-    data = TableData()
+                unique_columns.add(col[2])
 
     for param_name, param_data in params.items():
+        param_data.foreign_key = param_name in foreign_key_columns
+        param_data.unique = param_name in unique_columns
 
-        # Look at data distribution for this column.
         cursor.execute(f"SELECT {param_name}, COUNT(*) AS freq, ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct_of_total FROM {table_name} GROUP BY {param_name} ORDER BY freq DESC LIMIT 5;")
         results = cursor.fetchall()
         param_data.most_common_values = [
@@ -47,16 +46,7 @@ def extract_table_data(table_name, cursor) -> TableData:
             for val in results
         ]
 
-        data.parameters[param_name] = param_data
-
-        if param_data.primary_key or param_name in foreign_key_columns or param_name in unique_columns:
-            data.primary_keys[param_name] = param_data
-        elif not (param_data.default is not None or not param_data.not_null):
-            data.required_parameters[param_name] = param_data
-        else:
-            data.optional_parameters[param_name] = param_data
-
-    return data
+    return TableData(params)
 
 def _generate_for_table(database_name : str, table_name : str, table_data : TableData, lua_manager : str = "TestManager") -> tuple[ET.Element, str] :
     statements : list[ET.Element] = []

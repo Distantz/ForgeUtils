@@ -11,325 +11,325 @@ This page documents the schema for the tables within the `TrackedRides` database
 ## Table Schemas
 
 ### BlueprintTags
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Tag | `string` | Yes |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Tag | `string` | :white_check_mark: |  | :white_check_mark: |  |
 
 ### BrowserEntries
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Label | `string` | No |  |
-| Icon | `string\|nil` | No |  |
-| Description | `string` | No |  |
-| ReleaseGroup | `integer` | No | `1` |
-| Manufacturer | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Label | `string` |  |  |  |  |
+| Icon | `string\|nil` |  |  |  |  |
+| Description | `string` |  |  |  |  |
+| ReleaseGroup | `integer` |  |  |  | `1` |
+| Manufacturer | `string\|nil` |  |  |  |  |
 
 ### BrowserMenus
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| Label | `string\|nil` | No |  |
-| Icon | `string\|nil` | No |  |
-| Ordering | `integer` | No |  |
-| Parent | `string\|nil` | No |  |
-| IsCoaster | `boolean\|nil` | No |  |
-| AudioOpenSound | `string\|nil` | No |  |
-| IsWaterSlide | `boolean\|nil` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Label | `string\|nil` |  |  |  |  |
+| Icon | `string\|nil` |  |  |  |  |
+| Ordering | `integer` |  |  |  |  |
+| Parent | `string\|nil` |  | :white_check_mark: |  |  |
+| IsCoaster | `boolean\|nil` |  |  |  |  |
+| AudioOpenSound | `string\|nil` |  |  |  |  |
+| IsWaterSlide | `boolean\|nil` |  |  |  | `0` |
 
 ### BrowserTooltips
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | No |  |
-| Tooltip | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` |  | :white_check_mark: |  |  |
+| Tooltip | `string` |  |  |  |  |
 
 ### CinematicCameraWeights
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Car | `integer` | No | `0` |
-| CarFacing | `integer` | No | `0` |
-| FixFollow | `integer` | No | `30` |
-| FrontBumper | `integer` | No | `0` |
-| GroundFollow | `integer` | No | `30` |
-| Orbit | `integer` | No | `0` |
-| Seat | `integer` | No | `0` |
-| SeatFacing | `integer` | No | `0` |
-| SlideFollow | `integer` | No | `30` |
-| Wing | `integer` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Car | `integer` |  |  |  | `0` |
+| CarFacing | `integer` |  |  |  | `0` |
+| FixFollow | `integer` |  |  |  | `30` |
+| FrontBumper | `integer` |  |  |  | `0` |
+| GroundFollow | `integer` |  |  |  | `30` |
+| Orbit | `integer` |  |  |  | `0` |
+| Seat | `integer` |  |  |  | `0` |
+| SeatFacing | `integer` |  |  |  | `0` |
+| SlideFollow | `integer` |  |  |  | `30` |
+| Wing | `integer` |  |  |  | `0` |
 
 ### Class
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Type | `string` | Yes |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Type | `string` | :white_check_mark: |  | :white_check_mark: |  |
 
 ### ContentPacks
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| EnumValue | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| EnumValue | `string` |  |  | :white_check_mark: |  |
 
 ### DefaultFlexiColours
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| SemanticTag | `string` | No | `""` |
-| MaterialCustomisationProviderSlot | `integer` | Yes |  |
-| Red | `integer` | No |  |
-| Green | `integer` | No |  |
-| Blue | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| SemanticTag | `string` |  |  |  | `""` |
+| MaterialCustomisationProviderSlot | `integer` | :white_check_mark: |  | :white_check_mark: |  |
+| Red | `integer` |  |  |  |  |
+| Green | `integer` |  |  |  |  |
+| Blue | `integer` |  |  |  |  |
 
 ### ElementConversion
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Element | `string` | Yes |  |
-| ConvertToElement | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Element | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| ConvertToElement | `string` |  |  |  |  |
 
 ### ElementData
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| Type | `string` | No |  |
-| Label | `string\|nil` | No |  |
-| Icon | `string\|nil` | No |  |
-| Cost | `integer` | No |  |
-| RequiredPower | `number` | No | `0.0` |
-| LeadsInto | `string\|nil` | No |  |
-| TrackWearMultiplier | `number` | No | `0` |
-| DisabledText | `string` | No |  |
-| Ordering | `number` | No |  |
-| LeadsOutOf | `string\|nil` | No |  |
-| CanGoUnderwater | `boolean\|nil` | No | `0` |
-| DescriptionText | `string\|nil` | No |  |
-| Description2Text | `string\|nil` | No |  |
-| Description3Text | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Type | `string` |  |  |  |  |
+| Label | `string\|nil` |  |  |  |  |
+| Icon | `string\|nil` |  |  |  |  |
+| Cost | `integer` |  |  |  |  |
+| RequiredPower | `number` |  |  |  | `0.0` |
+| LeadsInto | `string\|nil` |  |  |  |  |
+| TrackWearMultiplier | `number` |  |  |  | `0` |
+| DisabledText | `string` |  |  |  |  |
+| Ordering | `number` |  |  | :white_check_mark: |  |
+| LeadsOutOf | `string\|nil` |  |  |  |  |
+| CanGoUnderwater | `boolean\|nil` |  |  |  | `0` |
+| DescriptionText | `string\|nil` |  |  |  |  |
+| Description2Text | `string\|nil` |  |  |  |  |
+| Description3Text | `string\|nil` |  |  |  |  |
 
 ### ElementLists
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Element | `string` | Yes |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Element | `string` | :white_check_mark: |  | :white_check_mark: |  |
 
 ### ElementParamValueLabels
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| LabelSetName | `string` | No |  |
-| ParamValue | `integer` | No |  |
-| LocString | `string` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| LabelSetName | `string` |  |  |  |  |
+| ParamValue | `integer` |  |  |  |  |
+| LocString | `string` |  |  |  |  |
 
 ### ElementParams
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Element | `string` | Yes |  |
-| Param | `string` | Yes |  |
-| Min | `number` | No |  |
-| Max | `number` | No |  |
-| Initial | `number` | No |  |
-| Step | `number` | No |  |
-| StepIsRelativeToMin | `integer\|nil` | No | `0` |
-| LabelOverride | `string\|nil` | No |  |
-| ValueLabelSetName | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Element | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Param | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Min | `number` |  |  |  |  |
+| Max | `number` |  |  |  |  |
+| Initial | `number` |  |  |  |  |
+| Step | `number` |  |  |  |  |
+| StepIsRelativeToMin | `integer\|nil` |  |  |  | `0` |
+| LabelOverride | `string\|nil` |  |  |  |  |
+| ValueLabelSetName | `string\|nil` |  |  |  |  |
 
 ### ElementTypes
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Type | `string` | Yes |  |
-| Icon | `string\|nil` | No |  |
-| Ordering | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Type | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Icon | `string\|nil` |  |  |  |  |
+| Ordering | `integer` |  |  | :white_check_mark: |  |
 
 ### ElementUsesRideParams
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Element | `string` | Yes |  |
-| Param | `string` | Yes |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Element | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Param | `string` | :white_check_mark: |  | :white_check_mark: |  |
 
 ### FilterGroupDefinitions
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| TextSymbol | `string` | No |  |
-| Ordering | `integer` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| TextSymbol | `string` |  |  |  |  |
+| Ordering | `integer` |  |  |  | `0` |
 
 ### FilterGroups
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| GroupName | `string` | No |  |
-| TagName | `string` | No |  |
-| Ordering | `integer` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| GroupName | `string` |  |  |  |  |
+| TagName | `string` |  | :white_check_mark: |  |  |
+| Ordering | `integer` |  |  |  | `0` |
 
 ### FlumePlatforms
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Platform | `string` | Yes |  |
-| Label | `string` | No |  |
-| Icon | `string\|nil` | No |  |
-| Description | `string` | No |  |
-| Cost | `integer` | No |  |
-| ContentPack | `string` | No |  |
-| ResearchLevel | `integer` | No |  |
-| SupportBasePrefab | `string\|nil` | No |  |
-| Width | `number` | No | `4` |
-| Length | `number` | No | `4` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Platform | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Label | `string` |  |  |  |  |
+| Icon | `string\|nil` |  |  |  |  |
+| Description | `string` |  |  |  |  |
+| Cost | `integer` |  |  |  |  |
+| ContentPack | `string` |  |  |  |  |
+| ResearchLevel | `integer` |  |  |  |  |
+| SupportBasePrefab | `string\|nil` |  |  |  |  |
+| Width | `number` |  |  |  | `4` |
+| Length | `number` |  |  |  | `4` |
 
 ### MetadataTags
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Tag | `string` | Yes |  |
-| TextSymbol | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Tag | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| TextSymbol | `string\|nil` |  |  |  |  |
 
 ### RideData
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Track | `string\|nil` | No |  |
-| Name | `string\|nil` | No |  |
-| Class | `string\|nil` | No |  |
-| TrackCost | `number` | No |  |
-| SpecificPowerMultiplier | `number` | No | `1.0` |
-| BreakdownTimeMultiplier | `number` | No |  |
-| MaxTrackHeightFeet | `number` | No |  |
-| PlatformHeight | `number` | No | `2` |
-| HeightAbovePlatform | `number` | No | `0` |
-| TrackGapWidth | `number` | No | `2` |
-| TrackBlockWidth | `number` | No | `4` |
-| PlatformBlockWidth | `number` | No | `4` |
-| SplineElement | `string` | No |  |
-| StationElement | `string` | No |  |
-| ChainElement | `string\|nil` | No |  |
-| StationWidth | `number` | No | `8` |
-| AudioType | `string\|nil` | No | `Metal` |
-| BlockSection | `boolean` | No |  |
-| MaxSlopeDeltaDegrees | `number` | No | `90` |
-| MaxBankDeltaDegrees | `number` | No | `90` |
-| BuildBackwards | `boolean` | No | `0` |
-| ContentPack | `string` | No |  |
-| HeightOffsetOnWater | `number\|nil` | No | `0` |
-| TrainTypeName | `string\|nil` | No | `Car` |
-| GroupTrainTypeName | `string\|nil` | No | `Train` |
-| CustomPlatformSpatial | `number\|nil` | No | `0` |
-| DefaultStationRailCount | `integer\|nil` | No | `1` |
-| MaxStationCount | `integer\|nil` | No | `0` |
-| LastTrackElement | `string\|nil` | No |  |
-| ShuttleMode | `boolean` | No | `0` |
-| FlumePlacementOffset | `number` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Track | `string\|nil` |  |  |  |  |
+| Name | `string\|nil` |  |  |  |  |
+| Class | `string\|nil` |  |  |  |  |
+| TrackCost | `number` |  |  |  |  |
+| SpecificPowerMultiplier | `number` |  |  |  | `1.0` |
+| BreakdownTimeMultiplier | `number` |  |  |  |  |
+| MaxTrackHeightFeet | `number` |  |  |  |  |
+| PlatformHeight | `number` |  |  |  | `2` |
+| HeightAbovePlatform | `number` |  |  |  | `0` |
+| TrackGapWidth | `number` |  |  |  | `2` |
+| TrackBlockWidth | `number` |  |  |  | `4` |
+| PlatformBlockWidth | `number` |  |  |  | `4` |
+| SplineElement | `string` |  |  |  |  |
+| StationElement | `string` |  |  |  |  |
+| ChainElement | `string\|nil` |  |  |  |  |
+| StationWidth | `number` |  |  |  | `8` |
+| AudioType | `string\|nil` |  |  |  | `Metal` |
+| BlockSection | `boolean` |  |  |  |  |
+| MaxSlopeDeltaDegrees | `number` |  |  |  | `90` |
+| MaxBankDeltaDegrees | `number` |  |  |  | `90` |
+| BuildBackwards | `boolean` |  |  |  | `0` |
+| ContentPack | `string` |  | :white_check_mark: |  |  |
+| HeightOffsetOnWater | `number\|nil` |  |  |  | `0` |
+| TrainTypeName | `string\|nil` |  |  |  | `Car` |
+| GroupTrainTypeName | `string\|nil` |  |  |  | `Train` |
+| CustomPlatformSpatial | `number\|nil` |  |  |  | `0` |
+| DefaultStationRailCount | `integer\|nil` |  |  |  | `1` |
+| MaxStationCount | `integer\|nil` |  |  |  | `0` |
+| LastTrackElement | `string\|nil` |  |  |  |  |
+| ShuttleMode | `boolean` |  |  |  | `0` |
+| FlumePlacementOffset | `number` |  |  |  | `0` |
 
 ### RideFlumePlatforms
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Platform | `string` | Yes |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Platform | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
 
 ### RideMetadataTags
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Tag | `string` | Yes |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Tag | `string` | :white_check_mark: |  | :white_check_mark: |  |
 
 ### RideParams
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Param | `string` | Yes |  |
-| Min | `number` | No |  |
-| Max | `number` | No |  |
-| Initial | `number` | No |  |
-| Step | `number` | No |  |
-| StepIsRelativeToMin | `integer\|nil` | No | `0` |
-| LabelOverride | `string\|nil` | No |  |
-| ValueLabelSetName | `string\|nil` | No |  |
-| AbsoluteMin | `number\|nil` | No |  |
-| AbsoluteMax | `number\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Param | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Min | `number` |  |  |  |  |
+| Max | `number` |  |  |  |  |
+| Initial | `number` |  |  |  |  |
+| Step | `number` |  |  |  |  |
+| StepIsRelativeToMin | `integer\|nil` |  |  |  | `0` |
+| LabelOverride | `string\|nil` |  |  |  |  |
+| ValueLabelSetName | `string\|nil` |  |  |  |  |
+| AbsoluteMin | `number\|nil` |  |  |  |  |
+| AbsoluteMax | `number\|nil` |  |  |  |  |
 
 ### RideTrains
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Train | `string` | Yes |  |
-| Sort | `integer` | No |  |
-| SceneryAttachmentGroup | `integer\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Train | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Sort | `integer` |  |  |  |  |
+| SceneryAttachmentGroup | `integer\|nil` |  |  |  |  |
 
 ### RideTrains_Extra
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string` | Yes |  |
-| Train | `string` | Yes |  |
-| Sort | `integer` | No |  |
-| SceneryAttachmentGroup | `integer\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Train | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Sort | `integer` |  |  |  |  |
+| SceneryAttachmentGroup | `integer\|nil` |  |  |  |  |
 
 ### Simulation
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| ExcitementRating | `number` | No |  |
-| IntensityRating | `number` | No |  |
-| NauseaRating | `number` | No |  |
-| Prestige | `integer` | No |  |
-| TicketCost | `integer` | No |  |
-| SupportsChildGuests | `boolean` | No | `1` |
-| MaximumGroupSize | `integer\|nil` | No |  |
-| IsTransport | `boolean` | No | `0` |
-| ResearchPack | `integer\|nil` | No |  |
-| IsBoomerang | `boolean\|nil` | No | `0` |
-| IsLoopedAsDefault | `boolean\|nil` | No | `0` |
-| RequiresEndLoops | `boolean\|nil` | No | `0` |
-| IsNonStop | `boolean` | No | `0` |
-| AllowsFreeEnds | `boolean\|nil` | No | `0` |
-| IsWaterSlide | `boolean` | No | `0` |
-| IsSwimsuit | `boolean` | No | `0` |
-| IsChildOnly | `boolean` | No | `0` |
-| ServiceInterval | `number\|nil` | No | `1800` |
-| IsParade | `boolean` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| ExcitementRating | `number` |  |  |  |  |
+| IntensityRating | `number` |  |  |  |  |
+| NauseaRating | `number` |  |  |  |  |
+| Prestige | `integer` |  |  |  |  |
+| TicketCost | `integer` |  |  |  |  |
+| SupportsChildGuests | `boolean` |  |  |  | `1` |
+| MaximumGroupSize | `integer\|nil` |  |  |  |  |
+| IsTransport | `boolean` |  |  |  | `0` |
+| ResearchPack | `integer\|nil` |  |  |  |  |
+| IsBoomerang | `boolean\|nil` |  |  |  | `0` |
+| IsLoopedAsDefault | `boolean\|nil` |  |  |  | `0` |
+| RequiresEndLoops | `boolean\|nil` |  |  |  | `0` |
+| IsNonStop | `boolean` |  |  |  | `0` |
+| AllowsFreeEnds | `boolean\|nil` |  |  |  | `0` |
+| IsWaterSlide | `boolean` |  |  |  | `0` |
+| IsSwimsuit | `boolean` |  |  |  | `0` |
+| IsChildOnly | `boolean` |  |  |  | `0` |
+| ServiceInterval | `number\|nil` |  |  |  | `1800` |
+| IsParade | `boolean` |  |  |  | `0` |
 
 ### TrackParamEnum
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Name | `string` | Yes |  |
-| Enum | `integer` | No |  |
-| Icon | `string\|nil` | No |  |
-| Units | `string\|nil` | No |  |
-| Multiplier | `number` | No | `1` |
-| Deadzone | `number` | No | `0` |
-| Sort | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Enum | `integer` |  |  | :white_check_mark: |  |
+| Icon | `string\|nil` |  |  |  |  |
+| Units | `string\|nil` |  |  |  |  |
+| Multiplier | `number` |  |  |  | `1` |
+| Deadzone | `number` |  |  |  | `0` |
+| Sort | `integer` |  |  | :white_check_mark: |  |
 
 ### TransitionList
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| TrackedRideName | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| TrackedRideName | `string\|nil` |  |  |  |  |
 
 ### UtilityConsumer
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| RideName | `string` | No |  |
-| UtilityType | `string` | No |  |
-| RequiredUtilityQuantity | `number` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| RideName | `string` |  | :white_check_mark: |  |  |
+| UtilityType | `string` |  | :white_check_mark: |  |  |
+| RequiredUtilityQuantity | `number` |  |  |  |  |
 
 ### UtilityTypes
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| UtilityType | `string` | Yes |  |
-| EnumValue | `integer` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| UtilityType | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| EnumValue | `integer` |  |  | :white_check_mark: |  |
 
 ### Trains
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| Ride | `string\|nil` | No |  |
-| Train | `string` | No |  |
-| NumCars | `integer` | No |  |
-| MinCars | `integer` | No |  |
-| MaxCars | `integer` | No |  |
-| Powered_MinSpeed | `number\|nil` | No | `0` |
-| Powered_MaxSpeed | `number\|nil` | No | `0` |
-| Powered_DefaultSpeed | `number\|nil` | No | `0` |
-| Powered_SpeedRangeMinDelta | `number\|nil` | No | `0` |
-| Powered_SpeedRangeMaxDelta | `number\|nil` | No | `0` |
-| AllowCrashTestDummies | `boolean\|nil` | No | `1` |
-| IsRacing | `boolean` | No | `0` |
-| NumPassesThroughStation | `integer` | No | `1` |
-| MinNumPassesThroughStation | `integer` | No | `1` |
-| MaxNumPassesThroughStation | `integer` | No | `1` |
-| HardMaxTrains | `integer` | No | `20` |
-| Powered_Behaviour | `integer` | No | `0` |
-| Powered_CanChangeBehaviour | `boolean` | No | `0` |
-| IsDefaultTrainForRide | `boolean` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Ride | `string\|nil` |  | :white_check_mark: |  |  |
+| Train | `string` |  |  | :white_check_mark: |  |
+| NumCars | `integer` |  |  |  |  |
+| MinCars | `integer` |  |  |  |  |
+| MaxCars | `integer` |  |  |  |  |
+| Powered_MinSpeed | `number\|nil` |  |  |  | `0` |
+| Powered_MaxSpeed | `number\|nil` |  |  |  | `0` |
+| Powered_DefaultSpeed | `number\|nil` |  |  |  | `0` |
+| Powered_SpeedRangeMinDelta | `number\|nil` |  |  |  | `0` |
+| Powered_SpeedRangeMaxDelta | `number\|nil` |  |  |  | `0` |
+| AllowCrashTestDummies | `boolean\|nil` |  |  |  | `1` |
+| IsRacing | `boolean` |  |  |  | `0` |
+| NumPassesThroughStation | `integer` |  |  |  | `1` |
+| MinNumPassesThroughStation | `integer` |  |  |  | `1` |
+| MaxNumPassesThroughStation | `integer` |  |  |  | `1` |
+| HardMaxTrains | `integer` |  |  |  | `20` |
+| Powered_Behaviour | `integer` |  |  |  | `0` |
+| Powered_CanChangeBehaviour | `boolean` |  |  |  | `0` |
+| IsDefaultTrainForRide | `boolean` |  |  |  |  |

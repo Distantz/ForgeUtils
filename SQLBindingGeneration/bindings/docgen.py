@@ -16,11 +16,11 @@ This page documents the schema for the tables within the `{0}` database.
 
 table_schema_template = """
 ### {0}
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
 {1}"""
 
-schema_param_template = "| {0} | {1} | {2} | {3} |"
+schema_param_template = "| {0} | {1} | {2} | {3} | {4} | {5} |"
 
 def generate_doc_source_file(
     database_name : str,
@@ -65,7 +65,9 @@ def get_param_entry(
     return schema_param_template.format(
         name,
         get_lua_type(param),
-        "Yes" if param.primary_key else "No",
+        get_doc_display_for_tick(param.primary_key),
+        get_doc_display_for_tick(param.foreign_key),
+        get_doc_display_for_tick(param.unique),
         f"`{param.default}`" if param.default is not None else ""
     )
 
@@ -77,3 +79,6 @@ def get_lua_type(
     if not param.not_null:
         luatype += "\|nil"
     return f"`{luatype}`"
+
+def get_doc_display_for_tick(bool : bool) -> str:
+    return ":white_check_mark:" if bool else ""

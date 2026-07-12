@@ -11,90 +11,90 @@ This page documents the schema for the tables within the `TrackedRideCars` datab
 ## Table Schemas
 
 ### Cars
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| TrainID | `string` | No |  |
-| WhichCar | `string\|nil` | No |  |
-| CarOrder | `integer\|nil` | No | `0` |
-| CarID | `string` | Yes |  |
-| Prefab | `string\|nil` | No |  |
-| Mass | `number` | No |  |
-| PlatformPrefab | `string\|nil` | No |  |
-| IsPowered | `boolean\|nil` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| TrainID | `string` |  | :white_check_mark: |  |  |
+| WhichCar | `string\|nil` |  |  |  |  |
+| CarOrder | `integer\|nil` |  |  |  | `0` |
+| CarID | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Prefab | `string\|nil` |  |  |  |  |
+| Mass | `number` |  |  |  |  |
+| PlatformPrefab | `string\|nil` |  |  |  |  |
+| IsPowered | `boolean\|nil` |  |  |  | `0` |
 
 ### CatchTrains
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| TrainID | `string` | Yes |  |
-| ShouldWait | `boolean` | No | `0` |
-| CatchOnReturn | `boolean` | No | `0` |
-| MatchSpeed | `boolean` | No | `0` |
-| CatchOnFinalLap | `boolean` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| TrainID | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| ShouldWait | `boolean` |  |  |  | `0` |
+| CatchOnReturn | `boolean` |  |  |  | `0` |
+| MatchSpeed | `boolean` |  |  |  | `0` |
+| CatchOnFinalLap | `boolean` |  |  |  | `0` |
 
 ### RacingTrains
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| TrainID | `string` | Yes |  |
-| PitOffset | `number\|nil` | No |  |
-| PitFront | `number\|nil` | No |  |
-| PitStep | `number\|nil` | No |  |
-| StartingOffset | `number\|nil` | No |  |
-| StartingFront | `number\|nil` | No |  |
-| StartingStep | `number\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| TrainID | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| PitOffset | `number\|nil` |  |  |  |  |
+| PitFront | `number\|nil` |  |  |  |  |
+| PitStep | `number\|nil` |  |  |  |  |
+| StartingOffset | `number\|nil` |  |  |  |  |
+| StartingFront | `number\|nil` |  |  |  |  |
+| StartingStep | `number\|nil` |  |  |  |  |
 
 ### Trains
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| TrainID | `string` | Yes |  |
-| StaticFriction | `number\|nil` | No | `0.06` |
-| AirResistance | `number\|nil` | No | `0.02` |
-| DynamicFriction | `number\|nil` | No | `0.04` |
-| DynamicFriction_Alternate | `number\|nil` | No |  |
-| LuaScoringModule | `string\|nil` | No | `DefaultScoring` |
-| BaseExcitement | `number\|nil` | No |  |
-| BaseFear | `number\|nil` | No |  |
-| BaseNausea | `number\|nil` | No |  |
-| CanAddOffStation | `boolean` | No |  |
-| AudioSpeedThreshold | `number\|nil` | No | `25` |
-| AudioAccnThreshold | `number\|nil` | No | `30` |
-| AudioWeightThreshold | `number\|nil` | No | `100` |
-| AudioLateralThreshold | `number\|nil` | No | `50` |
-| AudioUseFrontAxelForFlanges | `number\|nil` | No | `0` |
-| AudioIgnoreFrontCarForFlanges | `number\|nil` | No | `0` |
-| AudioIgnoreRearCarForFlanges | `number\|nil` | No | `1` |
-| AudioIgnoreMidCarsForFlanges | `number\|nil` | No | `1` |
-| AudioChainLiftPrefix | `string\|nil` | No | `CL` |
-| AudioBrakePrefix | `string\|nil` | No | `Fri` |
-| DefaultRideMusic | `string\|nil` | No | `NO_MUSIC` |
-| UniqueEngineSound | `number\|nil` | No | `0` |
-| PlayMusicContinuously | `boolean\|nil` | No | `0` |
-| PlayMusicOnAllCarsSimultaneously | `boolean\|nil` | No | `0` |
-| AudioGuestsUseExcitement | `boolean` | No | `1` |
-| AudioGuestsUseFear | `boolean` | No | `1` |
-| AudioGuestsUseSpecialBehaviour | `boolean` | No | `1` |
-| UseTransportRideMusic | `boolean` | No | `0` |
-| TreatAsCoaster | `boolean` | No | `1` |
-| AudioMaxRange | `number\|nil` | No | `500` |
-| CatchTrainType | `string\|nil` | No |  |
-| NumCatchCars | `integer` | No | `0` |
-| ReverseCatchTrainType | `string\|nil` | No |  |
-| NumReverseCatchCars | `integer` | No | `0` |
-| SplitCatchTrainType | `string\|nil` | No |  |
-| SplitNormalTrainDelay | `number` | No | `0` |
-| AudioPrefixOverride | `string\|nil` | No |  |
-| UseMirrorCarRotation | `boolean\|nil` | No | `0` |
-| ForceCarAttachOffsetYToZero | `boolean\|nil` | No | `0` |
-| ForceCarAttachOffsetYToValue | `number\|nil` | No | `0` |
-| AudioCabinIsEnclosed | `boolean` | No | `0` |
-| IsWaterSlideTrain | `integer` | No | `0` |
-| UseDefaultAudibilityRange | `boolean` | No | `0` |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| TrainID | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| StaticFriction | `number\|nil` |  |  |  | `0.06` |
+| AirResistance | `number\|nil` |  |  |  | `0.02` |
+| DynamicFriction | `number\|nil` |  |  |  | `0.04` |
+| DynamicFriction_Alternate | `number\|nil` |  |  |  |  |
+| LuaScoringModule | `string\|nil` |  |  |  | `DefaultScoring` |
+| BaseExcitement | `number\|nil` |  |  |  |  |
+| BaseFear | `number\|nil` |  |  |  |  |
+| BaseNausea | `number\|nil` |  |  |  |  |
+| CanAddOffStation | `boolean` |  |  |  |  |
+| AudioSpeedThreshold | `number\|nil` |  |  |  | `25` |
+| AudioAccnThreshold | `number\|nil` |  |  |  | `30` |
+| AudioWeightThreshold | `number\|nil` |  |  |  | `100` |
+| AudioLateralThreshold | `number\|nil` |  |  |  | `50` |
+| AudioUseFrontAxelForFlanges | `number\|nil` |  |  |  | `0` |
+| AudioIgnoreFrontCarForFlanges | `number\|nil` |  |  |  | `0` |
+| AudioIgnoreRearCarForFlanges | `number\|nil` |  |  |  | `1` |
+| AudioIgnoreMidCarsForFlanges | `number\|nil` |  |  |  | `1` |
+| AudioChainLiftPrefix | `string\|nil` |  |  |  | `CL` |
+| AudioBrakePrefix | `string\|nil` |  |  |  | `Fri` |
+| DefaultRideMusic | `string\|nil` |  |  |  | `NO_MUSIC` |
+| UniqueEngineSound | `number\|nil` |  |  |  | `0` |
+| PlayMusicContinuously | `boolean\|nil` |  |  |  | `0` |
+| PlayMusicOnAllCarsSimultaneously | `boolean\|nil` |  |  |  | `0` |
+| AudioGuestsUseExcitement | `boolean` |  |  |  | `1` |
+| AudioGuestsUseFear | `boolean` |  |  |  | `1` |
+| AudioGuestsUseSpecialBehaviour | `boolean` |  |  |  | `1` |
+| UseTransportRideMusic | `boolean` |  |  |  | `0` |
+| TreatAsCoaster | `boolean` |  |  |  | `1` |
+| AudioMaxRange | `number\|nil` |  |  |  | `500` |
+| CatchTrainType | `string\|nil` |  |  |  |  |
+| NumCatchCars | `integer` |  |  |  | `0` |
+| ReverseCatchTrainType | `string\|nil` |  |  |  |  |
+| NumReverseCatchCars | `integer` |  |  |  | `0` |
+| SplitCatchTrainType | `string\|nil` |  |  |  |  |
+| SplitNormalTrainDelay | `number` |  |  |  | `0` |
+| AudioPrefixOverride | `string\|nil` |  |  |  |  |
+| UseMirrorCarRotation | `boolean\|nil` |  |  |  | `0` |
+| ForceCarAttachOffsetYToZero | `boolean\|nil` |  |  |  | `0` |
+| ForceCarAttachOffsetYToValue | `number\|nil` |  |  |  | `0` |
+| AudioCabinIsEnclosed | `boolean` |  |  |  | `0` |
+| IsWaterSlideTrain | `integer` |  |  |  | `0` |
+| UseDefaultAudibilityRange | `boolean` |  |  |  | `0` |
 
 ### TransitionList
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| TrackedRideName | `string\|nil` | No |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| TrackedRideName | `string\|nil` |  |  |  |  |
 
 ### WhichCar
-| Name | Lua Type | Primary Key | Default Value |
-| ---- | -------- | ----------- | ------------- |
-| ID | `string` | Yes |  |
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| ID | `string` | :white_check_mark: |  | :white_check_mark: |  |
