@@ -44,23 +44,34 @@ runs:
 
         cat "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md"
 
+    - name: Postprocess Docs
+      shell: bash
+      run: |
+        DOCS_PATH="${{ github.workspace }}/Docs"
+
+        # Make folder-based for autogen
+        python3 "${DOCS_PATH}/postprocess_luals.py" "${DOCS_PATH}/src/API/forgeutils/"
+
+        # Generate Summary.MD
+        python3 "${DOCS_PATH}/gen_summary.py" "${DOCS_PATH}/src/" "${DOCS_PATH}/src/SUMMARY.md"
+
     - name: Build mdbook documentation
       shell: bash
       run: |
-        cd "${{ github.workspace }}/Docs"
+        cd "${DOCS_PATH}"
         mdbook build
 
     - name: Check mdbook output
       shell: bash
       run: |
         echo "Contents of Docs after build:"
-        ls -l "${{ github.workspace }}/Docs"
+        ls -l "${DOCS_PATH}"
         echo "Contents of book dir (if exists):"
-        ls -l "${{ github.workspace }}/Docs/book" || echo "No book directory found"
+        ls -l "${DOCS_PATH}/book" || echo "No book directory found"
 
     - name: Upload mdBook output as artifact
       if: ${{ inputs.upload_pages != '' }}
       id: upload-pages
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ${{ github.workspace }}/Docs/book
+        path: ${DOCS_PATH}/book
