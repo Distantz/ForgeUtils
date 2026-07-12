@@ -1,4 +1,6 @@
 import sqlite3
+
+from .docgen import generate_doc_source_file
 from .tabletypes import TableData, TableParam
 from .shared_gen import get_insert_name, get_update_name, get_select_name
 from .luagen import get_pretty_print_for_value, get_delete_method, get_update_method, get_insert_method, get_select_method, generate_lua_source_file
@@ -121,22 +123,25 @@ def generate_for_database(
         database_name : str, 
         pscollection_save_dir : str,
         lua_save_dir : str,
-        lua_namespace : str
+        lua_namespace : str,
+        docs_save_dir : str
     ) -> None:
 
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
 
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
-    tables = [row[0] for row in cursor.fetchall()]
+    tables : list[str] = [row[0] for row in cursor.fetchall()]
+    table_data = {
+        name: extract_table_data(name, cursor) for name in tables
+    }
 
     db_lua = ""
     pscollections : dict[str, ET.Element] = {}
 
-    for table in tables:
-        data = extract_table_data(table, cursor)
-        pscoll, table_lua = _generate_for_table(database_name, table, data, database_name)
-        pscollections[f"{database_name}_{table}"] = pscoll
+    for name, data in table_data.items():
+        pscoll, table_lua = _generate_for_table(database_name, name, data, database_name)
+        pscollections[f"{database_name}_{name}"] = pscoll
         db_lua += table_lua
 
     lua_source = generate_lua_source_file(
@@ -147,6 +152,11 @@ def generate_for_database(
         db_lua
     )
 
+    doc_source = generate_doc_source_file(
+        database_name,
+        table_data
+    )
+
     with open(lua_save_dir + f"\\{database_name}.lua", "w+") as file:
         file.write(lua_source)
 
@@ -154,5 +164,8 @@ def generate_for_database(
         with open(pscollection_save_dir + f"\\{name}.pscollection", "w+") as file:
             ET.indent(ET.ElementTree(xml))
             file.write(ET.tostring(xml, encoding="unicode"))
+
+    with open(docs_save_dir + f"\\{database_name}.md", "w+") as file:
+        file.write(doc_source)
 
     conn.close()

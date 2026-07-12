@@ -8,6 +8,7 @@ from configuration import (
     # Folders
     base_lua_folder, 
     constants_lua_folder,
+    base_docs_folder,
 
     # Namespaces
     base_lua_namespace,
@@ -25,7 +26,10 @@ base_path = os.path.join(
     this_path, 
     "..\\", 
 )
-
+export_docs_folder = os.path.join(
+    base_path, 
+    base_docs_folder
+)
 export_database_lua_folder = os.path.join(
     base_path,
     base_lua_folder
@@ -58,7 +62,8 @@ for name, path in found_dbs.items():
         name,
         init_folder,
         export_database_lua_folder,
-        base_lua_namespace
+        base_lua_namespace,
+        export_docs_folder
     )
 
     print("Looking for constants...")
