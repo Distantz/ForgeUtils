@@ -21,7 +21,7 @@
         <arg arg_type="3" arg_index="1" />
         <arg arg_type="3" arg_index="2" />
       </args>
-      <statement_name>DiegeticMusicEventToCategoryMap__Select</statement_name>
+      <statement_name>DiegeticMusicEventToCategoryMap__Delete</statement_name>
       <sql_query>DELETE FROM DiegeticMusicEventToCategoryMap WHERE EventName = ?1 AND Category = ?2;</sql_query>
     </prepared_statement>
   </prepared_statements>

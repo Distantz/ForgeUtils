@@ -24,7 +24,7 @@
         <arg arg_type="3" arg_index="1" />
         <arg arg_type="3" arg_index="2" />
       </args>
-      <statement_name>PathExtraProps__Select</statement_name>
+      <statement_name>PathExtraProps__Delete</statement_name>
       <sql_query>DELETE FROM PathExtraProps WHERE SceneryPartName = ?1 AND SnapType = ?2;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="3">
