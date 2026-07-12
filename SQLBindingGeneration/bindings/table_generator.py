@@ -1,15 +1,17 @@
 import sqlite3
+
+from .docgen import generate_doc_source_file
 from .tabletypes import TableData, TableParam
 from .shared_gen import get_insert_name, get_update_name, get_select_name
-from .luagen import get_pretty_print_for_value, get_update_method, get_insert_method, get_select_method, generate_lua_source_file
-from .pscolgen import get_root_file, get_insert_statement, get_update_statement, get_select_statement
+from .luagen import get_pretty_print_for_value, get_delete_method, get_update_method, get_insert_method, get_select_method, generate_lua_source_file
+from .pscolgen import get_delete_statement, get_root_file, get_insert_statement, get_update_statement, get_select_statement
 import xml.etree.ElementTree as ET
 import sys
 
 def extract_table_data(table_name, cursor) -> TableData:
     cursor.execute(f"PRAGMA table_info({table_name});")
     columns = cursor.fetchall()
-    params : dict[str, TableParam] = {
+    params: dict[str, TableParam] = {
         col[1]: TableParam(
             col[2],
             bool(col[3]),
@@ -18,26 +20,25 @@ def extract_table_data(table_name, cursor) -> TableData:
         )
         for col in columns
     }
-    
+
     cursor.execute(f"PRAGMA foreign_key_list({table_name});")
     foreign_keys = cursor.fetchall()
     foreign_key_columns = {fk[3] for fk in foreign_keys}
 
     cursor.execute(f"PRAGMA index_list({table_name});")
     indexes = cursor.fetchall()
-    unique_columns = []
+    unique_columns = set()
     for _, index_name, unique, *_ in indexes:
         if unique:
             cursor.execute(f"PRAGMA index_info({index_name});")
             index_cols = cursor.fetchall()
             for col in index_cols:
-                unique_columns.append(col[2])
-    
-    data = TableData()
+                unique_columns.add(col[2])
 
     for param_name, param_data in params.items():
+        param_data.foreign_key = param_name in foreign_key_columns
+        param_data.unique = param_name in unique_columns
 
-        # Look at data distribution for this column.
         cursor.execute(f"SELECT {param_name}, COUNT(*) AS freq, ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS pct_of_total FROM {table_name} GROUP BY {param_name} ORDER BY freq DESC LIMIT 5;")
         results = cursor.fetchall()
         param_data.most_common_values = [
@@ -45,16 +46,7 @@ def extract_table_data(table_name, cursor) -> TableData:
             for val in results
         ]
 
-        data.parameters[param_name] = param_data
-
-        if param_data.primary_key or param_name in foreign_key_columns or param_name in unique_columns:
-            data.primary_keys[param_name] = param_data
-        elif not (param_data.default is not None or not param_data.not_null):
-            data.required_parameters[param_name] = param_data
-        else:
-            data.optional_parameters[param_name] = param_data
-
-    return data
+    return TableData(params)
 
 def _generate_for_table(database_name : str, table_name : str, table_data : TableData, lua_manager : str = "TestManager") -> tuple[ET.Element, str] :
     statements : list[ET.Element] = []
@@ -77,6 +69,15 @@ def _generate_for_table(database_name : str, table_name : str, table_data : Tabl
     # generate inserter
     statements.append(get_insert_statement(table_name, get_insert_name(table_name), insert_params))
     lua += get_insert_method(
+        lua_manager,
+        database_name,
+        table_name,
+        table_data
+    )
+
+    # generate remover
+    statements.append(get_delete_statement(table_name, get_select_name(table_name), primary_keys))
+    lua += get_delete_method(
         lua_manager,
         database_name,
         table_name,
@@ -112,22 +113,25 @@ def generate_for_database(
         database_name : str, 
         pscollection_save_dir : str,
         lua_save_dir : str,
-        lua_namespace : str
+        lua_namespace : str,
+        docs_save_dir : str
     ) -> None:
 
     conn = sqlite3.connect(database_path)
     cursor = conn.cursor()
 
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
-    tables = [row[0] for row in cursor.fetchall()]
+    tables : list[str] = [row[0] for row in cursor.fetchall()]
+    table_data = {
+        name: extract_table_data(name, cursor) for name in tables
+    }
 
     db_lua = ""
     pscollections : dict[str, ET.Element] = {}
 
-    for table in tables:
-        data = extract_table_data(table, cursor)
-        pscoll, table_lua = _generate_for_table(database_name, table, data, database_name)
-        pscollections[f"{database_name}_{table}"] = pscoll
+    for name, data in table_data.items():
+        pscoll, table_lua = _generate_for_table(database_name, name, data, database_name)
+        pscollections[f"{database_name}_{name}"] = pscoll
         db_lua += table_lua
 
     lua_source = generate_lua_source_file(
@@ -138,6 +142,11 @@ def generate_for_database(
         db_lua
     )
 
+    doc_source = generate_doc_source_file(
+        database_name,
+        table_data
+    )
+
     with open(lua_save_dir + f"\\{database_name}.lua", "w+") as file:
         file.write(lua_source)
 
@@ -145,5 +154,8 @@ def generate_for_database(
         with open(pscollection_save_dir + f"\\{name}.pscollection", "w+") as file:
             ET.indent(ET.ElementTree(xml))
             file.write(ET.tostring(xml, encoding="unicode"))
+
+    with open(docs_save_dir + f"\\{database_name}.md", "w+") as file:
+        file.write(doc_source)
 
     conn.close()

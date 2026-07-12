@@ -1,4 +1,4 @@
-<PscollectionRoot count="4" game="Planet Coaster 2">
+<PscollectionRoot count="5" game="Planet Coaster 2">
   <prepared_statements pool_type="4">
     <prepared_statement arg_count="1">
       <args pool_type="4">
@@ -15,6 +15,13 @@
       </args>
       <statement_name>TriggerTargetProps__Insert</statement_name>
       <sql_query>INSERT OR REPLACE INTO TriggerTargetProps (SceneryPartName, CostPerTrigger, TriggerRunTime) VALUES (?1, ?2, ?3);</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="1">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+      </args>
+      <statement_name>TriggerTargetProps__Select</statement_name>
+      <sql_query>DELETE FROM TriggerTargetProps WHERE SceneryPartName = ?1;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="2">
       <args pool_type="4">

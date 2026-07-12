@@ -1,4 +1,4 @@
-<PscollectionRoot count="19" game="Planet Coaster 2">
+<PscollectionRoot count="20" game="Planet Coaster 2">
   <prepared_statements pool_type="4">
     <prepared_statement arg_count="2">
       <args pool_type="4">
@@ -19,6 +19,14 @@
       </args>
       <statement_name>Trains__Insert</statement_name>
       <sql_query>INSERT OR REPLACE INTO Trains (Ride, Train, NumCars, MinCars, MaxCars, IsDefaultTrainForRide) VALUES (?1, ?2, ?3, ?4, ?5, ?6);</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="2">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+      </args>
+      <statement_name>Trains__Select</statement_name>
+      <sql_query>DELETE FROM Trains WHERE Ride = ?1 AND Train = ?2;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="3">
       <args pool_type="4">

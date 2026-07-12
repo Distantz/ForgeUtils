@@ -10,6 +10,13 @@ import os
 base_lua_namespace = "forgeutils.internal.database"
 constants_lua_namespace = f"{base_lua_namespace}.constants"
 
+base_docs_folder = os.path.join(
+    "Docs",
+    "src",
+    "databases",
+    "schemas"
+)
+
 base_lua_folder = os.path.join(
     "Main", 
     "forgeutils", 

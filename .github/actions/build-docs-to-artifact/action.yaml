@@ -31,6 +31,16 @@ runs:
         chmod +x ~/.local/bin/luals_docs_gen
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
+    - name: Fix missing Summary for luals-docs-gen
+      shell: bash
+      run: |
+        DOCS_OUTPUT_BASE_PATH="${{ github.workspace }}/Docs/src"
+
+        cat > "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md" << 'EOF'
+        <!-- API TOC START -->
+        <!-- API TOC END -->
+        EOF
+
     - name: Generate Markdown with luals-docs-gen
       shell: bash
       run: |
@@ -43,6 +53,22 @@ runs:
         luals_docs_gen -o by-class -n "forgeutils" "${LUA_SOURCE_PATH}" "${DOCS_OUTPUT_BASE_PATH}"
 
         cat "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md"
+
+    - name: Postprocess Docs
+      shell: bash
+      run: |
+        DOCS_PATH="${{ github.workspace }}/Docs"
+
+        # Make folder-based for autogen
+        python3 "${DOCS_PATH}/postprocess_luals.py" "${DOCS_PATH}/src/API/forgeutils/"
+
+        # Generate Summary.MD
+        python3 "${DOCS_PATH}/gen_summary.py" "${DOCS_PATH}/src/" "${DOCS_PATH}/src/SUMMARY.md"
+
+    - name: Debug SUMMARY.md
+      shell: bash
+      run: |
+        cat -A "${{ github.workspace }}/Docs/src/SUMMARY.md" | head -30
 
     - name: Build mdbook documentation
       shell: bash

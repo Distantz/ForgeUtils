@@ -57,6 +57,22 @@ def get_select_statement(table: str, statement_name: str, primary_keys: dict[str
         params
     )
 
+def get_delete_statement(table: str, statement_name: str, primary_keys: dict[str, TableParam]) -> ET.Element:
+    where_clause_parts = []
+    params = []
+    for i, (pk_name, pk_param) in enumerate(primary_keys.items(), start=1):
+        where_clause_parts.append(f"{pk_name} = ?{i}")
+        params.append(pk_param)
+    
+    where_clause = " AND ".join(where_clause_parts)
+    select_sql = f"DELETE FROM {table} WHERE {where_clause};"
+    
+    return get_prepared_statement(
+        statement_name,
+        select_sql,
+        params
+    )
+
 def get_insert_statement(table : str, statement_name : str, params : dict[str, TableParam]) -> ET.Element:
     args_str = ", ".join(
         [

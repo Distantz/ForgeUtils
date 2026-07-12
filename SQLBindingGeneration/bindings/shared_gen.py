@@ -1,3 +1,6 @@
+def get_delete_name(table : str) -> str:
+    return f"{table}__Delete"
+
 def get_select_name(table : str) -> str:
     return f"{table}__Select"
 

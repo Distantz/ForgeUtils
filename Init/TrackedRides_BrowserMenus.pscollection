@@ -1,4 +1,4 @@
-<PscollectionRoot count="8" game="Planet Coaster 2">
+<PscollectionRoot count="9" game="Planet Coaster 2">
   <prepared_statements pool_type="4">
     <prepared_statement arg_count="2">
       <args pool_type="4">
@@ -16,6 +16,14 @@
       </args>
       <statement_name>BrowserMenus__Insert</statement_name>
       <sql_query>INSERT OR REPLACE INTO BrowserMenus (Name, Ordering, Parent) VALUES (?1, ?2, ?3);</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="2">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+      </args>
+      <statement_name>BrowserMenus__Select</statement_name>
+      <sql_query>DELETE FROM BrowserMenus WHERE Name = ?1 AND Parent = ?2;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="3">
       <args pool_type="4">

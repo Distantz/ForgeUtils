@@ -1,4 +1,4 @@
-<PscollectionRoot count="12" game="Planet Coaster 2">
+<PscollectionRoot count="13" game="Planet Coaster 2">
   <prepared_statements pool_type="4">
     <prepared_statement arg_count="1">
       <args pool_type="4">
@@ -13,6 +13,13 @@
       </args>
       <statement_name>CinematicCameraWeights__Insert</statement_name>
       <sql_query>INSERT OR REPLACE INTO CinematicCameraWeights (Ride) VALUES (?1);</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="1">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+      </args>
+      <statement_name>CinematicCameraWeights__Select</statement_name>
+      <sql_query>DELETE FROM CinematicCameraWeights WHERE Ride = ?1;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="2">
       <args pool_type="4">
