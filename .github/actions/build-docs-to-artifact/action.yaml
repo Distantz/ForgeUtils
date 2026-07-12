@@ -57,7 +57,7 @@ runs:
     - name: Postprocess Docs
       shell: bash
       run: |
-        $DOCS_PATH="${{ github.workspace }}/Docs"
+        DOCS_PATH="${{ github.workspace }}/Docs"
 
         # Make folder-based for autogen
         python3 "${DOCS_PATH}/postprocess_luals.py" "${DOCS_PATH}/src/API/forgeutils/"
