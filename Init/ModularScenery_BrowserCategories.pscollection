@@ -22,7 +22,7 @@
         <arg arg_type="0" arg_index="1" />
         <arg arg_type="3" arg_index="2" />
       </args>
-      <statement_name>BrowserCategories__Select</statement_name>
+      <statement_name>BrowserCategories__Delete</statement_name>
       <sql_query>DELETE FROM BrowserCategories WHERE CategoryID = ?1 AND CategoryTag = ?2;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="3">

@@ -24,7 +24,7 @@
         <arg arg_type="3" arg_index="2" />
         <arg arg_type="3" arg_index="3" />
       </args>
-      <statement_name>ModularSceneryParts__Select</statement_name>
+      <statement_name>ModularSceneryParts__Delete</statement_name>
       <sql_query>DELETE FROM ModularSceneryParts WHERE SceneryPartName = ?1 AND DataPrefabName = ?2 AND ContentPack = ?3;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="4">

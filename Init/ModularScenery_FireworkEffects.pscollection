@@ -21,7 +21,7 @@
       <args pool_type="4">
         <arg arg_type="3" arg_index="1" />
       </args>
-      <statement_name>FireworkEffects__Select</statement_name>
+      <statement_name>FireworkEffects__Delete</statement_name>
       <sql_query>DELETE FROM FireworkEffects WHERE SceneryPartName = ?1;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="2">

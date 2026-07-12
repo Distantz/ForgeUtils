@@ -25,7 +25,7 @@
         <arg arg_type="3" arg_index="2" />
         <arg arg_type="3" arg_index="3" />
       </args>
-      <statement_name>ThemeNames__Select</statement_name>
+      <statement_name>ThemeNames__Delete</statement_name>
       <sql_query>DELETE FROM ThemeNames WHERE ThemeName = ?1 AND Tag = ?2 AND ContentPack = ?3;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="4">

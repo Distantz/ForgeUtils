@@ -25,7 +25,7 @@
         <arg arg_type="3" arg_index="1" />
         <arg arg_type="3" arg_index="2" />
       </args>
-      <statement_name>RideParams__Select</statement_name>
+      <statement_name>RideParams__Delete</statement_name>
       <sql_query>DELETE FROM RideParams WHERE Ride = ?1 AND Param = ?2;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="3">
