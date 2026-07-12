@@ -65,6 +65,11 @@ runs:
         # Generate Summary.MD
         python3 "${DOCS_PATH}/gen_summary.py" "${DOCS_PATH}/src/" "${DOCS_PATH}/src/SUMMARY.md"
 
+    - name: Debug SUMMARY.md
+      shell: bash
+      run: |
+        cat -A "${{ github.workspace }}/Docs/src/SUMMARY.md" | head -30
+
     - name: Build mdbook documentation
       shell: bash
       run: |
