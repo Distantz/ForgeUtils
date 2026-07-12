@@ -34,8 +34,7 @@ runs:
     - name: Fix missing Summary for luals-docs-gen
       shell: bash
       run: |
-        DOCS_PATH="${{ github.workspace }}/Docs"
-        DOCS_OUTPUT_BASE_PATH="${DOCS_PATH}/src"
+        DOCS_OUTPUT_BASE_PATH="${{ github.workspace }}/Docs/src"
 
         cat > "${DOCS_OUTPUT_BASE_PATH}/SUMMARY.md" << 'EOF'
         <!-- API TOC START -->
@@ -46,6 +45,7 @@ runs:
       shell: bash
       run: |
         LUA_SOURCE_PATH="${{ github.workspace }}/Main"
+        DOCS_OUTPUT_BASE_PATH="${{ github.workspace }}/Docs/src"
 
         find "${LUA_SOURCE_PATH}" -type d
 
@@ -57,6 +57,8 @@ runs:
     - name: Postprocess Docs
       shell: bash
       run: |
+        $DOCS_PATH="${{ github.workspace }}/Docs"
+
         # Make folder-based for autogen
         python3 "${DOCS_PATH}/postprocess_luals.py" "${DOCS_PATH}/src/API/forgeutils/"
 
@@ -66,20 +68,20 @@ runs:
     - name: Build mdbook documentation
       shell: bash
       run: |
-        cd "${DOCS_PATH}"
+        cd "${{ github.workspace }}/Docs"
         mdbook build
 
     - name: Check mdbook output
       shell: bash
       run: |
         echo "Contents of Docs after build:"
-        ls -l "${DOCS_PATH}"
+        ls -l "${{ github.workspace }}/Docs"
         echo "Contents of book dir (if exists):"
-        ls -l "${DOCS_PATH}/book" || echo "No book directory found"
+        ls -l "${{ github.workspace }}/Docs/book" || echo "No book directory found"
 
     - name: Upload mdBook output as artifact
       if: ${{ inputs.upload_pages != '' }}
       id: upload-pages
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ${DOCS_PATH}/book
+        path: ${{ github.workspace }}/Docs/book
