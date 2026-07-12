@@ -1,4 +1,4 @@
-<PscollectionRoot count="5" game="Planet Coaster 2">
+<PscollectionRoot count="6" game="Planet Coaster 2">
   <prepared_statements pool_type="4">
     <prepared_statement arg_count="2">
       <args pool_type="4">
@@ -18,6 +18,14 @@
       </args>
       <statement_name>PathExtraProps__Insert</statement_name>
       <sql_query>INSERT OR REPLACE INTO PathExtraProps (SceneryPartName, BoxXSize, BoxYSize, BoxZSize, SnapType) VALUES (?1, ?2, ?3, ?4, ?5);</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="2">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+      </args>
+      <statement_name>PathExtraProps__Select</statement_name>
+      <sql_query>DELETE FROM PathExtraProps WHERE SceneryPartName = ?1 AND SnapType = ?2;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="3">
       <args pool_type="4">

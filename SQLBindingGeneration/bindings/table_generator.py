@@ -1,8 +1,8 @@
 import sqlite3
 from .tabletypes import TableData, TableParam
 from .shared_gen import get_insert_name, get_update_name, get_select_name
-from .luagen import get_pretty_print_for_value, get_update_method, get_insert_method, get_select_method, generate_lua_source_file
-from .pscolgen import get_root_file, get_insert_statement, get_update_statement, get_select_statement
+from .luagen import get_pretty_print_for_value, get_delete_method, get_update_method, get_insert_method, get_select_method, generate_lua_source_file
+from .pscolgen import get_delete_statement, get_root_file, get_insert_statement, get_update_statement, get_select_statement
 import xml.etree.ElementTree as ET
 import sys
 
@@ -77,6 +77,15 @@ def _generate_for_table(database_name : str, table_name : str, table_data : Tabl
     # generate inserter
     statements.append(get_insert_statement(table_name, get_insert_name(table_name), insert_params))
     lua += get_insert_method(
+        lua_manager,
+        database_name,
+        table_name,
+        table_data
+    )
+
+    # generate remover
+    statements.append(get_delete_statement(table_name, get_select_name(table_name), primary_keys))
+    lua += get_delete_method(
         lua_manager,
         database_name,
         table_name,

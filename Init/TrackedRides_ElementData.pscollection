@@ -1,4 +1,4 @@
-<PscollectionRoot count="15" game="Planet Coaster 2">
+<PscollectionRoot count="16" game="Planet Coaster 2">
   <prepared_statements pool_type="4">
     <prepared_statement arg_count="2">
       <args pool_type="4">
@@ -18,6 +18,14 @@
       </args>
       <statement_name>ElementData__Insert</statement_name>
       <sql_query>INSERT OR REPLACE INTO ElementData (Name, Type, Cost, DisabledText, Ordering) VALUES (?1, ?2, ?3, ?4, ?5);</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="2">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="2" arg_index="2" />
+      </args>
+      <statement_name>ElementData__Select</statement_name>
+      <sql_query>DELETE FROM ElementData WHERE Name = ?1 AND Ordering = ?2;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="3">
       <args pool_type="4">

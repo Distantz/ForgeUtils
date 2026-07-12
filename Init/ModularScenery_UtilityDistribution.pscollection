@@ -1,4 +1,4 @@
-<PscollectionRoot count="4" game="Planet Coaster 2">
+<PscollectionRoot count="5" game="Planet Coaster 2">
   <prepared_statements pool_type="4">
     <prepared_statement arg_count="2">
       <args pool_type="4">
@@ -17,6 +17,14 @@
       </args>
       <statement_name>UtilityDistribution__Insert</statement_name>
       <sql_query>INSERT OR REPLACE INTO UtilityDistribution (SceneryPartName, UtilityType, RateOfTransfer, RadiusOfEffect) VALUES (?1, ?2, ?3, ?4);</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="2">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+      </args>
+      <statement_name>UtilityDistribution__Select</statement_name>
+      <sql_query>DELETE FROM UtilityDistribution WHERE SceneryPartName = ?1 AND UtilityType = ?2;</sql_query>
     </prepared_statement>
     <prepared_statement arg_count="3">
       <args pool_type="4">
