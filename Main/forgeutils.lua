@@ -22,7 +22,7 @@ local ForgeUtils = {}
 -- Modify data in place.
 ForgeUtils.version = version.new({
     major = 2,
-    minor = 3,
+    minor = 4,
     patch = 0
 })
 
