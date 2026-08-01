@@ -1,10 +1,8 @@
-# Custom Tracked Ride (CTR) Overview
-
-## Introduction
+# Introduction
 A Custom Tracked Ride (commonly known as CTR) mod provides a replacement of or an additional new tracked ride to the game. You can achieve replacements with prefab injection or overriding assets. Additions require new files to be created and referenced by the game's database. The purpose of this page is to show the general layout of a CTR in a mod. Specifics will be focused on in dedicated pages, which will be under this general header.
 
-## Anatomy
-### Concepts
+# Anatomy
+## Concepts
 A CTR mod generally contains these following concepts:
 - Code:
     - `database.*MODNAME*luadatabase.lua` for a mod entry point
@@ -31,7 +29,7 @@ A CTR mod generally contains these following concepts:
 - Translation files:
     - `.txt`, for naming other things in the mod. Any user-facing text is usually a `.txt` file
 
-### Organisation
+## Organisation
 Mod files should be organised in the parent mod folder (the folder containing the `Manifest.xml`) like so:
 
 - `/Init/`
