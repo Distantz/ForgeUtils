@@ -2,17 +2,29 @@ local global = _G
 ---@diagnostic disable-next-line: undefined-field
 local api = global.api
 local setmetatable = global.setmetatable
+local ipairs = global.ipairs
+local type = global.type
+local tostring = global.tostring
+local tablePlus = require("Common.tableplus")
 
 --- Logger is a standard utility used for logging in ForgeUtils.
---- Generally loggers should go near the top of the file with the requires, like so:
+--- Generally loggers should go near the top of the file with the requires.
+--- You don't need to include the `levelOverride` (`"INFO"` argument below) argument on the `Get` method. If you don't, it will use `Logger.GLOBAL_LEVEL`.
 --- ```lua
 --- -- example_filename.lua
---- local logger = require("ForgeUtils.Logger"):Get("example_filename")
+--- local logger = require("ForgeUtils.Logger").Get("example_filename", "INFO")
 --- ```
+---
 --- You can then call the logger with
 --- ```lua
 --- -- Prints: [INFO] example_filename: Hello World
---- logger.Info("Hello World")
+--- logger:Info("Hello World")
+--- ```
+--- You can also pass any number of values to the logger and it will attempt to convert it into a readable string.
+--- This includes tables, which will be output as a readable lua value using `Common.tablePlus`.
+--- ```lua
+--- -- Prints: [INFO] example_filename: The answer to 2 + 1 is 3
+--- logger:Info("The answer to ", 2, " + ", 1, " is ", 2 + 1)
 --- ```
 ---
 --- @class forgeutils.Logger
@@ -48,10 +60,33 @@ function Logger.Get(name, levelOverride)
     return instance
 end
 
+---Concatenates an array of values into a string representation.
+---@private
+---@param args any[]
+---@return string
+function Logger:ToConcatString(args)
+    local str = ""
+
+    for _, arg in ipairs(args) do
+        local argType = type(arg)
+        local out = ""
+        if argType == "nil" then
+            out = argType
+        elseif argType == "table" then
+            out = tablePlus.tostring(arg, nil, nil, nil, false) -- not multiline
+        else
+            out = tostring(arg)
+        end
+        str = str .. out
+    end
+    return str
+end
+
 ---@private
 ---@param level levels The level to print at.
----@param string string The string to print to the console.
-function Logger:PrintLevel(level, string)
+---@vararg any Values to turn into strings and print.
+---@return nil
+function Logger:PrintLevel(level, ...)
     if self.levelOverride ~= nil then
         if Logger.LEVELS[level] < Logger.LEVELS[self.levelOverride] then
             return
@@ -62,42 +97,42 @@ function Logger:PrintLevel(level, string)
         end
     end
 
-    api.debug.Trace("[" .. level .. "] " .. self.name .. ": " .. string)
+    api.debug.Trace("[" .. level .. "] " .. self.name .. ": " .. self:ToConcatString({ ... }))
 end
 
 ---Prints to log with the level of debug query.
----@param string string The string to print to the console.
+---@vararg any Values to turn into strings and print.
 ---@return nil
-function Logger:DebugQuery(string)
-    self:PrintLevel("DEBUG_QUERY", string)
+function Logger:DebugQuery(...)
+    self:PrintLevel("DEBUG_QUERY", ...)
 end
 
 ---Prints to log with the level of debug.
----@param string string The string to print to the console.
+---@vararg any Values to turn into strings and print.
 ---@return nil
-function Logger:Debug(string)
-    self:PrintLevel("DEBUG", string)
+function Logger:Debug(...)
+    self:PrintLevel("DEBUG", ...)
 end
 
 ---Prints to log with the level of info.
----@param string string The string to print to the console.
+---@vararg any Values to turn into strings and print.
 ---@return nil
-function Logger:Info(string)
-    self:PrintLevel("INFO", string)
+function Logger:Info(...)
+    self:PrintLevel("INFO", ...)
 end
 
 ---Prints to log with the level of warn.
----@param string string The string to print to the console.
+---@vararg any Values to turn into strings and print.
 ---@return nil
-function Logger:Warn(string)
-    self:PrintLevel("WARN", string)
+function Logger:Warn(...)
+    self:PrintLevel("WARN", ...)
 end
 
 ---Prints to log with the level of error.
----@param string string The string to print to the console.
+---@vararg any Values to turn into strings and print.
 ---@return nil
-function Logger:Error(string)
-    self:PrintLevel("ERROR", string)
+function Logger:Error(...)
+    self:PrintLevel("ERROR", ...)
 end
 
 ---Helper that checks if `name` is nil, prints an error

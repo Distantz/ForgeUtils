@@ -12,7 +12,7 @@ local trybuild = require("forgeutils.builders.utils.trybuild")
 --- @class forgeutils.builders.train.ElementParamLabelBuilder
 --- @field __index table
 --- @field id string
---- @field labels { [integer]: string }
+--- @field labels table<integer, string>
 local ElementParamLabelBuilder = {}
 ElementParamLabelBuilder.__index = ElementParamLabelBuilder
 
