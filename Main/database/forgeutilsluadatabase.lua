@@ -9,11 +9,12 @@ local table = global.table
 local require = global.require
 local tostring = global.tostring
 local pairs = global.pairs
+local forgeUtilsVersion = require("forgeutils").version
 
--- Setup logger
-local loggerSetup = require("forgeutils.logger")
-local logger = loggerSetup.Get("ForgeUtilsLuaDatabase")
-logger:Info("Loading ForgeUtils...")
+-- Setup logger, it's purposely INFO so diag info is always logged.
+local logger = require("forgeutils.logger").Get("ForgeUtils", "INFO")
+logger:Info("Loading...")
+logger:Info("Version ", forgeUtilsVersion:toString())
 
 local hookManager = require("forgeutils.hookmanager")
 local uiHookManager = require("forgeutils.uihookmanager")
@@ -69,7 +70,7 @@ function _ForgeUtilsLuaDatabase.RunCheckLocalModification(originalMethod, self)
     local foundOutOfDate = false
     local lines = {
         "Warning! Some mods target a different version of ForgeUtils. Beware of crashing!",
-        "Installed version is " .. require("forgeutils").version:toString()
+        "Installed version is " .. forgeUtilsVersion:toString()
     }
 
     for mod, ver in pairs(outOfDate) do
