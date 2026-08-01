@@ -28,7 +28,7 @@ local logger = require("forgeutils.logger").Get("SceneryPartBuilder")
 --- @field contentPackID integer Default is 0.
 --- @field visualsPrefab string? Default is nil, mapping to `*PART_ID*`.
 --- @field dataPrefab string Default is SurfaceScaling.
---- @field tags { [string]: boolean } Default is none. You will need to add at least one though. Values are not used in this, it's exclusively a set.
+--- @field tags table<string, boolean> Default is none. You will need to add at least one though. Values are not used in this, it's exclusively a set.
 --- @field nameFile string
 --- @field descFile string
 --- @field iconFile string? Default is nil, mapping to `uigameface\img\modularscenery\*PART_ID*`.
@@ -184,7 +184,7 @@ function SceneryPartBuilder:addToDB()
         self.contentPack,
         self.sizeZ * 100.0
     )
-    
+
     SceneryDBBindings.PartControlPoints__Insert(
         self.partID
     )
