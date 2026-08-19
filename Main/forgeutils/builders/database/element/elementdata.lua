@@ -51,6 +51,9 @@ function ElementData.addToDb(id, elementData)
     if elementData.leadsInto ~= nil then
         db.ElementData__Update__LeadsInto(id, ordering, elementData.leadsInto)
     end
+    if elementData.stationLeadsInto ~= nil then
+        db.ElementData__Update__StationLeadsInto(id, ordering, elementData.stationLeadsInto)
+    end
     if elementData.trackWearMultiplier ~= nil then
         db.ElementData__Update__TrackWearMultiplier(id, ordering, elementData.trackWearMultiplier)
     end
