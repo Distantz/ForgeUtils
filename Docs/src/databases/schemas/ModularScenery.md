@@ -91,6 +91,24 @@ This page documents the schema for the tables within the `ModularScenery` databa
 | BoxZSize | `number` |  |  |  |  |
 | AlignmentStyle | `string` |  | :white_check_mark: |  | `Middle` |
 
+### LightToCookieGroup
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| SceneryPartName | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| CookieGroup | `integer` |  |  |  |  |
+
+### LightingCookieGroups
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| CookieGroup | `integer` |  |  |  |  |
+| CookieName | `string\|nil` |  | :white_check_mark: |  |  |
+
+### LightingCookies
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| CookieName | `string\|nil` | :white_check_mark: |  | :white_check_mark: |  |
+| LocString | `string` |  |  |  |  |
+
 ### LocalGridAlignmentStyle
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |

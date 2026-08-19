@@ -9,6 +9,7 @@ local constants = require("forgeutils.internal.database.constants.TrackedRides")
 --- @field cost integer
 --- @field requiredPower number?
 --- @field leadsInto string?
+--- @field stationLeadsInto string?
 --- @field trackWearMultiplier number?
 --- @field disabledText string
 --- @field ordering number?
@@ -34,6 +35,7 @@ function ElementData.new()
     self.icon = "CoasterEditorIconTrack" -- matches default_spline
     self.requiredPower = nil
     self.leadsInto = nil
+    self.stationLeadsInto = nil
     self.trackWearMultiplier = 1 -- matches default_spline
     self.leadsOutOf = nil
     self.canGoUnderwater = nil
@@ -82,6 +84,13 @@ end
 --- @return self
 function ElementData:withLeadsInto(leadsInto)
     self.leadsInto = leadsInto
+    return self
+end
+
+--- @param stationLeadsInto string?
+--- @return self
+function ElementData:withStationLeadsInto(stationLeadsInto)
+    self.stationLeadsInto = stationLeadsInto
     return self
 end
 

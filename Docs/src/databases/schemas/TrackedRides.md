@@ -105,6 +105,7 @@ This page documents the schema for the tables within the `TrackedRides` database
 | DescriptionText | `string\|nil` |  |  |  |  |
 | Description2Text | `string\|nil` |  |  |  |  |
 | Description3Text | `string\|nil` |  |  |  |  |
+| StationLeadsInto | `string\|nil` |  |  |  | `NULL` |
 
 ### ElementLists
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
