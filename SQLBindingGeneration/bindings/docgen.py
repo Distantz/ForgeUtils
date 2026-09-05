@@ -81,4 +81,4 @@ def get_lua_type(
     return f"`{luatype}`"
 
 def get_doc_display_for_tick(bool : bool) -> str:
-    return ":white_check_mark:" if bool else ""
+    return "✅" if bool else ""
