@@ -142,10 +142,7 @@ end
 ---@private
 function UiHookManager:_AddHookToInstance(gamefaceUiInstance, uiHook)
     if uiHook.type == "Element" then
-        logger:Info(
-            "Applying hook: " ..
-            uiHook.file
-        )
+        logger:Info("Applying hook: ",uiHook.file)
 
         gamefaceUiInstance:TriggerEventAtNextAdvance(
             "ForgeUtils_AddElementHook",
@@ -153,19 +150,14 @@ function UiHookManager:_AddHookToInstance(gamefaceUiInstance, uiHook)
             uiHook.file
         )
     elseif uiHook.type == "Import" then
-        logger:Info(
-            "Applying hook: " ..
-            uiHook.file
-        )
+        logger:Info("Applying hook: ",uiHook.file)
 
         gamefaceUiInstance:TriggerEventAtNextAdvance(
             "ForgeUtils_AddImportHook",
             uiHook.file
         )
     elseif uiHook.type == "KeyboardGroup" then
-        logger:Info(
-            "Applying KeyboardGroups: " .. table.tostring(uiHook.group)
-        )
+        logger:Info("Applying KeyboardGroups:", uiHook.group)
 
         gamefaceUiInstance:TriggerEventAtNextAdvance(
             "ForgeUtils_AddKeyboardGroups",
@@ -289,14 +281,14 @@ end
 local KeyboardHookViews = { "HUD", "FrontEnd" };
 
 ---@class forgeutils.UIHookManager.KeybindGroup A table representing a group of keyboard and mouse keybinds that can be rebindable by the user. 
----@field label string The display name of said group using a translatable string. i.e. [ForgeUtils_Group_String]
+---@field label string The display name of said group using a translatable string. i.e. `'[ForgeUtils_Group_String]'`
 ---@field items forgeutils.UIHookManager.KeybindItem[] A list of keybind items 
 
 ---@class forgeutils.UIHookManager.KeybindItem A table representing the keyboard and mouse item.
----@field label string The display name of said item using a translatable string. i.e. [ForgeUtils_ToggleUI]
+---@field label string The display name of said item using a translatable string. i.e. `'[ForgeUtils_ToggleUI]'`
 ---@field itemName string? The logical control to link the item to. This is also used as the input icon.
 ---@field canEdit boolean? The ability to edit the keybind to another key. Default: false
----@field icon string? An icon name that overrides the itemName icon, best used if you want to use mouse icons i.e. 'mouseXY' 
+---@field icon string? An icon name that can be used in place of the itemName or in combination. icon refers to a svg file within `UIGameface/img/buttonIcons`. An example being `"mouseXYAxis"`
 ---@field hideHoldIndicator boolean? Hides the '(Hold)' text next to the icon. (Only related if the Hold bitflag '131072' is added to the k_3 value of said logical control)
 ---@field holdTime number? The duration in seconds for a button to be held down to be activated.
 
