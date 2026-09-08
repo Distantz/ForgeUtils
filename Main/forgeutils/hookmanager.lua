@@ -7,6 +7,7 @@ local package = global.package
 local require = global.require
 local string = global.string
 local pairs = global.pairs
+local type = global.type
 local logger = require("forgeutils.logger").Get("HookManager")
 
 --#region Global Definitions
@@ -76,6 +77,51 @@ function HookManager:AddHook(moduleName, functionName, hookMethod)
     end
 
     return true
+end
+
+--- Registers prefix hooks for a table of hooks on a module.
+--- This method allows auto wire-up logic for functions in the hooks table
+--- which have the prefix. The name without the prefix will be hooked in the module.
+--- ```lua
+--- -- module is:
+--- local module = {
+---     ["Function"] = function(a, b, c) end
+--- }
+--- local hooks = {
+---     ["Hook_Function"] = function(originalFunction, a, b, c) end
+--- }
+---
+--- -- default prefix is "Hook_"
+--- hookManager:AddHooks("module", hooks)
+--- -- which is equivalent to this:
+--- hookManager:AddHooks("module", hooks, "Hook_")
+--- ```
+---@param moduleName string The module to add this hook to.
+---@param hooks table The hooks table. Non-string keys will be ignored. Non-function values will be ignored. Prefix will be used to filter.
+---@param hookFunctionsPrefix string? The hook function prefix. If not provided, defaults to `"Hook_"`.
+function HookManager:AddHooks(moduleName, hooks, hookFunctionsPrefix)
+    if not hookFunctionsPrefix then
+        hookFunctionsPrefix = "Hook_"
+    end
+
+    local len = #hookFunctionsPrefix
+    for key, value in pairs(hooks) do
+        -- make sure value is a function
+        if type(key) ~= "string" or type(value) ~= "function" then
+            goto continue
+        end
+
+        -- check prefix
+        if key:sub(1, len) ~= hookFunctionsPrefix then
+            goto continue
+        end
+        local hookName = key:sub(len + 1)
+
+        -- Add hook
+        self:AddHook(moduleName, hookName, value)
+
+        ::continue::
+    end
 end
 
 ---Chains the hooks in a HookContainer.
