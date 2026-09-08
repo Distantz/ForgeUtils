@@ -5,9 +5,7 @@ local api = global.api
 local require = global.require
 local logger = require("forgeutils.logger").Get("UiHookManager")
 local hookManager = require("forgeutils.hookmanager")
-local table = require(
-    "Common.tableplus"
-)
+local table = require("common.tableplus")
 
 --#region Global Definitions
 
@@ -142,7 +140,6 @@ end
 ---@param uiHook forgeutils.UiHookManager.UiHook The hook.
 ---@private
 function UiHookManager:_AddHookToInstance(gamefaceUiInstance, uiHook)
-    logger:Info("Applying Hook")
     if uiHook.type == "Element" then
         logger:Info(
             "Applying hook: " ..

@@ -1,6 +1,5 @@
 import * as Engine from "/js/common/core/Engine.js";
 import "/js/forgeutils/printhelper.js";
-// import "/js/forgeutils/hooks/keyboardrebind.js";
 let keyboardRebind;
 const moduleHooks = new Map();
 
@@ -18,9 +17,7 @@ export function onAddElementHook(className, hookHandlerFile) {
   import(hookHandlerFile)
     .then((module) => {
       if (typeof module.OnHook !== "function") {
-        console.warn(
-          `Module "${hookHandlerFile}" does not export an OnHook function.`,
-        );
+        console.warn(`Module "${hookHandlerFile}" does not export an OnHook function.`);
         return;
       }
       if (!moduleHooks.has(className)) {
@@ -40,28 +37,22 @@ export function onAddElementHook(className, hookHandlerFile) {
 export function onAddKeyboardGroups(groups) {
   if (keyboardRebind == undefined) {
     import("/js/forgeutils/hooks/keyboardrebind.js")
-    .then((module) => {
+      .then((module) => {
         keyboardRebind = module;
         console.log(`Added hook /js/forgeutils/hooks/keyboardrebind.js!`);
-     keyboardRebind.AddKeyboardGroups(groups);
-    }).catch(
-      (err) => {
-        console.error(`Failed to load hooked import /js/forgeutils/hooks/keyboardrebind.js:`, err);
-      },
-    );
+        keyboardRebind.AddKeyboardGroups(groups);
+      })
+      .catch((err) => {
+        console.error(`Failed to load hooked import /js/forgeutils/hooks/keyboardrebind.js:`, err,);
+      });
   }
-  console.log("Adding keyboard group: " + groups.label);
-  if(keyboardRebind !== undefined){
-  keyboardRebind.AddKeyboardGroups(groups);}
+  if (keyboardRebind !== undefined) {
+    keyboardRebind.AddKeyboardGroups(groups);
+  }
 }
 
-export function triggerModuleHooks(
-  className,
-  originalMethod,
-  nodeName,
-  attributes,
-  ...children
-) {
+export function triggerModuleHooks(className,originalMethod,nodeName,attributes,...children) 
+{
   const handlers = moduleHooks.get(className) ?? [];
   const chain = handlers.reduceRight(
     (next, handler) => {
