@@ -5,6 +5,9 @@ local api = global.api
 local require = global.require
 local logger = require("forgeutils.logger").Get("UiHookManager")
 local hookManager = require("forgeutils.hookmanager")
+local table = require(
+    "Common.tableplus"
+)
 
 --#region Global Definitions
 
@@ -33,13 +36,15 @@ local UiHookManagerState = api.forgeutils.uiHookManagerState
 ---@enum (key) forgeutils.UiHookManager.UiHook.Type
 local hookTypes = {
     Element = 1,
-    Import = 2
+    Import = 2,
+    KeyboardGroup = 3
 }
 
 ---@class forgeutils.UiHookManager.UiHook A type representing a UI hook.
 ---@field type forgeutils.UiHookManager.UiHook.Type
 ---@field element string? The element to apply the hook to. This is the token name of the type in JS. `"div"` is an example, `"Button"` is another. Only required for certain hook types.
----@field file string The file that contains the JavaScript UI hook. An example is `"/js/hooks/forgeutils/hudBottomBarHook.js"`.
+---@field file string? The file that contains the JavaScript UI hook. An example is `"/js/hooks/forgeutils/hudBottomBarHook.js"`.
+---@field group table? The list of keyboard bindings to send to the FrontEnd and HUD UI Views for SettingsMenu.
 
 ---@class forgeutils.UiHookManager
 local UiHookManager = {}
@@ -137,21 +142,36 @@ end
 ---@param uiHook forgeutils.UiHookManager.UiHook The hook.
 ---@private
 function UiHookManager:_AddHookToInstance(gamefaceUiInstance, uiHook)
-    logger:Info(
-        "Applying hook: " ..
-        uiHook.file
-    )
-
+    logger:Info("Applying Hook")
     if uiHook.type == "Element" then
+        logger:Info(
+            "Applying hook: " ..
+            uiHook.file
+        )
+
         gamefaceUiInstance:TriggerEventAtNextAdvance(
             "ForgeUtils_AddElementHook",
             uiHook.element,
             uiHook.file
         )
     elseif uiHook.type == "Import" then
+        logger:Info(
+            "Applying hook: " ..
+            uiHook.file
+        )
+
         gamefaceUiInstance:TriggerEventAtNextAdvance(
             "ForgeUtils_AddImportHook",
             uiHook.file
+        )
+    elseif uiHook.type == "KeyboardGroup" then
+        logger:Info(
+            "Applying KeyboardGroups: " .. table.tostring(uiHook.group)
+        )
+
+        gamefaceUiInstance:TriggerEventAtNextAdvance(
+            "ForgeUtils_AddKeyboardGroups",
+            uiHook.group
         )
     else
         logger:Error("Unknown type! Hook was not added.")
@@ -266,6 +286,19 @@ function UiHookManager:AddImportHook(viewName, jsImportFile)
             file = jsImportFile
         }
     )
+end
+
+local KeyboardHookViews = { "HUD", "FrontEnd" };
+function UiHookManager:AddKeyboardGroup(group)
+    for _, view in pairs(KeyboardHookViews) do
+        self:_AddHookCommon(
+            view,
+            {
+                type = "KeyboardGroup",
+                group = group
+            }
+        )
+    end
 end
 
 -- Based on state, init if needed.
