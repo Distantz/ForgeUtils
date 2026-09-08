@@ -13,71 +13,71 @@ This page documents the schema for the tables within the `Audio` database.
 ### AmbienceCategories
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
 | TextSymbol | `string\|nil` |  |  |  |  |
 | Ordering | `string` |  |  |  | `0` |
 
 ### AmbienceEventToCategoryMap
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` |  | :white_check_mark: | :white_check_mark: |  |
-| Category | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| EventName | `string` |  | ✅ | ✅ |  |
+| Category | `string` |  | ✅ | ✅ |  |
 
 ### Categories
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
 | TextSymbol | `string\|nil` |  |  |  |  |
 | Ordering | `integer` |  |  |  | `0` |
 
 ### CoasterMusicEventToCategoryMap
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` |  |  | :white_check_mark: |  |
-| Category | `string` |  |  | :white_check_mark: |  |
+| EventName | `string` |  |  | ✅ |  |
+| Category | `string` |  |  | ✅ |  |
 
 ### CoasterMusicEvents
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| EventName | `string` | ✅ |  | ✅ |  |
 | ContentPack | `string` |  |  |  | `BaseGame` |
 
 ### ContentPacks
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| EnumValue | `integer` |  |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
+| EnumValue | `integer` |  |  | ✅ |  |
 
 ### DiegeticMusicEventToCategoryMap
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` |  | :white_check_mark: | :white_check_mark: |  |
-| Category | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| EventName | `string` |  | ✅ | ✅ |  |
+| Category | `string` |  | ✅ | ✅ |  |
 
 ### DiegeticMusicEvents
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| ContentPack | `string` |  | :white_check_mark: |  | `BaseGame` |
+| EventName | `string` | ✅ |  | ✅ |  |
+| ContentPack | `string` |  | ✅ |  | `BaseGame` |
 | Ordering | `integer` |  |  |  | `0` |
 
 ### EventToCategoryMap
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` |  | :white_check_mark: | :white_check_mark: |  |
-| Category | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| EventName | `string` |  | ✅ | ✅ |  |
+| Category | `string` |  | ✅ | ✅ |  |
 
 ### FlatrideMusicEventToCategoryMap
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` |  | :white_check_mark: | :white_check_mark: |  |
-| Category | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| EventName | `string` |  | ✅ | ✅ |  |
+| Category | `string` |  | ✅ | ✅ |  |
 
 ### FlatrideMusicEvents
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| ContentPack | `string` |  | :white_check_mark: |  | `BaseGame` |
+| EventName | `string` | ✅ |  | ✅ |  |
+| ContentPack | `string` |  | ✅ |  | `BaseGame` |
 
 ### GunSoundCategories
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
@@ -100,33 +100,33 @@ This page documents the schema for the tables within the `Audio` database.
 ### MusicCategories
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
 | TextSymbol | `string\|nil` |  |  |  |  |
 | Ordering | `integer` |  |  |  | `0` |
 
 ### PlaceableAmbienceEvents
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| ContentPack | `string` |  | :white_check_mark: |  | `BaseGame` |
+| EventName | `string` | ✅ |  | ✅ |  |
+| ContentPack | `string` |  | ✅ |  | `BaseGame` |
 | Ordering | `integer` |  |  |  | `0` |
 
 ### PlaceableTriggeredEvents
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| ContentPack | `string` |  | :white_check_mark: |  | `BaseGame` |
+| EventName | `string` | ✅ |  | ✅ |  |
+| ContentPack | `string` |  | ✅ |  | `BaseGame` |
 | SupportsPitchShift | `boolean` |  |  |  | `0` |
 | Ordering | `integer` |  |  |  | `0` |
 
 ### SpeakerMusicEventToCategoryMap
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` |  | :white_check_mark: | :white_check_mark: |  |
-| Category | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| EventName | `string` |  | ✅ | ✅ |  |
+| Category | `string` |  | ✅ | ✅ |  |
 
 ### SpeakerMusicEvents
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| EventName | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| ContentPack | `string` |  | :white_check_mark: |  | `BaseGame` |
+| EventName | `string` | ✅ |  | ✅ |  |
+| ContentPack | `string` |  | ✅ |  | `BaseGame` |

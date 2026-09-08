@@ -13,7 +13,7 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### Audio
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | PlacementSound | `string\|nil` |  |  |  | `Default_Placement_Sound` |
 | DeletionSound | `string\|nil` |  |  |  | `Default_Deletion_Sound` |
 | MoveSound | `string\|nil` |  |  |  | `Default_Move_Sound` |
@@ -26,14 +26,14 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### Blueprint_Tags
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPart | `string` |  | :white_check_mark: | :white_check_mark: |  |
-| Tag | `string` |  |  | :white_check_mark: |  |
+| SceneryPart | `string` |  | ✅ | ✅ |  |
+| Tag | `string` |  |  | ✅ |  |
 
 ### BrowserCategories
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| CategoryID | `integer\|nil` | :white_check_mark: |  |  |  |
-| CategoryTag | `string\|nil` |  | :white_check_mark: |  |  |
+| CategoryID | `integer\|nil` | ✅ |  |  |  |
+| CategoryTag | `string\|nil` |  | ✅ |  |  |
 | Label | `string` |  |  |  |  |
 | Icon | `string\|nil` |  |  |  |  |
 | ParentID | `integer\|nil` |  |  |  |  |
@@ -51,14 +51,14 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### ComplexTypes
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| EnumValue | `integer` |  |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
+| EnumValue | `integer` |  |  | ✅ |  |
 
 ### ContentPacks
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| EnumValue | `integer` |  |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
+| EnumValue | `integer` |  |  | ✅ |  |
 
 ### DevTransitionList
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
@@ -68,13 +68,13 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### FacilityProps
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | ShopInventoryName | `string\|nil` |  |  |  |  |
 
 ### FireworkEffects
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | Radius | `integer` |  |  |  |  |
 | Magnitude | `integer` |  |  |  |  |
 | Duration | `number` |  |  |  |  |
@@ -82,52 +82,52 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### GridProps
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | CellXSize | `number` |  |  |  |  |
 | CellYSize | `number` |  |  |  |  |
 | CellZSize | `number` |  |  |  |  |
 | BoxXSize | `number` |  |  |  |  |
 | BoxYSize | `number` |  |  |  |  |
 | BoxZSize | `number` |  |  |  |  |
-| AlignmentStyle | `string` |  | :white_check_mark: |  | `Middle` |
+| AlignmentStyle | `string` |  | ✅ |  | `Middle` |
 
 ### LightToCookieGroup
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| SceneryPartName | `string` | ✅ |  | ✅ |  |
 | CookieGroup | `integer` |  |  |  |  |
 
 ### LightingCookieGroups
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
 | CookieGroup | `integer` |  |  |  |  |
-| CookieName | `string\|nil` |  | :white_check_mark: |  |  |
+| CookieName | `string\|nil` |  | ✅ |  |  |
 
 ### LightingCookies
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| CookieName | `string\|nil` | :white_check_mark: |  | :white_check_mark: |  |
+| CookieName | `string\|nil` | ✅ |  | ✅ |  |
 | LocString | `string` |  |  |  |  |
 
 ### LocalGridAlignmentStyle
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| EnumValue | `integer` |  |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
+| EnumValue | `integer` |  |  | ✅ |  |
 
 ### Metadata_Tags
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPart | `string` |  | :white_check_mark: | :white_check_mark: |  |
-| Tag | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPart | `string` |  | ✅ | ✅ |  |
+| Tag | `string` |  | ✅ | ✅ |  |
 
 ### ModularSceneryParts
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| SceneryPartName | `string` | ✅ |  | ✅ |  |
 | PrefabName | `string\|nil` |  |  |  |  |
-| DataPrefabName | `string` |  | :white_check_mark: |  |  |
-| ContentPack | `string` |  | :white_check_mark: |  |  |
+| DataPrefabName | `string` |  | ✅ |  |  |
+| ContentPack | `string` |  | ✅ |  |  |
 | UGCID | `string\|nil` |  |  |  | `NULL` |
 | BoxXSize | `number\|nil` |  |  |  |  |
 | BoxYSize | `number\|nil` |  |  |  |  |
@@ -136,13 +136,13 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### PartComplexMembers
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| MustBelongToComplexOfType | `string\|nil` |  | :white_check_mark: |  |  |
+| SceneryPartName | `string` | ✅ | ✅ | ✅ |  |
+| MustBelongToComplexOfType | `string\|nil` |  | ✅ |  |  |
 
 ### PartControlPoints
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | ControlPointX | `number` |  |  |  | `0` |
 | ControlPointY | `number` |  |  |  | `0` |
 | ControlPointZ | `number` |  |  |  | `0` |
@@ -150,46 +150,46 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### PartCustomFilterIDs
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: |  |  |
+| SceneryPartName | `string` |  | ✅ |  |  |
 | CustomFilterID | `string` |  |  |  |  |
 
 ### PartDataPrefabs
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| PrefabName | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| PrefabName | `string` | ✅ |  | ✅ |  |
 
 ### PathExtraProps
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | BoxXSize | `number` |  |  |  |  |
 | BoxYSize | `number` |  |  |  |  |
 | BoxZSize | `number` |  |  |  |  |
-| SnapType | `string` |  | :white_check_mark: |  |  |
+| SnapType | `string` |  | ✅ |  |  |
 
 ### PathExtraSnapType
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SnapTypeName | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| SnapTypeName | `string` | ✅ |  | ✅ |  |
 | SnapTypeValue | `integer` |  |  |  |  |
 
 ### PathProps
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | JoinPartResourceName | `string` |  |  |  |  |
 
 ### SceneryScaling
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | MinSize | `number` |  |  |  |  |
 | MaxSize | `number` |  |  |  |  |
 
 ### Simulation
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` | ✅ | ✅ | ✅ |  |
 | BuildCost | `integer` |  |  |  |  |
 | HourlyRunningCost | `integer\|nil` |  |  |  |  |
 | ResearchPack | `integer\|nil` |  |  |  |  |
@@ -198,49 +198,49 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### SnapEdgePartData
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` | ✅ | ✅ | ✅ |  |
 | Size | `integer` |  |  |  |  |
 
 ### TagGroups
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| TagGroup | `string` |  | :white_check_mark: | :white_check_mark: |  |
-| Tag | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| TagGroup | `string` |  | ✅ | ✅ |  |
+| Tag | `string` |  | ✅ | ✅ |  |
 | Ordering | `integer` |  |  |  | `0` |
 
 ### TagGroupsDefinition
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
 | TextSymbol | `string` |  |  |  |  |
 | Ordering | `integer` |  |  |  | `0` |
 
 ### TagGroupsToBrowserTabs
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| TabGroup | `string` |  | :white_check_mark: |  |  |
+| TabGroup | `string` |  | ✅ |  |  |
 | BrowserTab | `string` |  |  |  |  |
 | Ordering | `integer` |  |  |  | `0` |
 
 ### TagSet
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Tag | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Tag | `string` | ✅ |  | ✅ |  |
 | TextSymbol | `string` |  |  |  |  |
 | IconPath | `string\|nil` |  |  |  |  |
 
 ### ThemeNames
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| ThemeName | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| Tag | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| ThemeName | `string` | ✅ |  | ✅ |  |
+| Tag | `string` |  | ✅ | ✅ |  |
 | LocTag | `string` |  |  |  |  |
-| ContentPack | `string\|nil` |  | :white_check_mark: |  |  |
+| ContentPack | `string\|nil` |  | ✅ |  |  |
 
 ### Theming
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | Weight | `integer` |  |  |  | `0` |
 | Radius | `integer` |  |  |  | `0` |
 | FalloffRadius | `integer` |  |  |  | `0` |
@@ -248,14 +248,14 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### TriggerTargetProps
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` |  | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` |  | ✅ | ✅ |  |
 | CostPerTrigger | `integer` |  |  |  |  |
 | TriggerRunTime | `number` |  |  |  |  |
 
 ### UIData
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` | ✅ | ✅ | ✅ |  |
 | LabelTextSymbol | `string` |  |  |  |  |
 | DescriptionTextSymbol | `string\|nil` |  |  |  |  |
 | Icon | `string\|nil` |  |  |  |  |
@@ -264,36 +264,36 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### UIPartOrdering
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| DataPrefabName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| DataPrefabName | `string` | ✅ | ✅ | ✅ |  |
 | OrderingValue | `integer` |  |  |  | `0` |
 
 ### UtilityConnection
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| UtilityType | `string` |  | :white_check_mark: |  |  |
+| SceneryPartName | `string` | ✅ | ✅ | ✅ |  |
+| UtilityType | `string` |  | ✅ |  |  |
 | CostPerMeter | `number` |  |  |  |  |
 
 ### UtilityConsumer
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| UtilityType | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` | ✅ | ✅ | ✅ |  |
+| UtilityType | `string` | ✅ | ✅ | ✅ |  |
 | RequiredUtilityQuantity | `number` |  |  |  |  |
 
 ### UtilityDistribution
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| UtilityType | `string` |  | :white_check_mark: |  |  |
+| SceneryPartName | `string` | ✅ | ✅ | ✅ |  |
+| UtilityType | `string` |  | ✅ |  |  |
 | RateOfTransfer | `number` |  |  |  |  |
 | RadiusOfEffect | `number` |  |  |  |  |
 
 ### UtilityProduction
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| SceneryPartName | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| UtilityType | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| SceneryPartName | `string` | ✅ | ✅ | ✅ |  |
+| UtilityType | `string` | ✅ | ✅ | ✅ |  |
 | ProductionPerHour | `number` |  |  |  |  |
 | CostPerUtilityPerHour | `number` |  |  |  |  |
 | TotalBreakdownTimeMinutes | `number` |  |  |  |  |
@@ -303,13 +303,13 @@ This page documents the schema for the tables within the `ModularScenery` databa
 ### UtilityTypes
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| UtilityType | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| EnumValue | `integer` |  |  | :white_check_mark: |  |
+| UtilityType | `string` | ✅ |  | ✅ |  |
+| EnumValue | `integer` |  |  | ✅ |  |
 
 ### WaterCleanliness
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| WaterConsumerType | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| WaterConsumerEnum | `integer` |  |  | :white_check_mark: |  |
+| WaterConsumerType | `string` | ✅ |  | ✅ |  |
+| WaterConsumerEnum | `integer` |  |  | ✅ |  |
 | CleanlinessScalar | `number` |  |  |  |  |
 | VolumeMultiplier | `number` |  |  |  |  |
