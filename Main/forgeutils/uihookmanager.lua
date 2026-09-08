@@ -3,8 +3,10 @@ local global = _G
 ---@diagnostic disable-next-line: undefined-field
 local api = global.api
 local require = global.require
+local pairs = global.pairs
 local logger = require("forgeutils.logger").Get("UiHookManager")
 local hookManager = require("forgeutils.hookmanager")
+local table = require("common.tableplus")
 
 --#region Global Definitions
 
@@ -33,13 +35,15 @@ local UiHookManagerState = api.forgeutils.uiHookManagerState
 ---@enum (key) forgeutils.UiHookManager.UiHook.Type
 local hookTypes = {
     Element = 1,
-    Import = 2
+    Import = 2,
+    KeyboardGroup = 3
 }
 
 ---@class forgeutils.UiHookManager.UiHook A type representing a UI hook.
 ---@field type forgeutils.UiHookManager.UiHook.Type
 ---@field element string? The element to apply the hook to. This is the token name of the type in JS. `"div"` is an example, `"Button"` is another. Only required for certain hook types.
----@field file string The file that contains the JavaScript UI hook. An example is `"/js/hooks/forgeutils/hudBottomBarHook.js"`.
+---@field file string? The file that contains the JavaScript UI hook. An example is `"/js/hooks/forgeutils/hudBottomBarHook.js"`.
+---@field group forgeutils.UIHookManager.KeybindGroup? The list of keyboard bindings to send to the FrontEnd and HUD UI Views for SettingsMenu.
 
 ---@class forgeutils.UiHookManager
 local UiHookManager = {}
@@ -137,21 +141,35 @@ end
 ---@param uiHook forgeutils.UiHookManager.UiHook The hook.
 ---@private
 function UiHookManager:_AddHookToInstance(gamefaceUiInstance, uiHook)
-    logger:Info(
-        "Applying hook: " ..
-        uiHook.file
-    )
-
     if uiHook.type == "Element" then
+        logger:Info(
+            "Applying hook: " ..
+            uiHook.file
+        )
+
         gamefaceUiInstance:TriggerEventAtNextAdvance(
             "ForgeUtils_AddElementHook",
             uiHook.element,
             uiHook.file
         )
     elseif uiHook.type == "Import" then
+        logger:Info(
+            "Applying hook: " ..
+            uiHook.file
+        )
+
         gamefaceUiInstance:TriggerEventAtNextAdvance(
             "ForgeUtils_AddImportHook",
             uiHook.file
+        )
+    elseif uiHook.type == "KeyboardGroup" then
+        logger:Info(
+            "Applying KeyboardGroups: " .. table.tostring(uiHook.group)
+        )
+
+        gamefaceUiInstance:TriggerEventAtNextAdvance(
+            "ForgeUtils_AddKeyboardGroups",
+            uiHook.group
         )
     else
         logger:Error("Unknown type! Hook was not added.")
@@ -266,6 +284,34 @@ function UiHookManager:AddImportHook(viewName, jsImportFile)
             file = jsImportFile
         }
     )
+end
+--- The list of views to use to inject keybind information into.
+local KeyboardHookViews = { "HUD", "FrontEnd" };
+
+---@class forgeutils.UIHookManager.KeybindGroup A table representing a group of keyboard and mouse keybinds that can be rebindable by the user. 
+---@field label string The display name of said group using a translatable string. i.e. [ForgeUtils_Group_String]
+---@field items forgeutils.UIHookManager.KeybindItem[] A list of keybind items 
+
+---@class forgeutils.UIHookManager.KeybindItem A table representing the keyboard and mouse item.
+---@field label string The display name of said item using a translatable string. i.e. [ForgeUtils_ToggleUI]
+---@field itemName string? The logical control to link the item to. This is also used as the input icon.
+---@field canEdit boolean? The ability to edit the keybind to another key. Default: false
+---@field icon string? An icon name that overrides the itemName icon, best used if you want to use mouse icons i.e. 'mouseXY' 
+---@field hideHoldIndicator boolean? Hides the '(Hold)' text next to the icon. (Only related if the Hold bitflag '131072' is added to the k_3 value of said logical control)
+---@field holdTime number? The duration in seconds for a button to be held down to be activated.
+
+--- Adds a Keyboard Configuration Group to be added to the settings menu. 
+---@param group forgeutils.UIHookManager.KeybindGroup
+function UiHookManager:AddKeyboardGroup(group)
+    for _, view in pairs(KeyboardHookViews) do
+        self:_AddHookCommon(
+            view,
+            {
+                type = "KeyboardGroup",
+                group = group
+            }
+        )
+    end
 end
 
 -- Based on state, init if needed.
