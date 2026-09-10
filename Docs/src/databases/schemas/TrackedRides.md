@@ -13,13 +13,13 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### BlueprintTags
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Tag | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
+| Tag | `string` | ✅ |  | ✅ |  |
 
 ### BrowserEntries
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
 | Label | `string` |  |  |  |  |
 | Icon | `string\|nil` |  |  |  |  |
 | Description | `string` |  |  |  |  |
@@ -29,11 +29,11 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### BrowserMenus
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
 | Label | `string\|nil` |  |  |  |  |
 | Icon | `string\|nil` |  |  |  |  |
 | Ordering | `integer` |  |  |  |  |
-| Parent | `string\|nil` |  | :white_check_mark: |  |  |
+| Parent | `string\|nil` |  | ✅ |  |  |
 | IsCoaster | `boolean\|nil` |  |  |  |  |
 | AudioOpenSound | `string\|nil` |  |  |  |  |
 | IsWaterSlide | `boolean\|nil` |  |  |  | `0` |
@@ -41,13 +41,13 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### BrowserTooltips
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` |  | :white_check_mark: |  |  |
+| Ride | `string` |  | ✅ |  |  |
 | Tooltip | `string` |  |  |  |  |
 
 ### CinematicCameraWeights
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
 | Car | `integer` |  |  |  | `0` |
 | CarFacing | `integer` |  |  |  | `0` |
 | FixFollow | `integer` |  |  |  | `30` |
@@ -62,20 +62,20 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### Class
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Type | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Type | `string` | ✅ |  | ✅ |  |
 
 ### ContentPacks
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| EnumValue | `string` |  |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
+| EnumValue | `string` |  |  | ✅ |  |
 
 ### DefaultFlexiColours
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
 | SemanticTag | `string` |  |  |  | `""` |
-| MaterialCustomisationProviderSlot | `integer` | :white_check_mark: |  | :white_check_mark: |  |
+| MaterialCustomisationProviderSlot | `integer` | ✅ |  | ✅ |  |
 | Red | `integer` |  |  |  |  |
 | Green | `integer` |  |  |  |  |
 | Blue | `integer` |  |  |  |  |
@@ -83,14 +83,14 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### ElementConversion
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Element | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
+| Element | `string` | ✅ |  | ✅ |  |
 | ConvertToElement | `string` |  |  |  |  |
 
 ### ElementData
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
 | Type | `string` |  |  |  |  |
 | Label | `string\|nil` |  |  |  |  |
 | Icon | `string\|nil` |  |  |  |  |
@@ -99,7 +99,7 @@ This page documents the schema for the tables within the `TrackedRides` database
 | LeadsInto | `string\|nil` |  |  |  |  |
 | TrackWearMultiplier | `number` |  |  |  | `0` |
 | DisabledText | `string` |  |  |  |  |
-| Ordering | `number` |  |  | :white_check_mark: |  |
+| Ordering | `number` |  |  | ✅ |  |
 | LeadsOutOf | `string\|nil` |  |  |  |  |
 | CanGoUnderwater | `boolean\|nil` |  |  |  | `0` |
 | DescriptionText | `string\|nil` |  |  |  |  |
@@ -110,8 +110,8 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### ElementLists
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Element | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
+| Element | `string` | ✅ |  | ✅ |  |
 
 ### ElementParamValueLabels
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
@@ -123,8 +123,8 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### ElementParams
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Element | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Param | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Element | `string` | ✅ | ✅ | ✅ |  |
+| Param | `string` | ✅ |  | ✅ |  |
 | Min | `number` |  |  |  |  |
 | Max | `number` |  |  |  |  |
 | Initial | `number` |  |  |  |  |
@@ -136,20 +136,20 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### ElementTypes
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Type | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Type | `string` | ✅ |  | ✅ |  |
 | Icon | `string\|nil` |  |  |  |  |
-| Ordering | `integer` |  |  | :white_check_mark: |  |
+| Ordering | `integer` |  |  | ✅ |  |
 
 ### ElementUsesRideParams
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Element | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Param | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Element | `string` | ✅ | ✅ | ✅ |  |
+| Param | `string` | ✅ |  | ✅ |  |
 
 ### FilterGroupDefinitions
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
 | TextSymbol | `string` |  |  |  |  |
 | Ordering | `integer` |  |  |  | `0` |
 
@@ -157,13 +157,13 @@ This page documents the schema for the tables within the `TrackedRides` database
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
 | GroupName | `string` |  |  |  |  |
-| TagName | `string` |  | :white_check_mark: |  |  |
+| TagName | `string` |  | ✅ |  |  |
 | Ordering | `integer` |  |  |  | `0` |
 
 ### FlumePlatforms
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Platform | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Platform | `string` | ✅ |  | ✅ |  |
 | Label | `string` |  |  |  |  |
 | Icon | `string\|nil` |  |  |  |  |
 | Description | `string` |  |  |  |  |
@@ -177,13 +177,13 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### MetadataTags
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Tag | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Tag | `string` | ✅ |  | ✅ |  |
 | TextSymbol | `string\|nil` |  |  |  |  |
 
 ### RideData
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Ride | `string` | ✅ |  | ✅ |  |
 | Track | `string\|nil` |  |  |  |  |
 | Name | `string\|nil` |  |  |  |  |
 | Class | `string\|nil` |  |  |  |  |
@@ -205,7 +205,7 @@ This page documents the schema for the tables within the `TrackedRides` database
 | MaxSlopeDeltaDegrees | `number` |  |  |  | `90` |
 | MaxBankDeltaDegrees | `number` |  |  |  | `90` |
 | BuildBackwards | `boolean` |  |  |  | `0` |
-| ContentPack | `string` |  | :white_check_mark: |  |  |
+| ContentPack | `string` |  | ✅ |  |  |
 | HeightOffsetOnWater | `number\|nil` |  |  |  | `0` |
 | TrainTypeName | `string\|nil` |  |  |  | `Car` |
 | GroupTrainTypeName | `string\|nil` |  |  |  | `Train` |
@@ -219,20 +219,20 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### RideFlumePlatforms
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Platform | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
+| Platform | `string` | ✅ | ✅ | ✅ |  |
 
 ### RideMetadataTags
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Tag | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
+| Tag | `string` | ✅ |  | ✅ |  |
 
 ### RideParams
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Param | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
+| Param | `string` | ✅ |  | ✅ |  |
 | Min | `number` |  |  |  |  |
 | Max | `number` |  |  |  |  |
 | Initial | `number` |  |  |  |  |
@@ -246,23 +246,23 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### RideTrains
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Train | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
+| Train | `string` | ✅ |  | ✅ |  |
 | Sort | `integer` |  |  |  |  |
 | SceneryAttachmentGroup | `integer\|nil` |  |  |  |  |
 
 ### RideTrains_Extra
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
-| Train | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| Ride | `string` | ✅ | ✅ | ✅ |  |
+| Train | `string` | ✅ |  | ✅ |  |
 | Sort | `integer` |  |  |  |  |
 | SceneryAttachmentGroup | `integer\|nil` |  |  |  |  |
 
 ### Simulation
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| Name | `string` | ✅ | ✅ | ✅ |  |
 | ExcitementRating | `number` |  |  |  |  |
 | IntensityRating | `number` |  |  |  |  |
 | NauseaRating | `number` |  |  |  |  |
@@ -286,13 +286,13 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### TrackParamEnum
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Name | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| Enum | `integer` |  |  | :white_check_mark: |  |
+| Name | `string` | ✅ |  | ✅ |  |
+| Enum | `integer` |  |  | ✅ |  |
 | Icon | `string\|nil` |  |  |  |  |
 | Units | `string\|nil` |  |  |  |  |
 | Multiplier | `number` |  |  |  | `1` |
 | Deadzone | `number` |  |  |  | `0` |
-| Sort | `integer` |  |  | :white_check_mark: |  |
+| Sort | `integer` |  |  | ✅ |  |
 
 ### TransitionList
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
@@ -302,21 +302,21 @@ This page documents the schema for the tables within the `TrackedRides` database
 ### UtilityConsumer
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| RideName | `string` |  | :white_check_mark: |  |  |
-| UtilityType | `string` |  | :white_check_mark: |  |  |
+| RideName | `string` |  | ✅ |  |  |
+| UtilityType | `string` |  | ✅ |  |  |
 | RequiredUtilityQuantity | `number` |  |  |  |  |
 
 ### UtilityTypes
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| UtilityType | `string` | :white_check_mark: |  | :white_check_mark: |  |
-| EnumValue | `integer` |  |  | :white_check_mark: |  |
+| UtilityType | `string` | ✅ |  | ✅ |  |
+| EnumValue | `integer` |  |  | ✅ |  |
 
 ### Trains
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| Ride | `string\|nil` |  | :white_check_mark: |  |  |
-| Train | `string` |  |  | :white_check_mark: |  |
+| Ride | `string\|nil` |  | ✅ |  |  |
+| Train | `string` |  |  | ✅ |  |
 | NumCars | `integer` |  |  |  |  |
 | MinCars | `integer` |  |  |  |  |
 | MaxCars | `integer` |  |  |  |  |

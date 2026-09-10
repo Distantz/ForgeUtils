@@ -13,10 +13,10 @@ This page documents the schema for the tables within the `TrackedRideCars` datab
 ### Cars
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| TrainID | `string` |  | :white_check_mark: |  |  |
+| TrainID | `string` |  | ✅ |  |  |
 | WhichCar | `string\|nil` |  |  |  |  |
 | CarOrder | `integer\|nil` |  |  |  | `0` |
-| CarID | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| CarID | `string` | ✅ |  | ✅ |  |
 | Prefab | `string\|nil` |  |  |  |  |
 | Mass | `number` |  |  |  |  |
 | PlatformPrefab | `string\|nil` |  |  |  |  |
@@ -25,7 +25,7 @@ This page documents the schema for the tables within the `TrackedRideCars` datab
 ### CatchTrains
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| TrainID | `string` | :white_check_mark: | :white_check_mark: | :white_check_mark: |  |
+| TrainID | `string` | ✅ | ✅ | ✅ |  |
 | ShouldWait | `boolean` |  |  |  | `0` |
 | CatchOnReturn | `boolean` |  |  |  | `0` |
 | MatchSpeed | `boolean` |  |  |  | `0` |
@@ -34,7 +34,7 @@ This page documents the schema for the tables within the `TrackedRideCars` datab
 ### RacingTrains
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| TrainID | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| TrainID | `string` | ✅ |  | ✅ |  |
 | PitOffset | `number\|nil` |  |  |  |  |
 | PitFront | `number\|nil` |  |  |  |  |
 | PitStep | `number\|nil` |  |  |  |  |
@@ -45,7 +45,7 @@ This page documents the schema for the tables within the `TrackedRideCars` datab
 ### Trains
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| TrainID | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| TrainID | `string` | ✅ |  | ✅ |  |
 | StaticFriction | `number\|nil` |  |  |  | `0.06` |
 | AirResistance | `number\|nil` |  |  |  | `0.02` |
 | DynamicFriction | `number\|nil` |  |  |  | `0.04` |
@@ -97,4 +97,4 @@ This page documents the schema for the tables within the `TrackedRideCars` datab
 ### WhichCar
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
-| ID | `string` | :white_check_mark: |  | :white_check_mark: |  |
+| ID | `string` | ✅ |  | ✅ |  |

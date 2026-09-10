@@ -155,7 +155,7 @@ def generate_for_database(
             ET.indent(ET.ElementTree(xml))
             file.write(ET.tostring(xml, encoding="unicode"))
 
-    with open(docs_save_dir + f"\\{database_name}.md", "w+") as file:
+    with open(docs_save_dir + f"\\{database_name}.md", "w+", encoding="utf8") as file:
         file.write(doc_source)
 
     conn.close()
