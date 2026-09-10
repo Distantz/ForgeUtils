@@ -6,7 +6,6 @@ local require = global.require
 local pairs = global.pairs
 local logger = require("forgeutils.logger").Get("UiHookManager")
 local hookManager = require("forgeutils.hookmanager")
-local table = require("common.tableplus")
 
 --#region Global Definitions
 
