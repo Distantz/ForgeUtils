@@ -1,0 +1,1 @@
+---@class forgeutils.prefabs.ComponentList : table
