@@ -48,6 +48,14 @@
             "request": "launch",
             "program": "./SQLBindingGeneration/main.py",
             "console": "integratedTerminal",
+        },
+        {
+            // This rebuilds the component data based on input specdefs and enumnamers.
+            "name": "Run Prefab Type rebuild",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./PrefabTypeGeneration/main.py",
+            "console": "integratedTerminal",
         }
     ]
 }
