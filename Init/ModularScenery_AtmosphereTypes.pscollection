@@ -1,0 +1,31 @@
+<PscollectionRoot count="3" game="Planet Coaster 2">
+  <prepared_statements pool_type="4">
+    <prepared_statement arg_count="3">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+        <arg arg_type="0" arg_index="3" />
+      </args>
+      <statement_name>AtmosphereTypes__Select</statement_name>
+      <sql_query>SELECT * FROM AtmosphereTypes WHERE Name = ?1 AND Tag = ?2 AND EnumValue = ?3;</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="3">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+        <arg arg_type="0" arg_index="3" />
+      </args>
+      <statement_name>AtmosphereTypes__Insert</statement_name>
+      <sql_query>INSERT OR REPLACE INTO AtmosphereTypes (Name, Tag, EnumValue) VALUES (?1, ?2, ?3);</sql_query>
+    </prepared_statement>
+    <prepared_statement arg_count="3">
+      <args pool_type="4">
+        <arg arg_type="3" arg_index="1" />
+        <arg arg_type="3" arg_index="2" />
+        <arg arg_type="0" arg_index="3" />
+      </args>
+      <statement_name>AtmosphereTypes__Delete</statement_name>
+      <sql_query>DELETE FROM AtmosphereTypes WHERE Name = ?1 AND Tag = ?2 AND EnumValue = ?3;</sql_query>
+    </prepared_statement>
+  </prepared_statements>
+</PscollectionRoot>

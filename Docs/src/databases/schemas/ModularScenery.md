@@ -10,6 +10,13 @@ This page documents the schema for the tables within the `ModularScenery` databa
 
 ## Table Schemas
 
+### AtmosphereTypes
+| Name | Lua Type | Primary | Foreign | Unique | Default Value |
+| ---- | -------- | :-----: | :-----: | :----: | ------------- |
+| Name | `string` | ✅ |  | ✅ |  |
+| Tag | `string` |  | ✅ | ✅ |  |
+| EnumValue | `integer` |  |  | ✅ |  |
+
 ### Audio
 | Name | Lua Type | Primary | Foreign | Unique | Default Value |
 | ---- | -------- | :-----: | :-----: | :----: | ------------- |
